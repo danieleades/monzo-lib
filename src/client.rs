@@ -22,6 +22,7 @@ fn get_endpoint(endpoint: impl AsRef<str> + 'static) -> String {
 pub struct ClientBuilder {
     access_token: Option<String>,
     refresh_token: Option<String>,
+    http_client: Option<HttpClient>,
 }
 
 impl ClientBuilder {
@@ -39,6 +40,12 @@ impl ClientBuilder {
         self
     }
 
+    /// Allows for using your own carefully constructed Reqwest client.
+    pub fn reqwest_client(mut self, client: HttpClient) -> Self {
+        self.http_client = Some(client);
+        self
+    }
+
     /// consumes the ClientBuilder and returns a Client.
     ///
     /// # Panics
@@ -53,7 +60,7 @@ impl ClientBuilder {
         let access_token = self.access_token.unwrap();
         let refresh_token = self.refresh_token;
 
-        let http_client = HttpClient::new();
+        let http_client = self.http_client.unwrap_or_else(HttpClient::new);
 
         Client {
             http_client,
