@@ -1,7 +1,7 @@
 #![warn(missing_docs)]
-#![warn(clippy::all)]
+#![deny(clippy::all)]
 
-//! [![Latest Docs](https://docs.rs/harbourmaster/badge.svg)](https://docs.rs/harbourmaster/)
+//! [![Latest Docs](https://docs.rs/monzo-lib/badge.svg)](https://docs.rs/monzo-lib/)
 //!
 //! This crate is an async Monzo API client in pure rust.
 //!
@@ -32,6 +32,7 @@
 //! ```
 
 mod client;
+pub use self::client::{accounts, balance, pots};
 mod error;
 
 pub use self::error::Error;
@@ -40,11 +41,3 @@ pub use self::error::Error;
 pub type Result<T> = std::result::Result<T, Error>;
 
 pub use self::client::{Client, ClientBuilder};
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}

@@ -1,13 +1,13 @@
 use reqwest::{Client as HttpClient, RequestBuilder};
 
-mod accounts;
-mod balance;
-mod pots;
+pub mod accounts;
+pub mod balance;
+pub mod pots;
 mod request;
 
 use self::{
     accounts::{Accounts, AccountsRequest},
-    balance::Balance,
+    balance::{Balance, BalanceRequest},
     pots::{Pots, PotsRequest},
 };
 use crate::Result;
@@ -150,15 +150,11 @@ impl Client {
     /// # }
     /// ```
     pub async fn balance(&self, account_id: impl AsRef<str>) -> Result<Balance> {
-        Ok(self
-            .http_client
-            .get(&get_endpoint("balance"))
-            .bearer_auth(&self.access_token)
-            .query(&[("account_id", account_id.as_ref())])
-            .send()
-            .await?
-            .json()
-            .await?)
+        BalanceRequest::from(
+            self.get("balance")
+                .query(&[("account_id", account_id.as_ref())]),
+        )
+        .await
     }
 
     /// Return a list of Pots

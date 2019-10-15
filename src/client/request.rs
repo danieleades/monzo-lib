@@ -1,5 +1,4 @@
 use crate::Result;
-use pin_project::pin_project;
 use reqwest::RequestBuilder;
 use serde::de::DeserializeOwned;
 use std::{
@@ -10,7 +9,6 @@ use std::{
 
 type BoxFuture<Response> = Pin<Box<dyn Future<Output = Response>>>;
 
-//#[pin_project]
 pub(crate) struct Request<Response> {
     request_builder: Option<RequestBuilder>,
     inner_future: Option<BoxFuture<Result<Response>>>,
