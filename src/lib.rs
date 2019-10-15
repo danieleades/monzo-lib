@@ -1,6 +1,8 @@
 #![warn(missing_docs)]
 #![warn(clippy::all)]
 
+//! [![Latest Docs](https://docs.rs/harbourmaster/badge.svg)](https://docs.rs/harbourmaster/)
+//! 
 //! This crate is an async Monzo API client in pure rust.
 //! 
 //! It is intended as the backend of a monzo CLI app that i'll probably

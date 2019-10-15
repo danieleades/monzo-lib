@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.org/danieleades/monzo-lib.svg?branch=master)](https://travis-ci.org/danieleades/monzo-lib)
 
 # monzo-lib
+
+[![Build Status](https://travis-ci.org/danieleades/monzo-lib.svg?branch=master)](https://travis-ci.org/danieleades/monzo-lib)
+[![Latest Docs](https://docs.rs/harbourmaster/badge.svg)](https://docs.rs/harbourmaster/)
 
 This crate is an async Monzo API client in pure rust.
 
@@ -29,5 +31,9 @@ async fn main() -> Result<()> {
     Ok(())
 }
 ```
+
+---
+
+Current version: 0.0.0
 
 License: Apache-2.0
