@@ -10,3 +10,7 @@ edition = "2018"
 reqwest = {version = "0.10.0-alpha.1", features = ["json"] }
 chrono = {version = "0.4.9", features = ["serde"] }
 serde = { version = "1.0.101", features = ["derive"] }
+pin-project = "0.4.3"
+
+[dev-dependencies]
+tokio = "0.2.0-alpha.6"
