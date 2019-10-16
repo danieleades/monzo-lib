@@ -4,7 +4,11 @@ rust:
   - nightly
 before_script:
   - rustup component add rustfmt
+  - cargo install cargo-readme
 script:
   - cargo fmt -- --check
   - cargo build --verbose
   - cargo test --verbose
+  
+  # ensure that the readme has been updated
+  - diff READM.md <(cargo readme)

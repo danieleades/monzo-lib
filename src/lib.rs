@@ -6,7 +6,7 @@
 //! This crate is an async Monzo API client in pure rust.
 //!
 //! It is intended as the backend of a monzo CLI app that i'll probably
-//! never get to building.
+//! never get around to building.
 //!
 //! In order to use this client, you will first need to get an access token and/or refresh token for the Monzo API (see [the docs](https://docs.monzo.com/))
 //!
@@ -34,7 +34,6 @@
 mod client;
 pub use self::client::{accounts, balance, pots};
 mod error;
-
 pub use self::error::Error;
 
 /// Result type for all methods in this crate which can fail.
