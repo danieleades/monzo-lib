@@ -4,7 +4,7 @@ rust:
   - nightly
 before_script:
   - rustup component add rustfmt
-  - cargo install cargo-readme
+  - cargo install cargo-readme -Z install-upgrade
 script:
   - cargo fmt -- --check
   - cargo build --verbose
