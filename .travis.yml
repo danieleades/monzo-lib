@@ -9,6 +9,6 @@ script:
   - cargo fmt -- --check
   - cargo build --verbose
   - cargo test --verbose
-  
+
   # ensure that the readme has been updated
-  - diff READM.md <(cargo readme)
+  - diff README.md <(cargo readme)
