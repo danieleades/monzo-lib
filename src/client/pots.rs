@@ -24,3 +24,4 @@ pub struct Pot {
 // Since there are no fields to set on this request, we simply forward the
 // underlying 'Request'
 pub(crate) type PotsRequest = Request<Pots>;
+pub(crate) type PotDepositRequest = Request<Pot>;

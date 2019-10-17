@@ -1,4 +1,4 @@
-use crate::Result;
+use crate::{Error, Result};
 use reqwest::RequestBuilder;
 use serde::de::DeserializeOwned;
 use std::{
@@ -62,7 +62,13 @@ where
             let request_builder = this.request_builder.take().unwrap();
 
             this.inner_future = Some(Box::pin(async move {
-                Ok(request_builder.send().await?.json().await?)
+                let response = request_builder.send().await?;
+
+                match response.status() {
+                    x if x.is_success() => Ok(response.json().await?),
+                    x if x.is_client_error() || x.is_server_error() => Err(Error::from(x)),
+                    _ => unreachable!()
+                }                
             }))
         }
 

@@ -8,11 +8,11 @@ mod request;
 use self::{
     accounts::{Accounts, AccountsRequest},
     balance::{Balance, BalanceRequest},
-    pots::{Pots, PotsRequest},
+    pots::{Pots, PotsRequest, Pot, PotDepositRequest},
 };
 use crate::Result;
 
-fn get_endpoint(endpoint: impl AsRef<str> + 'static) -> String {
+fn get_endpoint<'a>(endpoint: impl AsRef<str> + 'a) -> String {
     format!("https://api.monzo.com/{}", endpoint.as_ref())
 }
 
@@ -116,6 +116,12 @@ impl Client {
             .bearer_auth(&self.access_token)
     }
 
+    fn put(&self, endpoint: impl AsRef<str> + 'static) -> RequestBuilder {
+        let endpoint = get_endpoint(endpoint);
+
+        self.http_client.put(&endpoint).bearer_auth(&self.access_token)
+    }
+
     /// Return a list of bank accounts associated with the Monzo account
     ///
     /// # Example
@@ -184,5 +190,12 @@ impl Client {
     /// ```
     pub async fn pots(&self) -> Result<Pots> {
         PotsRequest::from(self.get("pots")).await
+    }
+
+    /// Deposit money into a pot
+    pub async fn deposit_into_pot(&self, pot_id: impl AsRef<str>, amount: i64) -> Result<Pot> {
+        let endpoint = get_endpoint(format!("pots/{}/deposit", pot_id.as_ref()));
+        let request = self.put(endpoint);
+        PotDepositRequest::from(request).await
     }
 }
