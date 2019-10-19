@@ -1,4 +1,3 @@
-use super::request::Request;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -23,5 +22,5 @@ pub struct Pot {
 
 // Since there are no fields to set on this request, we simply forward the
 // underlying 'Request'
-pub(crate) type PotsRequest = Request<Pots>;
-pub(crate) type PotDepositRequest = Request<Pot>;
+pub struct PotsRequest {}
+pub struct PotDepositRequest {}

@@ -1,4 +1,4 @@
-use crate::client::request::Request;
+use super::RequestBuilder;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
@@ -28,6 +28,7 @@ pub struct Account {
     pub created: DateTime<Utc>,
 }
 
-// Since there are no fields to set on this request, we simply forward the
-// underlying 'Request'
-pub(crate) type AccountsRequest = Request<Accounts>;
+/// An object representing a request to the Monzo API for a list of accounts
+pub struct AccountsRequest {}
+
+pub type AccountsRequestBuilder = RequestBuilder<AccountsRequest, Accounts>;

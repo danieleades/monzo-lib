@@ -32,11 +32,14 @@
 //! ```
 
 mod client;
-pub use self::client::{accounts, balance, pots};
+pub use client::Client;
+mod endpoints;
+pub use endpoints::{accounts, auth, balance, pots, RequestBuilder};
+//pub use self::endpoints::{accounts, auth, balance, pots};
 mod error;
 pub use self::error::Error;
 
 /// Result type for all methods in this crate which can fail.
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub use self::client::{Client, ClientBuilder};
+//pub use self::client::{Client, ClientBuilder};

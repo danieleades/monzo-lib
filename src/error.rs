@@ -6,6 +6,9 @@ pub enum Error {
     /// Errors associated with the underlying Reqwest crate
     Reqwest(reqwest::Error),
 
+    /// Error returned when the access token has expired
+    AuthExpired,
+
     /// HTTP client errors
     ClientError(StatusCode),
 
@@ -35,6 +38,7 @@ impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Error::Reqwest(e) => write!(f, "Reqwest Error: {}", e),
+            Error::AuthExpired => write!(f, "Access token has expired!"),
             Error::ClientError(e) => write!(f, "Client error: {}", e),
             Error::ServerError(e) => write!(f, "Server error: {}", e),
         }

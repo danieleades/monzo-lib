@@ -1,4 +1,3 @@
-use super::request::Request;
 use serde::Deserialize;
 
 /// The balance of a Monzo Account
@@ -21,4 +20,4 @@ pub struct Balance {
 
 // Since there are no fields to set on this request, we simply forward the
 // underlying 'Request'
-pub(crate) type BalanceRequest = Request<Balance>;
+pub struct BalanceRequest {}

@@ -1,147 +1,52 @@
-use reqwest::{Client as HttpClient, RequestBuilder};
-
-pub mod accounts;
-pub mod balance;
-pub mod pots;
-mod request;
-
-use self::{
-    accounts::{Accounts, AccountsRequest},
+use crate::{
+    accounts::{AccountsRequestBuilder},
+    auth::{RefreshRequest, RefreshResponse},
     balance::{Balance, BalanceRequest},
-    pots::{Pots, PotsRequest, Pot, PotDepositRequest},
+    endpoints::auth::RefreshTokens,
+    pots::{Pots, PotsRequest},
+    RequestBuilder, Result,
 };
-use crate::Result;
+use reqwest::Client as HttpClient;
 
-fn get_endpoint<'a>(endpoint: impl AsRef<str> + 'a) -> String {
-    format!("https://api.monzo.com/{}", endpoint.as_ref())
-}
-
-/// The ClientBuilder is used for configuring and constructing a new Monzo
-/// Client
-#[derive(Default)]
-pub struct ClientBuilder {
-    access_token: Option<String>,
-    refresh_token: Option<String>,
-    http_client: Option<HttpClient>,
-}
-
-impl ClientBuilder {
-    /// Set the access token for querying the Monzo API. This is required if the
-    /// refresh token is not set
-    pub fn access_token(mut self, access_token: impl Into<String>) -> Self {
-        self.access_token = Some(access_token.into());
-        self
-    }
-
-    /// Set the refresh token for generating a new access token. This is
-    /// required if the access token is not provided
-    pub fn refresh_token(mut self, refresh_token: impl Into<String>) -> Self {
-        self.refresh_token = Some(refresh_token.into());
-        self
-    }
-
-    /// Allows for using your own carefully constructed Reqwest client.
-    pub fn reqwest_client(mut self, client: HttpClient) -> Self {
-        self.http_client = Some(client);
-        self
-    }
-
-    /// consumes the ClientBuilder and returns a Client.
-    ///
-    /// # Panics
-    /// This method will panic if neither the access token or refresh token are
-    /// set
-    ///
-    /// # Note
-    /// Currently this naively assumes that the access token is provided, and
-    /// valid. no logic for refreshing the token is yet implemented.
-    pub fn build(self) -> Client {
-        // for now, assume we have both
-        let access_token = self.access_token.unwrap();
-        let refresh_token = self.refresh_token;
-
-        let http_client = self.http_client.unwrap_or_else(HttpClient::new);
-
-        Client {
-            http_client,
-            access_token,
-            refresh_token,
-        }
-    }
-}
-
-/// Monzo Client
+/// Client is a Monzo API client which requires only an access token.
+///
+/// The access token is valid for several hours after issue before it must be
+/// refreshed.
+///
+/// see the [Client](monzo-lib::Client) for a client which is capable of
+/// refreshing its own access.
 pub struct Client {
-    http_client: HttpClient,
     access_token: String,
-    refresh_token: Option<String>,
+    http_client: HttpClient,
+    refresh_tokens: RefreshTokens,
 }
+
 
 impl Client {
-    /// Returns a new Monzo Client.
-    ///
-    /// For more fine-grained control over the client configuration, see the
-    /// builder API.
-    pub fn new(access_token: impl Into<String>) -> Self {
-        Client::builder().access_token(access_token).build()
+    /// Create a new Monzo Client
+    pub fn new(
+        access_token: impl Into<String>,
+        client_id: impl Into<String>,
+        client_secret: impl Into<String>,
+        refresh_token: impl Into<String>,
+    ) -> Self {
+        let http_client = HttpClient::new();
+        let refresh_tokens = RefreshTokens::new(client_id, client_secret, refresh_token);
+        Client {
+            access_token: access_token.into(),
+            http_client,
+            refresh_tokens,
+        }
     }
 
-    /// return a ClientBuilder for configuring a new Client
-    ///
-    /// The builder API can be used for more fine-grained control over the
-    /// configuration of the client.
-    ///
-    /// # Example
-    /// ```no_run
-    /// use monzo_lib::Client;
-    /// #
-    /// #[tokio::main]
-    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let client = Client::builder()
-    ///        .access_token("ACCESS_TOKEN")
-    ///        .refresh_token("REFRESH_TOKEN")
-    ///        .build();
-    /// #   Ok(())
-    /// # }
-    /// ```
-    pub fn builder() -> ClientBuilder {
-        ClientBuilder::default()
-    }
-
-    fn get(&self, endpoint: impl AsRef<str> + 'static) -> RequestBuilder {
-        let endpoint = get_endpoint(endpoint);
+    /// Return a list of accounts
+    pub fn accounts(&self) -> AccountsRequestBuilder {
+        let endpoint = "https://api.monzo.com/accounts";
 
         self.http_client
-            .get(&endpoint)
+            .get(endpoint)
             .bearer_auth(&self.access_token)
-    }
-
-    fn put(&self, endpoint: impl AsRef<str> + 'static) -> RequestBuilder {
-        let endpoint = get_endpoint(endpoint);
-
-        self.http_client.put(&endpoint).bearer_auth(&self.access_token)
-    }
-
-    /// Return a list of bank accounts associated with the Monzo account
-    ///
-    /// # Example
-    /// ```no_run
-    /// # use monzo_lib::Client;
-    /// #
-    /// #[tokio::main]
-    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// #    let client = Client::builder()
-    /// #       .access_token("ACCESS_TOKEN")
-    /// #       .refresh_token("REFRESH_TOKEN")
-    /// #       .build();
-    /// #
-    ///    let accounts = client.accounts().await?;
-    /// #
-    /// #   Ok(())
-    /// # }
-    /// ```
-    pub async fn accounts(&self) -> Result<Accounts> {
-        AccountsRequest::from(self.get("accounts")).await
+            .into()
     }
 
     /// Return the balance of a given account
@@ -150,7 +55,7 @@ impl Client {
     /// ```no_run
     /// # use monzo_lib::Client;
     /// #
-    /// #[tokio::main]
+    /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// #    let client = Client::builder()
     /// #       .access_token("ACCESS_TOKEN")
@@ -162,12 +67,14 @@ impl Client {
     /// #   Ok(())
     /// # }
     /// ```
-    pub async fn balance(&self, account_id: impl AsRef<str>) -> Result<Balance> {
-        BalanceRequest::from(
-            self.get("balance")
-                .query(&[("account_id", account_id.as_ref())]),
-        )
-        .await
+    pub fn balance(&self, account_id: impl AsRef<str>) -> RequestBuilder<BalanceRequest, Balance> {
+        let endpoint = "https://api.monzo.com/balance";
+
+        self.http_client
+            .get(endpoint)
+            .bearer_auth(&self.access_token)
+            .query(&[("account_id", account_id.as_ref())])
+            .into()
     }
 
     /// Return a list of Pots
@@ -176,7 +83,7 @@ impl Client {
     /// ```no_run
     /// # use monzo_lib::Client;
     /// #
-    /// #[tokio::main]
+    /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// #    let client = Client::builder()
     /// #       .access_token("ACCESS_TOKEN")
@@ -188,14 +95,34 @@ impl Client {
     /// #   Ok(())
     /// # }
     /// ```
-    pub async fn pots(&self) -> Result<Pots> {
-        PotsRequest::from(self.get("pots")).await
+    pub fn pots(&self) -> RequestBuilder<PotsRequest, Pots> {
+        let endpoint = "https://api.monzo.com/pots";
+
+        self.http_client
+            .get(endpoint)
+            .bearer_auth(&self.access_token)
+            .into()
     }
 
-    /// Deposit money into a pot
-    pub async fn deposit_into_pot(&self, pot_id: impl AsRef<str>, amount: i64) -> Result<Pot> {
-        let endpoint = get_endpoint(format!("pots/{}/deposit", pot_id.as_ref()));
-        let request = self.put(endpoint);
-        PotDepositRequest::from(request).await
+    fn get_refresh_tokens(&self) -> RequestBuilder<RefreshRequest, RefreshResponse> {
+        self.http_client
+            .post("https://api.monzo.com/oauth2/token")
+            .form(&[
+                ("grant_type", "refresh_token"),
+                ("client_id", &self.refresh_tokens.client_id),
+                ("client_secret", &self.refresh_tokens.client_secret),
+                ("refresh_token", &self.refresh_tokens.refresh_token),
+            ])
+            .into()
+    }
+
+    /// Refresh the access and refresh tokens for this client
+    pub async fn refresh_auth(&mut self) -> Result<()> {
+        let response = self.get_refresh_tokens().await?;
+
+        self.access_token = response.access_token;
+        self.refresh_tokens.refresh_token = response.refresh_token;
+
+        Ok(())
     }
 }
