@@ -1,5 +1,5 @@
 use crate::{
-    accounts::{AccountsRequestBuilder},
+    accounts::AccountsRequestBuilder,
     auth::{RefreshRequest, RefreshResponse},
     balance::{Balance, BalanceRequest},
     endpoints::auth::RefreshTokens,
@@ -20,7 +20,6 @@ pub struct Client {
     http_client: HttpClient,
     refresh_tokens: RefreshTokens,
 }
-
 
 impl Client {
     /// Create a new Monzo Client

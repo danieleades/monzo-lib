@@ -15,8 +15,8 @@ pub mod pots;
 type BoxFuture<Response> = Pin<Box<dyn Future<Output = Response>>>;
 
 /// An http request to the Monzo API
-/// 
-/// This 
+///
+/// This
 pub struct RequestBuilder<Request, Response> {
     reqwest_builder: Option<reqwest::RequestBuilder>,
     inner_future: Option<BoxFuture<Result<Response>>>,
