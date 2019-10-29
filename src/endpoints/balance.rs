@@ -1,4 +1,9 @@
+//! Balance endpoint
+
+use crate::{endpoints::handle_response, into_future::IntoFuture, Result};
+use reqwest::Client as HttpClient;
 use serde::Deserialize;
+use std::{future::Future, pin::Pin};
 
 /// The balance of a Monzo Account
 #[derive(Deserialize, Debug)]
@@ -18,6 +23,52 @@ pub struct Balance {
     pub spend_today: i64,
 }
 
-// Since there are no fields to set on this request, we simply forward the
-// underlying 'Request'
-pub struct BalanceRequest {}
+/// An object representing a request to the Monzo API for a list of accounts
+pub struct GetBalance<'a> {
+    reqwest_builder: reqwest::RequestBuilder,
+    account_id: &'a str,
+}
+
+impl<'a> GetBalance<'a> {
+    pub(crate) fn new(
+        http_client: &HttpClient,
+        access_token: impl AsRef<str>,
+        account_id: &'a str,
+    ) -> Self {
+        let reqwest_builder = http_client
+            .get("https://api.monzo.com/balance")
+            .bearer_auth(access_token.as_ref());
+
+        Self {
+            reqwest_builder,
+            account_id,
+        }
+    }
+
+    /// Consume the request and return a future that will resolve to the balance of the given account
+    pub async fn send(self) -> Result<Balance> {
+        handle_response(
+            self.reqwest_builder
+                .query(&[("account_id", self.account_id)]),
+        )
+        .await
+    }
+}
+
+impl<'a> IntoFuture for GetBalance<'a> {
+    type Output = Result<Balance>;
+    type Future = Pin<Box<dyn Future<Output = Self::Output> + 'a>>;
+
+    fn into_future(self) -> Self::Future {
+        Box::pin(self.send())
+    }
+}
+
+/* impl<'a> IntoFuture for GetBalance<'a> {
+    type Output = Result<Balance>;
+    type Future = impl Future<Output = Self::Output>;
+
+    fn into_future(self) -> Self::Future {
+        self.send()
+    }
+} */

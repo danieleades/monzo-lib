@@ -10,10 +10,10 @@ pub enum Error {
     AuthExpired,
 
     /// HTTP client errors
-    ClientError(StatusCode),
+    Client(StatusCode),
 
     /// HTTP server errors
-    ServerError(StatusCode),
+    Server(StatusCode),
 }
 
 impl From<reqwest::Error> for Error {
@@ -25,9 +25,9 @@ impl From<reqwest::Error> for Error {
 impl From<reqwest::StatusCode> for Error {
     fn from(s: reqwest::StatusCode) -> Error {
         if s.is_client_error() {
-            Error::ClientError(s)
+            Error::Client(s)
         } else if s.is_server_error() {
-            Error::ServerError(s)
+            Error::Server(s)
         } else {
             panic!("this status code is not a valid error! ({})", s)
         }
@@ -39,8 +39,8 @@ impl std::fmt::Display for Error {
         match self {
             Error::Reqwest(e) => write!(f, "Reqwest Error: {}", e),
             Error::AuthExpired => write!(f, "Access token has expired!"),
-            Error::ClientError(e) => write!(f, "Client error: {}", e),
-            Error::ServerError(e) => write!(f, "Server error: {}", e),
+            Error::Client(e) => write!(f, "Client error: {}", e),
+            Error::Server(e) => write!(f, "Server error: {}", e),
         }
     }
 }
