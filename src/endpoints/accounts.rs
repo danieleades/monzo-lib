@@ -46,7 +46,8 @@ impl ListAccounts {
         Self { request_builder }
     }
 
-    /// Consume the request and return a future that will resolve to a list of accounts
+    /// Consume the request and return a future that will resolve to a list of
+    /// accounts
     pub async fn send(self) -> Result<Accounts> {
         handle_response(self.request_builder).await
     }

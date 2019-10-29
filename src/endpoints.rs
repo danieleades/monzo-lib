@@ -17,7 +17,7 @@ where
         x if x.is_client_error() || x.is_server_error() => {
             println!("response.body: {:#?}", response.text().await?);
             Err(Error::from(x))
-        },
+        }
         _ => unreachable!(),
     }
 }

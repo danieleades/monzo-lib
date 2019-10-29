@@ -4,10 +4,10 @@ use serde::Serialize;
 use std::{future::Future, pin::Pin};
 
 /// A request to create a new basic feed item.
-/// 
+///
 /// Currently a 'basic' feed item is the only kind
 /// of feed item which is supported
-/// 
+///
 /// Use the builder methods to set optional fields
 pub struct BasicFeedItem<'a> {
     reqwest_builder: reqwest::RequestBuilder,
@@ -16,7 +16,6 @@ pub struct BasicFeedItem<'a> {
 
 #[derive(Debug, Serialize)]
 struct Params<'a> {
-
     #[serde(rename = "params[title]")]
     title: &'a str,
 
@@ -48,7 +47,9 @@ impl<'a> BasicFeedItem<'a> {
         title: &'a str,
         image_url: &'a str,
     ) -> Self {
-        let reqwest_builder = http_client.post("https://api.monzo.com/feed").bearer_auth(access_token.as_ref());
+        let reqwest_builder = http_client
+            .post("https://api.monzo.com/feed")
+            .bearer_auth(access_token.as_ref());
 
         let params = Params {
             title,
@@ -64,7 +65,6 @@ impl<'a> BasicFeedItem<'a> {
             url: None,
             r#type: "basic",
             params,
-
         };
 
         Self {
@@ -74,7 +74,7 @@ impl<'a> BasicFeedItem<'a> {
     }
 
     /// Set the url of the feed item.
-    /// 
+    ///
     /// This is the url the user will be redirected to after
     /// tapping on the feed item
     pub fn url(mut self, url: &'a str) -> Self {
@@ -89,7 +89,7 @@ impl<'a> BasicFeedItem<'a> {
     }
 
     /// Set the image of the feed item.
-    /// 
+    ///
     /// # Note
     /// *This doesn't currently seem to do anything*
     pub fn image_url(mut self, image_url: &'a str) -> Self {
@@ -121,7 +121,8 @@ impl<'a> BasicFeedItem<'a> {
         self
     }
 
-    /// Consume the request and return a future which will resolve when the feed item is posted
+    /// Consume the request and return a future which will resolve when the feed
+    /// item is posted
     pub async fn send(self) -> Result<serde_json::Value> {
         handle_response(self.reqwest_builder.form(&self.payload)).await
     }
@@ -135,7 +136,7 @@ pub struct BasicFeedItemPayload<'a> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<&'a str>,
-    
+
     #[serde(flatten)]
     params: Params<'a>,
 }

@@ -1,6 +1,9 @@
 use super::refreshable_client::Client;
 use crate::{
-    accounts::ListAccounts, balance::GetBalance, feed_items::BasicFeedItem, pots::{ListPots, DepositIntoPot},
+    accounts::ListAccounts,
+    balance::GetBalance,
+    feed_items::BasicFeedItem,
+    pots::{DepositIntoPot, ListPots},
 };
 use reqwest::Client as HttpClient;
 
@@ -165,7 +168,7 @@ impl QuickClient {
     }
 
     /// Create an item in the monzo feed.
-    /// 
+    ///
     /// # Example
     /// ```no_run
     /// # #[tokio::main]
@@ -176,7 +179,7 @@ impl QuickClient {
     /// let account_id = "ACCOUNT_ID";
     /// let title = "Feed Item Title";
     /// let image_url = "http://www.nyan.cat/cats/original.gif";
-    /// 
+    ///
     /// client.basic_feed_item(
     ///     account_id,
     ///     title,
@@ -187,7 +190,7 @@ impl QuickClient {
     /// # Ok(())
     /// # }
     /// ```
-    /// 
+    ///
     /// # Note
     /// *At the time of writing the feed item API doesn't
     /// appear to quite match the documentation.
@@ -199,11 +202,11 @@ impl QuickClient {
         amount: i64,
     ) -> DepositIntoPot {
         DepositIntoPot::new(
-        self.http_client(),
-        self.access_token(),
-        pot_id,
-        source_account_id,
-        amount,
+            self.http_client(),
+            self.access_token(),
+            pot_id,
+            source_account_id,
+            amount,
         )
     }
 }

@@ -45,7 +45,8 @@ impl<'a> GetBalance<'a> {
         }
     }
 
-    /// Consume the request and return a future that will resolve to the balance of the given account
+    /// Consume the request and return a future that will resolve to the balance
+    /// of the given account
     pub async fn send(self) -> Result<Balance> {
         handle_response(
             self.reqwest_builder

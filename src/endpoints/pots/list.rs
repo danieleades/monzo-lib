@@ -17,7 +17,8 @@ impl ListPots {
         Self { request_builder }
     }
 
-    /// Consume the request and return a response that will resolve to a list of pots
+    /// Consume the request and return a response that will resolve to a list of
+    /// pots
     pub async fn send(self) -> Result<Pots> {
         handle_response(self.request_builder).await
     }
