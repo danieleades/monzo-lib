@@ -32,6 +32,8 @@ impl DepositIntoPot {
         Self { request_builder }
     }
 
+    /// Consume the request and a return a future that resolve to a [Pot] when
+    /// the deposit has been completed
     pub async fn send(self) -> Result<Pot> {
         handle_response(self.request_builder).await
     }

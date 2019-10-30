@@ -83,9 +83,6 @@ impl QuickClient {
 
     /// Return a list of accounts
     ///
-    /// The return [AccountsRequestBuilder] implements
-    /// [Future](std::future::Future), hence can be `await`ed directly.
-    ///
     /// # Example
     /// ```no_run
     /// # use monzo_lib::{Client, Result};
@@ -96,7 +93,7 @@ impl QuickClient {
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let accounts = client.accounts().await?;
+    /// let accounts = client.accounts().send().await?;
     /// #
     /// # Ok(())
     /// # }
@@ -118,7 +115,7 @@ impl QuickClient {
     /// # let ACCOUNT_ID = "ACCOUNT_ID";
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let balance = client.balance(ACCOUNT_ID).await?;
+    /// let balance = client.balance(ACCOUNT_ID).send().await?;
     /// #
     /// # Ok(())
     /// # }
@@ -139,7 +136,7 @@ impl QuickClient {
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let pots = client.pots().await?;
+    /// let pots = client.pots().send().await?;
     /// #
     /// # Ok(())
     /// # }
@@ -171,6 +168,7 @@ impl QuickClient {
     ///
     /// # Example
     /// ```no_run
+    /// use monzo_lib::Client;
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// # let access_token = "ACCESS_TOKEN";
