@@ -7,12 +7,16 @@ use std::collections::HashMap;
 mod list;
 pub use list::ListTransactions;
 
+mod retrieve;
+pub use retrieve::RetrieveTransaction;
+
 #[derive(Deserialize, Debug)]
 struct Transactions {
     transactions: Vec<Transaction>,
 }
 
 impl From<Transactions> for Vec<Transaction> {
+    #[must_use]
     fn from(transactions: Transactions) -> Self {
         transactions.transactions
     }
@@ -86,27 +90,55 @@ pub enum DeclineReason {
 /// The set of categories by which Monzo transactions and merchants can be
 /// categorised
 #[derive(Deserialize, Debug)]
+#[non_exhaustive]
 #[serde(rename_all = "snake_case")]
 pub enum Category {
+    /// General expenses
     General,
+
+    /// Restaurants, Cafes, etc
     EatingOut,
+
+    /// Work-related expenses
     Expenses,
+
+    /// Getting around
     Transport,
+
+    /// Cash withdrawals
     Cash,
+
+    /// Bills and regular expenses
     Bills,
+
+    /// Fun and Entertainment
     Entertainment,
+
+    /// Treat yourself
     Shopping,
+
+    /// Holiday expenses
     Holidays,
+
+    /// Food and household items
     Groceries,
 }
 
+/// Merchant information which might be returned in transactions data.
+///
+/// An id or a struct may be returned depending on whether the 'expand merchant'
+/// flag is set in the transactions request.
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
 pub enum MerchantInfo {
+    /// A unique ID associated with a merchant
     Id(String),
-    Details(Merchant),
+
+    /// Extra merchant information which may optionally be requested
+    Details(Box<Merchant>),
 }
 
+/// Merchant details
 #[derive(Deserialize, Debug)]
 pub struct Merchant {
     address: Address,
@@ -119,6 +151,7 @@ pub struct Merchant {
     category: Category,
 }
 
+/// Address details
 #[derive(Deserialize, Debug)]
 pub struct Address {
     address: String,

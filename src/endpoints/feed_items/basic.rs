@@ -1,7 +1,5 @@
-use crate::{endpoints::handle_response, into_future::IntoFuture, Result};
-use reqwest::Client as HttpClient;
+use crate::{endpoints::handle_response, Result};
 use serde::Serialize;
-use std::{future::Future, pin::Pin};
 
 /// A request to create a new basic feed item.
 ///
@@ -41,7 +39,7 @@ struct Params<'a> {
 
 impl<'a> BasicFeedItem<'a> {
     pub(crate) fn new(
-        http_client: &HttpClient,
+        http_client: &reqwest::Client,
         access_token: impl AsRef<str>,
         account_id: &'a str,
         title: &'a str,
@@ -141,6 +139,10 @@ pub struct BasicFeedItemPayload<'a> {
     params: Params<'a>,
 }
 
+/*
+use std::future::Future;
+use crate::into_future::IntoFuture;
+
 impl<'a> IntoFuture for BasicFeedItem<'a> {
     type Output = Result<serde_json::Value>;
     type Future = Pin<Box<dyn Future<Output = Self::Output> + 'a>>;
@@ -148,4 +150,4 @@ impl<'a> IntoFuture for BasicFeedItem<'a> {
     fn into_future(self) -> Self::Future {
         Box::pin(self.send())
     }
-}
+} */

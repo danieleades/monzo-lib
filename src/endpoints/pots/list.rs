@@ -1,7 +1,5 @@
 use super::Pots;
-use crate::{endpoints::handle_response, into_future::IntoFuture, Result};
-use reqwest::Client as HttpClient;
-use std::future::Future;
+use crate::{endpoints::handle_response, Result};
 
 /// An object representing a request to the Monzo API for a list of accounts
 pub struct ListPots {
@@ -9,7 +7,7 @@ pub struct ListPots {
 }
 
 impl ListPots {
-    pub(crate) fn new(http_client: &HttpClient, access_token: impl AsRef<str>) -> Self {
+    pub(crate) fn new(http_client: &reqwest::Client, access_token: impl AsRef<str>) -> Self {
         let request_builder = http_client
             .get("https://api.monzo.com/accounts")
             .bearer_auth(access_token.as_ref());
@@ -24,7 +22,11 @@ impl ListPots {
     }
 }
 
-/* impl IntoFuture for ListPots {
+/*
+use std::future::Future;
+use crate::into_future::IntoFuture;
+
+impl IntoFuture for ListPots {
     type Output = Result<Pots>;
     type Future = impl Future<Output = Self::Output>;
 

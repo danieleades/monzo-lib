@@ -1,6 +1,7 @@
 #![warn(missing_docs)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![allow(clippy::module_name_repetitions)]
 #![feature(type_alias_impl_trait)]
 
 //! This crate is a Monzo client in pure rust.
@@ -54,7 +55,7 @@ pub use endpoints::{accounts, auth, balance, feed_items, pots, transactions};
 mod error;
 pub use self::error::Error;
 
-mod into_future;
+//mod into_future;
 
 /// Result type for all methods in this crate which can fail.
 pub type Result<T> = std::result::Result<T, Error>;

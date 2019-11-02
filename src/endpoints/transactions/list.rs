@@ -41,7 +41,7 @@ impl<'a> ListTransactions<'a> {
             .map(Transactions::into)
     }
 
-    /// Only return transactions which occurred after the given DateTime
+    /// Only return transactions which occurred after the given `DateTime`
     pub fn since(mut self, datetime: DateTime<Utc>) -> Self {
         self.payload.pagination.since = Some(Since::Timestamp(datetime));
         self
@@ -55,7 +55,7 @@ impl<'a> ListTransactions<'a> {
         self
     }
 
-    /// Only return transactions which occurred before a given DateTime
+    /// Only return transactions which occurred before a given `DateTime`
     pub fn before(mut self, datetime: DateTime<Utc>) -> Self {
         self.payload.pagination.before = Some(datetime);
         self

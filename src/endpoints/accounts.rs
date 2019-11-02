@@ -1,10 +1,8 @@
 //! Accounts API endpoint
 
-use crate::{endpoints::handle_response, into_future::IntoFuture, Result};
+use crate::{endpoints::handle_response, Result};
 use chrono::{DateTime, Utc};
-use reqwest::Client as HttpClient;
 use serde::Deserialize;
-use std::future::Future;
 
 /// A struct representing a collection of accounts
 #[derive(Deserialize, Debug)]
@@ -52,7 +50,7 @@ pub struct ListAccounts {
 }
 
 impl ListAccounts {
-    pub(crate) fn new(http_client: &HttpClient, access_token: impl AsRef<str>) -> Self {
+    pub(crate) fn new(http_client: &reqwest::Client, access_token: impl AsRef<str>) -> Self {
         let request_builder = http_client
             .get("https://api.monzo.com/accounts")
             .bearer_auth(access_token.as_ref());
@@ -69,7 +67,11 @@ impl ListAccounts {
     }
 }
 
-/* impl IntoFuture for ListAccounts {
+/*
+use std::future::Future;
+use crate::into_future::IntoFuture;
+
+impl IntoFuture for ListAccounts {
     type Output = Result<Vec<Account>>;
     type Future = impl Future<Output = Self::Output>;
 

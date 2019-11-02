@@ -30,7 +30,7 @@ pub struct RefreshResponse {
 
 /// A request for new authentication tokens.
 ///
-/// This struct implements [IntoFuture](std::future::IntoFuture), and can be
+/// This struct implements `[IntoFuture](std::future::IntoFuture)`, and can be
 /// `await`ed directly.
 pub struct RefreshAuth {
     reqwest_builder: reqwest::RequestBuilder,
@@ -58,7 +58,7 @@ impl RefreshAuth {
     /// Send the response to the Monzo server.
     ///
     /// This method consumes the request and produces a future which will
-    /// resolve to a [RefreshResponse]. This method is effectively an alias
+    /// resolve to a `[RefreshResponse]`. This method is effectively an alias
     /// for the `into_future` method.
     pub async fn send(self) -> Result<RefreshResponse> {
         handle_response(self.reqwest_builder).await

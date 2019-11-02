@@ -1,9 +1,7 @@
 //! Balance endpoint
 
-use crate::{endpoints::handle_response, into_future::IntoFuture, Result};
-use reqwest::Client as HttpClient;
+use crate::{endpoints::handle_response, Result};
 use serde::Deserialize;
-use std::{future::Future, pin::Pin};
 
 /// The balance of a Monzo Account
 #[derive(Deserialize, Debug)]
@@ -31,7 +29,7 @@ pub struct GetBalance<'a> {
 
 impl<'a> GetBalance<'a> {
     pub(crate) fn new(
-        http_client: &HttpClient,
+        http_client: &reqwest::Client,
         access_token: impl AsRef<str>,
         account_id: &'a str,
     ) -> Self {
@@ -56,6 +54,10 @@ impl<'a> GetBalance<'a> {
     }
 }
 
+/*
+use std::future::Future;
+use crate::into_future::IntoFuture;
+
 impl<'a> IntoFuture for GetBalance<'a> {
     type Output = Result<Balance>;
     type Future = Pin<Box<dyn Future<Output = Self::Output> + 'a>>;
@@ -65,11 +67,4 @@ impl<'a> IntoFuture for GetBalance<'a> {
     }
 }
 
-/* impl<'a> IntoFuture for GetBalance<'a> {
-    type Output = Result<Balance>;
-    type Future = impl Future<Output = Self::Output>;
-
-    fn into_future(self) -> Self::Future {
-        self.send()
-    }
 } */

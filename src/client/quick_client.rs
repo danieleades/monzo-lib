@@ -4,7 +4,7 @@ use crate::{
     balance::GetBalance,
     feed_items::BasicFeedItem,
     pots::{DepositIntoPot, ListPots},
-    transactions::ListTransactions,
+    transactions::{ListTransactions, RetrieveTransaction},
 };
 use reqwest::Client as HttpClient;
 
@@ -13,6 +13,7 @@ use reqwest::Client as HttpClient;
 /// This client is easy to construct, because all you need is an access token.
 /// This client is not capable of refreshing the access token, hence this must
 /// be managed externally.
+#[must_use]
 pub struct QuickClient {
     http_client: HttpClient,
     access_token: String,
@@ -21,9 +22,9 @@ pub struct QuickClient {
 impl QuickClient {
     /// Create a new Monzo Client.
     ///
-    /// This QuickClient needs only an access token to authenticate against the
-    /// Monzo API, but is incapable of refreshing its access if the token
-    /// expires.
+    /// This `QuickClient` needs only an access token to authenticate against
+    /// the Monzo API, but is incapable of refreshing its access if the
+    /// token expires.
     pub fn new(access_token: impl Into<String>) -> Self {
         let http_client = reqwest::Client::new();
         Self::from_http_client(http_client, access_token)
@@ -34,7 +35,7 @@ impl QuickClient {
     /// The Monzo client uses a reqwest http client under the hood. If you wish,
     /// you may use your own reqwest client with whatever configuration you see
     /// fit.
-    fn from_http_client(http_client: HttpClient, access_token: impl Into<String>) -> Self {
+    pub fn from_http_client(http_client: HttpClient, access_token: impl Into<String>) -> Self {
         let access_token = access_token.into();
 
         Self {
@@ -44,6 +45,7 @@ impl QuickClient {
     }
 
     /// Return a reference to the current access token
+    #[must_use]
     pub fn access_token(&self) -> &String {
         &self.access_token
     }
@@ -73,6 +75,7 @@ impl QuickClient {
     }
 
     /// Return a reference to the internal http client
+    #[must_use]
     pub fn http_client(&self) -> &HttpClient {
         &self.http_client
     }
@@ -98,8 +101,9 @@ impl QuickClient {
     /// #
     /// # Ok(())
     /// # }
+    #[must_use]
     pub fn accounts(&self) -> ListAccounts {
-        ListAccounts::new(self.http_client(), self.access_token()).into()
+        ListAccounts::new(self.http_client(), self.access_token())
     }
 
     /// Return the balance of a given account
@@ -120,6 +124,7 @@ impl QuickClient {
     /// # Ok(())
     /// # }
     /// ```
+    #[must_use]
     pub fn balance<'a>(&self, account_id: &'a str) -> GetBalance<'a> {
         GetBalance::new(self.http_client(), self.access_token(), account_id)
     }
@@ -141,6 +146,7 @@ impl QuickClient {
     /// # Ok(())
     /// # }
     /// ```
+    #[must_use]
     pub fn pots(&self) -> ListPots {
         ListPots::new(self.http_client(), self.access_token())
     }
@@ -173,7 +179,8 @@ impl QuickClient {
     /// # Note
     /// *At the time of writing the feed item API doesn't
     /// appear to quite match the documentation.
-    /// image_url doesn't appear to do anything*
+    /// 'image url' doesn't appear to do anything*
+    #[must_use]
     pub fn basic_feed_item<'a>(
         &self,
         account_id: &'a str,
@@ -190,6 +197,7 @@ impl QuickClient {
     }
 
     /// Deposit money into a pot
+    #[must_use]
     pub fn deposit_into_pot(
         &self,
         pot_id: &str,
@@ -235,7 +243,36 @@ impl QuickClient {
     /// *The Monzo API will only return transactions from more than 90 days ago
     /// in the first 5 minutes after authorising the Client. You can avoid this
     /// by using the 'since' method.*
+    #[must_use]
     pub fn transactions<'a>(&self, account_id: &'a str) -> ListTransactions<'a> {
         ListTransactions::new(self.http_client(), self.access_token(), account_id)
+    }
+
+    /// Retrieve a transaction by transaction id
+    ///
+    /// # Example
+    /// ```no_run
+    /// use monzo::Client;
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let access_token = "ACCESS_TOKEN";
+    /// # let client = Client::quick(access_token);
+    /// #
+    /// let transaction_id = "TRANSACTION_ID";
+    ///
+    /// let transactions = client.transaction(transaction_id)
+    ///     .send()
+    ///     .await?;
+    /// #
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
+    /// # Note
+    /// *The Monzo API will only return transactions from more than 90 days ago
+    /// in the first 5 minutes after authorising the Client.
+    #[must_use]
+    pub fn transaction(&self, transaction_id: &str) -> RetrieveTransaction {
+        RetrieveTransaction::new(self.http_client(), self.access_token(), transaction_id)
     }
 }
