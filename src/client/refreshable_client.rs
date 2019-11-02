@@ -35,7 +35,7 @@ impl Client {
     ///
     /// # Example
     /// ```no_run
-    /// # use monzo_lib::{Client, client::QuickClient};
+    /// # use monzo::{Client, client::QuickClient};
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// #
     /// let client: QuickClient = Client::quick(ACCESS_TOKEN);

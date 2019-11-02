@@ -4,6 +4,7 @@ use crate::{
     balance::GetBalance,
     feed_items::BasicFeedItem,
     pots::{DepositIntoPot, ListPots},
+    transactions::ListTransactions,
 };
 use reqwest::Client as HttpClient;
 
@@ -85,7 +86,7 @@ impl QuickClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use monzo_lib::{Client, Result};
+    /// # use monzo::{Client, Result};
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<()> {
@@ -104,9 +105,8 @@ impl QuickClient {
     /// Return the balance of a given account
     ///
     /// # Example
-    /// # Example
     /// ```no_run
-    /// # use monzo_lib::{Client, Result};
+    /// # use monzo::{Client, Result};
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<()> {
@@ -128,7 +128,7 @@ impl QuickClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use monzo_lib::{Client, Result};
+    /// # use monzo::{Client, Result};
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<()> {
@@ -147,28 +147,9 @@ impl QuickClient {
 
     /// Post a basic item on the account feed.
     ///
-    /// For a full list of parameters that can be set on this object, refer to
-    /// the [BasicFeedItem] docs
-    pub fn basic_feed_item<'a>(
-        &self,
-        account_id: &'a str,
-        title: &'a str,
-        image_url: &'a str,
-    ) -> BasicFeedItem<'a> {
-        BasicFeedItem::new(
-            self.http_client(),
-            self.access_token(),
-            account_id,
-            title,
-            image_url,
-        )
-    }
-
-    /// Create an item in the monzo feed.
-    ///
     /// # Example
     /// ```no_run
-    /// use monzo_lib::Client;
+    /// use monzo::Client;
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// # let access_token = "ACCESS_TOKEN";
@@ -193,6 +174,22 @@ impl QuickClient {
     /// *At the time of writing the feed item API doesn't
     /// appear to quite match the documentation.
     /// image_url doesn't appear to do anything*
+    pub fn basic_feed_item<'a>(
+        &self,
+        account_id: &'a str,
+        title: &'a str,
+        image_url: &'a str,
+    ) -> BasicFeedItem<'a> {
+        BasicFeedItem::new(
+            self.http_client(),
+            self.access_token(),
+            account_id,
+            title,
+            image_url,
+        )
+    }
+
+    /// Deposit money into a pot
     pub fn deposit_into_pot(
         &self,
         pot_id: &str,
@@ -206,5 +203,39 @@ impl QuickClient {
             source_account_id,
             amount,
         )
+    }
+
+    /// Get a list of transactions
+    ///
+    /// The only required field is the account id, however optional pagination
+    /// parameters can be supplied.
+    ///
+    /// # Example
+    /// ```no_run
+    /// use monzo::Client;
+    /// use chrono::{Duration, Utc};
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let access_token = "ACCESS_TOKEN";
+    /// # let client = Client::quick(access_token);
+    /// #
+    /// let account_id = "ACCOUNT_ID";
+    ///
+    /// let transactions = client.transactions(account_id)
+    ///     .since(Utc::now() - Duration::days(10))
+    ///     .limit(10)
+    ///     .send()
+    ///     .await?;
+    /// #
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
+    /// # Note
+    /// *The Monzo API will only return transactions from more than 90 days ago
+    /// in the first 5 minutes after authorising the Client. You can avoid this
+    /// by using the 'since' method.*
+    pub fn transactions<'a>(&self, account_id: &'a str) -> ListTransactions<'a> {
+        ListTransactions::new(self.http_client(), self.access_token(), account_id)
     }
 }

@@ -1,19 +1,22 @@
 
-# monzo-lib
+# Monzo
 
 [![Build Status](https://travis-ci.org/danieleades/monzo-lib.svg?branch=master)](https://travis-ci.org/danieleades/monzo-lib)
 [![Latest Docs](https://docs.rs/monzo-lib/badge.svg)](https://docs.rs/monzo-lib/)
 
-This crate is an async Monzo API client in pure rust.
+This crate is a Monzo client in pure rust.
 
-It is intended as the backend of a monzo CLI app that i'll probably
-never get around to building.
+It's ergonomic, strongly-typed, and asynchronous.
+
+The majority of the endpoints are already supported. If you need a piece of
+functionality that is not yet implemented, please open an issue or even
+better, a pull request.
 
 In order to use this client, you will first need to get an access token and/or refresh token for the Monzo API (see [the docs](https://docs.monzo.com/))
 
 ### Usage
 ```rust
-use monzo_lib::{Client, client::QuickClient, Result};
+use monzo::{Client, Result};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -46,7 +49,5 @@ async fn main() -> Result<()> {
 ```
 
 ---
-
-Current version: 0.0.2
 
 License: Apache-2.0

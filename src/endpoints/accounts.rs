@@ -8,15 +8,8 @@ use std::future::Future;
 
 /// A struct representing a collection of accounts
 #[derive(Deserialize, Debug)]
-pub struct Accounts {
+struct Accounts {
     accounts: Vec<Account>,
-}
-
-impl std::ops::Deref for Accounts {
-    type Target = Vec<Account>;
-    fn deref(&self) -> &Self::Target {
-        &self.accounts
-    }
 }
 
 /// A struct representing a Monzo Account
@@ -25,11 +18,32 @@ pub struct Account {
     /// the unique ID of the accounts
     pub id: String,
 
-    /// account description
-    pub description: String,
+    closed: bool,
 
     /// the date-time that the account was created
     pub created: DateTime<Utc>,
+
+    /// account description
+    pub description: String,
+
+    r#type: String,
+
+    currency: String,
+
+    country_code: String,
+
+    owners: Vec<Owner>,
+
+    account_number: String,
+
+    sort_code: String,
+}
+
+#[derive(Deserialize, Debug)]
+struct Owner {
+    user_id: String,
+    preferred_name: String,
+    preferred_first_name: String,
 }
 
 /// An object representing a request to the Monzo API for a list of accounts
@@ -48,16 +62,18 @@ impl ListAccounts {
 
     /// Consume the request and return a future that will resolve to a list of
     /// accounts
-    pub async fn send(self) -> Result<Accounts> {
-        handle_response(self.request_builder).await
+    pub async fn send(self) -> Result<Vec<Account>> {
+        handle_response(self.request_builder)
+            .await
+            .map(|accounts: Accounts| accounts.accounts)
     }
 }
 
-impl IntoFuture for ListAccounts {
-    type Output = Result<Accounts>;
+/* impl IntoFuture for ListAccounts {
+    type Output = Result<Vec<Account>>;
     type Future = impl Future<Output = Self::Output>;
 
     fn into_future(self) -> Self::Future {
         self.send()
     }
-}
+} */

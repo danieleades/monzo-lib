@@ -3,18 +3,19 @@
 #![warn(clippy::pedantic)]
 #![feature(type_alias_impl_trait)]
 
-//! [![Latest Docs](https://docs.rs/monzo-lib/badge.svg)](https://docs.rs/monzo-lib/)
+//! This crate is a Monzo client in pure rust.
 //!
-//! This crate is an async Monzo API client in pure rust.
+//! It's ergonomic, strongly-typed, and asynchronous.
 //!
-//! It is intended as the backend of a monzo CLI app that i'll probably
-//! never get around to building.
+//! The majority of the endpoints are already supported. If you need a piece of
+//! functionality that is not yet implemented, please open an issue or even
+//! better, a pull request.
 //!
 //! In order to use this client, you will first need to get an access token and/or refresh token for the Monzo API (see [the docs](https://docs.monzo.com/))
 //!
 //! ## Usage
 //! ```no_run
-//! use monzo_lib::{Client, client::QuickClient, Result};
+//! use monzo::{Client, Result};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<()> {
@@ -49,8 +50,7 @@
 pub mod client;
 pub use client::Client;
 mod endpoints;
-pub use endpoints::{accounts, auth, balance, feed_items, pots};
-//pub use self::endpoints::{accounts, auth, balance, pots};
+pub use endpoints::{accounts, auth, balance, feed_items, pots, transactions};
 mod error;
 pub use self::error::Error;
 

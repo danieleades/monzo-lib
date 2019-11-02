@@ -24,7 +24,7 @@ impl ListPots {
     }
 }
 
-impl IntoFuture for ListPots {
+/* impl IntoFuture for ListPots {
     type Output = Result<Pots>;
     type Future = impl Future<Output = Self::Output>;
 
@@ -32,3 +32,4 @@ impl IntoFuture for ListPots {
         self.send()
     }
 }
+ */
