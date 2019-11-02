@@ -8,17 +8,45 @@ use serde::Deserialize;
 pub struct Balance {
     /// The account balance, in the minor units of the listed currency. ie for
     /// GBP, the balance is in pence.
-    pub balance: i64,
+    balance: i64,
 
     /// The total account balance. I haven't figured out what the difference is
     /// yet
-    pub total_balance: i64,
+    total_balance: i64,
 
     /// three-letter currency code for the account
-    pub currency: String,
+    currency: String,
 
     /// total expenditure so far this calendar day
-    pub spend_today: i64,
+    spend_today: i64,
+}
+
+impl Balance {
+    /// The account balance, in the minor units of the listed currency. ie for
+    /// GBP, the balance is in pence.
+    #[must_use]
+    pub fn balance(&self) -> i64 {
+        self.balance
+    }
+
+    /// The total account balance. I haven't figured out what the difference is
+    /// yet
+    #[must_use]
+    pub fn total_balance(&self) -> i64 {
+        self.total_balance
+    }
+
+    /// three-letter currency code for the account
+    #[must_use]
+    pub fn currency(&self) -> &String {
+        &self.currency
+    }
+
+    /// total expenditure so far this calendar day
+    #[must_use]
+    pub fn spend_today(&self) -> i64 {
+        self.spend_today
+    }
 }
 
 /// An object representing a request to the Monzo API for a list of accounts
