@@ -1,7 +1,7 @@
-use super::{Transaction, Transactions};
+use super::Transaction;
 use crate::{endpoints::handle_response, Result};
 use chrono::{DateTime, Utc};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
@@ -36,9 +36,9 @@ impl<'a> ListTransactions<'a> {
     /// Consume the request and return a future that resolves to a List of
     /// Transactions
     pub async fn send(self) -> Result<Vec<Transaction>> {
-        handle_response(self.reqwest_builder.form(&self.payload))
-            .await
-            .map(Transactions::into)
+        let Transactions { transactions } =
+            handle_response(self.reqwest_builder.form(&self.payload)).await?;
+        Ok(transactions)
     }
 
     /// Only return transactions which occurred after the given `DateTime`
@@ -73,6 +73,11 @@ impl<'a> ListTransactions<'a> {
         self.payload.expand_merchant = Some("merchant");
         self
     }
+}
+
+#[derive(Deserialize, Debug)]
+struct Transactions {
+    transactions: Vec<Transaction>,
 }
 
 #[derive(Serialize)]

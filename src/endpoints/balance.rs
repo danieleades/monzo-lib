@@ -5,6 +5,7 @@ use serde::Deserialize;
 
 /// The balance of a Monzo Account
 #[derive(Deserialize, Debug)]
+#[must_use]
 pub struct Balance {
     /// The account balance, in the minor units of the listed currency. ie for
     /// GBP, the balance is in pence.

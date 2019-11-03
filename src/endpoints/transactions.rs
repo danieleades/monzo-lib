@@ -10,18 +10,6 @@ pub use list::ListTransactions;
 mod retrieve;
 pub use retrieve::RetrieveTransaction;
 
-#[derive(Deserialize, Debug)]
-struct Transactions {
-    transactions: Vec<Transaction>,
-}
-
-impl From<Transactions> for Vec<Transaction> {
-    #[must_use]
-    fn from(transactions: Transactions) -> Self {
-        transactions.transactions
-    }
-}
-
 /// A Monzo transaction
 #[derive(Deserialize, Debug)]
 pub struct Transaction {

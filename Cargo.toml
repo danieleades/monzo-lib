@@ -1,6 +1,6 @@
 [package]
 name = "monzo-lib"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Daniel Eades <danieleades@hotmail.com>"]
 edition = "2018"
 description = "async Monzo client in pure rust."
@@ -16,7 +16,7 @@ path = "src/lib.rs"
 
 [badges]
 travis-ci = { repository = "danieleades/monzo-lib" }
-maintenance = { status="actively-developed" }
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 reqwest = { version = "0.10.0-alpha.1", features = ["json"] }
