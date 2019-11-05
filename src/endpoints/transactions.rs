@@ -167,7 +167,7 @@ where
 }
 
 #[derive(Serialize, Default)]
-pub struct Pagination {
+struct Pagination {
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u16>,
 
