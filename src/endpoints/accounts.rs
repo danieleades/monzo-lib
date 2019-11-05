@@ -6,7 +6,6 @@ use serde::Deserialize;
 /// A struct representing a Monzo Account
 #[derive(Deserialize, Debug)]
 pub struct Account {
-
     id: String,
 
     closed: bool,
@@ -21,7 +20,8 @@ pub struct Account {
 
     country_code: String,
 
-    // TODO: this can be an enum. either its a normal account and there's one owner, or its a joint account and there's two
+    // TODO: this can be an enum. either its a normal account and there's one owner, or its a joint
+    // account and there's two
     owners: Vec<Owner>,
 
     account_number: String,
@@ -91,9 +91,9 @@ pub struct Owner {
 
 /// Types of monzo account
 #[derive(Deserialize, Debug)]
-#[serde(rename="snake_case")]
+#[serde(rename = "snake_case")]
 #[serde(untagged)]
-#[non_exhaustive]
+//#[non_exhaustive]
 pub enum Type {
     /// A standard monzo account
     UkRetail,

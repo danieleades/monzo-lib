@@ -19,13 +19,14 @@ impl Request {
     /// Consume the request and return a response that will resolve to a list of
     /// pots
     pub async fn send(self) -> Result<Vec<Pot>> {
-        let Pots { pots } = handle_response(self.request_builder).await?;
+        /// A collection of Monzo pots
+        #[derive(Deserialize)]
+        struct Response {
+            pots: Vec<Pot>,
+        }
+
+        let Response { pots } = handle_response(self.request_builder).await?;
+        
         Ok(pots)
     }
-}
-
-/// A collection of Monzo pots
-#[derive(Deserialize, Debug)]
-pub struct Pots {
-    pots: Vec<Pot>,
 }

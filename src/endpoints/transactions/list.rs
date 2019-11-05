@@ -36,8 +36,14 @@ impl<'a> Request<'a> {
     /// Consume the request and return a future that resolves to a List of
     /// Transactions
     pub async fn send(self) -> Result<Vec<Transaction>> {
+        #[derive(Deserialize)]
+        struct Response {
+            transactions: Vec<Transaction>,
+        }
+
         let Response { transactions } =
             handle_response(self.reqwest_builder.form(&self.payload)).await?;
+
         Ok(transactions)
     }
 
@@ -73,11 +79,6 @@ impl<'a> Request<'a> {
         self.payload.expand_merchant = Some("merchant");
         self
     }
-}
-
-#[derive(Deserialize, Debug)]
-struct Response {
-    transactions: Vec<Transaction>,
 }
 
 #[derive(Serialize)]
