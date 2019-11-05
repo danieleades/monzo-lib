@@ -4,12 +4,12 @@ use crate::{endpoints::handle_response, Result};
 /// A request to retrieve a list of transactions from the Monzo API
 ///
 /// Use the builder-style methods to set optional fields on the request
-pub struct RetrieveTransaction {
+pub struct Request {
     reqwest_builder: reqwest::RequestBuilder,
     expand_merchant: bool,
 }
 
-impl RetrieveTransaction {
+impl Request {
     pub(crate) fn new(
         http_client: &reqwest::Client,
         access_token: &str,

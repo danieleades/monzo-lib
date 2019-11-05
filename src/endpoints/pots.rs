@@ -4,16 +4,9 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 mod list;
-pub use list::ListPots;
-
+pub use list::Request as List;
 mod deposit;
-pub use deposit::DepositIntoPot;
-
-/// A collection of Monzo pots
-#[derive(Deserialize, Debug)]
-pub struct Pots {
-    pots: Vec<Pot>,
-}
+pub use deposit::Request as Deposit;
 
 /// Representation of a Monzo pot
 #[derive(Deserialize, Debug)]

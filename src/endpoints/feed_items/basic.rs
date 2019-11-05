@@ -7,9 +7,9 @@ use serde::Serialize;
 /// of feed item which is supported
 ///
 /// Use the builder methods to set optional fields
-pub struct BasicFeedItem<'a> {
+pub struct Request<'a> {
     reqwest_builder: reqwest::RequestBuilder,
-    payload: BasicFeedItemPayload<'a>,
+    payload: Payload<'a>,
 }
 
 #[derive(Debug, Serialize)]
@@ -37,7 +37,7 @@ struct Params<'a> {
     body: Option<&'a str>,
 }
 
-impl<'a> BasicFeedItem<'a> {
+impl<'a> Request<'a> {
     pub(crate) fn new(
         http_client: &reqwest::Client,
         access_token: impl AsRef<str>,
@@ -58,7 +58,7 @@ impl<'a> BasicFeedItem<'a> {
             body: None,
         };
 
-        let payload = BasicFeedItemPayload {
+        let payload = Payload {
             account_id,
             url: None,
             r#type: "basic",
@@ -127,7 +127,7 @@ impl<'a> BasicFeedItem<'a> {
 }
 
 #[derive(Debug, Serialize)]
-pub struct BasicFeedItemPayload<'a> {
+pub struct Payload<'a> {
     //required for all feed item requests
     account_id: &'a str,
     r#type: &'static str,
@@ -138,16 +138,3 @@ pub struct BasicFeedItemPayload<'a> {
     #[serde(flatten)]
     params: Params<'a>,
 }
-
-/*
-use std::future::Future;
-use crate::into_future::IntoFuture;
-
-impl<'a> IntoFuture for BasicFeedItem<'a> {
-    type Output = Result<serde_json::Value>;
-    type Future = Pin<Box<dyn Future<Output = Self::Output> + 'a>>;
-
-    fn into_future(self) -> Self::Future {
-        Box::pin(self.send())
-    }
-} */

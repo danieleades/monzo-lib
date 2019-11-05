@@ -1,14 +1,13 @@
 //! Endpoints for retrieving and manipulating transactions
 
 use chrono::{DateTime, Utc};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 mod list;
-pub use list::ListTransactions;
-
-mod retrieve;
-pub use retrieve::RetrieveTransaction;
+pub use list::Request as List;
+mod get;
+pub use get::Request as Get;
 
 /// A Monzo transaction
 #[derive(Deserialize, Debug)]
@@ -165,4 +164,28 @@ where
         None | Some("") => Ok(None),
         Some(s) => T::deserialize(s.into_deserializer()).map(Some),
     }
+}
+
+#[derive(Serialize, Default)]
+pub struct Pagination {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<u16>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    since: Option<Since>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    before: Option<DateTime<Utc>>,
+}
+
+/// The 'since' paramater of a pagination request can be either a timestamp or
+/// an object id
+#[derive(Serialize)]
+#[serde(untagged)]
+pub enum Since {
+    /// A timestamp
+    Timestamp(DateTime<Utc>),
+
+    /// An id of an object
+    ObjectId(String),
 }
