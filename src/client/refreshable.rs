@@ -143,7 +143,7 @@ impl Client {
     /// # use monzo::{Client, Result};
     /// #
     /// # #[tokio::main]
-    /// # async fn main() -> Result<()> {
+    /// # async pub fn main() -> Result<()> {
     /// #
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// # let client = Client::quick(ACCESS_TOKEN);
@@ -164,7 +164,7 @@ impl Client {
     /// # use monzo::{Client, Result};
     /// #
     /// # #[tokio::main]
-    /// # async fn main() -> Result<()> {
+    /// # async pub fn main() -> Result<()> {
     /// #
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// # let ACCOUNT_ID = "ACCOUNT_ID";
@@ -187,7 +187,7 @@ impl Client {
     /// # use monzo::{Client, Result};
     /// #
     /// # #[tokio::main]
-    /// # async fn main() -> Result<()> {
+    /// # async pub fn main() -> Result<()> {
     /// #
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// # let client = Client::quick(ACCESS_TOKEN);
@@ -208,7 +208,7 @@ impl Client {
     /// ```no_run
     /// use monzo::Client;
     /// # #[tokio::main]
-    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// # async pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// # let access_token = "ACCESS_TOKEN";
     /// # let client = Client::quick(access_token);
     /// #
@@ -264,7 +264,7 @@ impl Client {
     /// use monzo::Client;
     /// use chrono::{Duration, Utc};
     /// # #[tokio::main]
-    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// # async pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// # let access_token = "ACCESS_TOKEN";
     /// # let client = Client::quick(access_token);
     /// #
@@ -295,7 +295,7 @@ impl Client {
     /// ```no_run
     /// use monzo::Client;
     /// # #[tokio::main]
-    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// # async pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// # let access_token = "ACCESS_TOKEN";
     /// # let client = Client::quick(access_token);
     /// #
