@@ -29,14 +29,11 @@ pub struct RefreshResponse {
 }
 
 /// A request for new authentication tokens.
-///
-/// This struct implements `[IntoFuture](std::future::IntoFuture)`, and can be
-/// `await`ed directly.
-pub struct RefreshAuth {
+pub struct Refresh {
     reqwest_builder: reqwest::RequestBuilder,
 }
 
-impl RefreshAuth {
+impl Refresh {
     pub(crate) fn new(
         http_client: &HttpClient,
         client_id: impl AsRef<str>,
