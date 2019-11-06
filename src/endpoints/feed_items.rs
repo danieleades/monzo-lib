@@ -4,7 +4,7 @@ pub use basic::Request as Basic;
 
 mod basic {
     use crate::{endpoints::handle_response, Result};
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
 
     /// A request to create a new basic feed item.
     ///
@@ -126,8 +126,9 @@ mod basic {
 
         /// Consume the request and return a future which will resolve when the
         /// feed item is posted
-        pub async fn send(self) -> Result<serde_json::Value> {
-            handle_response(self.reqwest_builder.form(&self.payload)).await
+        pub async fn send(self) -> Result<()> {
+            let Response {} = handle_response(self.reqwest_builder.form(&self.payload)).await?;
+            Ok(())
         }
     }
 
@@ -143,4 +144,7 @@ mod basic {
         #[serde(flatten)]
         params: Params<'a>,
     }
+
+    #[derive(Deserialize)]
+    struct Response {}
 }
