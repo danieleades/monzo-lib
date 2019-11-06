@@ -2,12 +2,12 @@
 
 use crate::{endpoints::handle_response, Result};
 use reqwest::Client as HttpClient;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// The response received from the Monzo API after a successful request to
 /// refresh the authentication.
 #[derive(Deserialize, Debug)]
-pub struct RefreshResponse {
+pub struct Response {
     /// New access token for authorising requests against the Monzo API
     pub access_token: String,
 
@@ -29,28 +29,41 @@ pub struct RefreshResponse {
 }
 
 /// A request for new authentication tokens.
-///
-/// This struct implements `[IntoFuture](std::future::IntoFuture)`, and can be
-/// `await`ed directly.
-pub struct RefreshAuth {
+pub struct Refresh {
     reqwest_builder: reqwest::RequestBuilder,
 }
 
-impl RefreshAuth {
+#[derive(Serialize)]
+struct Payload<'a> {
+    grant_type: &'static str,
+    client_id: &'a str,
+    client_secret: &'a str,
+    refresh_token: &'a str,
+}
+
+impl<'a> Payload<'a> {
+    fn new(client_id: &'a str, client_secret: &'a str, refresh_token: &'a str) -> Self {
+        Payload {
+            grant_type: "refresh_token",
+            client_id,
+            client_secret,
+            refresh_token,
+        }
+    }
+}
+
+impl Refresh {
     pub(crate) fn new(
         http_client: &HttpClient,
-        client_id: impl AsRef<str>,
-        client_secret: impl AsRef<str>,
-        refresh_token: impl AsRef<str>,
+        client_id: &str,
+        client_secret: &str,
+        refresh_token: &str,
     ) -> Self {
+        let payload = Payload::new(client_id, client_secret, refresh_token);
+
         let reqwest_builder = http_client
             .post("https://api.monzo.com/oauth2/token")
-            .form(&[
-                ("grant_type", "refresh_token"),
-                ("client_id", client_id.as_ref()),
-                ("client_secret", client_secret.as_ref()),
-                ("refresh_token", refresh_token.as_ref()),
-            ]);
+            .form(&payload);
 
         Self { reqwest_builder }
     }
@@ -60,7 +73,7 @@ impl RefreshAuth {
     /// This method consumes the request and produces a future which will
     /// resolve to a `[RefreshResponse]`. This method is effectively an alias
     /// for the `into_future` method.
-    pub async fn send(self) -> Result<RefreshResponse> {
+    pub async fn send(self) -> Result<Response> {
         handle_response(self.reqwest_builder).await
     }
 }

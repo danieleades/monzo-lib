@@ -1,11 +1,6 @@
 use super::QuickClient;
 use crate::{
-    accounts::ListAccounts,
-    auth::RefreshAuth,
-    balance::GetBalance,
-    feed_items::BasicFeedItem,
-    pots::{DepositIntoPot, ListPots},
-    transactions::{ListTransactions, RetrieveTransaction},
+    endpoints::{accounts, auth, balance, feed_items, pots, transactions},
     Result,
 };
 
@@ -13,6 +8,8 @@ use crate::{
 ///
 /// This client can refresh it's own access token if it expires
 /// See the individual methods for descriptions of the API endpoints.
+///
+/// For a full list of client functionality, see the [MonzoClient] trait
 #[must_use]
 pub struct Client {
     quick_client: QuickClient,
@@ -114,8 +111,8 @@ impl Client {
 
     /// Hit the Monzo auth endpoint and request new access and refresh tokens
     #[must_use]
-    fn get_refresh_tokens(&self) -> RefreshAuth {
-        RefreshAuth::new(
+    fn get_refresh_tokens(&self) -> auth::Refresh {
+        auth::Refresh::new(
             self.http_client(),
             self.client_id(),
             self.client_secret(),
@@ -139,28 +136,6 @@ impl Client {
         self.quick_client.access_token()
     }
 
-    /// Manually update the access token
-    pub fn set_access_token(&mut self, access_token: impl Into<String>) {
-        self.quick_client.set_access_token(access_token);
-    }
-
-    /// Builder-style method for setting the access token
-    pub fn with_access_token(mut self, access_token: impl Into<String>) -> Self {
-        self.set_access_token(access_token);
-        self
-    }
-
-    /// Return a reference to the internal http client
-    #[must_use]
-    pub fn http_client(&self) -> &reqwest::Client {
-        self.quick_client.http_client()
-    }
-
-    /// Swap out the internal http client for your own one.
-    pub fn set_http_client(&mut self, http_client: reqwest::Client) {
-        self.quick_client.set_http_client(http_client);
-    }
-
     /// Return a list of accounts
     ///
     /// # Example
@@ -178,7 +153,7 @@ impl Client {
     /// # Ok(())
     /// # }
     #[must_use]
-    pub fn accounts(&self) -> ListAccounts {
+    pub fn accounts(&self) -> accounts::List {
         self.quick_client.accounts()
     }
 
@@ -201,7 +176,7 @@ impl Client {
     /// # }
     /// ```
     #[must_use]
-    pub fn balance<'a>(&self, account_id: &'a str) -> GetBalance<'a> {
+    pub fn balance<'a>(&self, account_id: &'a str) -> balance::Get<'a> {
         self.quick_client.balance(account_id)
     }
 
@@ -223,7 +198,7 @@ impl Client {
     /// # }
     /// ```
     #[must_use]
-    pub fn pots(&self) -> ListPots {
+    pub fn pots(&self) -> pots::List {
         self.quick_client.pots()
     }
 
@@ -255,14 +230,14 @@ impl Client {
     /// # Note
     /// *At the time of writing the feed item API doesn't
     /// appear to quite match the documentation.
-    /// `image_url` doesn't appear to do anything*
+    /// 'image url' doesn't appear to do anything*
     #[must_use]
     pub fn basic_feed_item<'a>(
         &self,
         account_id: &'a str,
         title: &'a str,
         image_url: &'a str,
-    ) -> BasicFeedItem<'a> {
+    ) -> feed_items::Basic<'a> {
         self.quick_client
             .basic_feed_item(account_id, title, image_url)
     }
@@ -274,7 +249,7 @@ impl Client {
         pot_id: &str,
         source_account_id: &str,
         amount: i64,
-    ) -> DepositIntoPot {
+    ) -> pots::Deposit {
         self.quick_client
             .deposit_into_pot(pot_id, source_account_id, amount)
     }
@@ -310,7 +285,7 @@ impl Client {
     /// in the first 5 minutes after authorising the Client. You can avoid this
     /// by using the 'since' method.*
     #[must_use]
-    pub fn transactions<'a>(&self, account_id: &'a str) -> ListTransactions<'a> {
+    pub fn transactions<'a>(&self, account_id: &'a str) -> transactions::List<'a> {
         self.quick_client.transactions(account_id)
     }
 
@@ -338,7 +313,29 @@ impl Client {
     /// *The Monzo API will only return transactions from more than 90 days ago
     /// in the first 5 minutes after authorising the Client.
     #[must_use]
-    pub fn transaction(&self, transaction_id: &str) -> RetrieveTransaction {
-        RetrieveTransaction::new(self.http_client(), self.access_token(), transaction_id)
+    pub fn transaction(&self, transaction_id: &str) -> transactions::Get {
+        transactions::Get::new(self.http_client(), self.access_token(), transaction_id)
+    }
+
+    /// Manually update the access token
+    pub fn set_access_token(&mut self, access_token: impl Into<String>) {
+        self.quick_client.set_access_token(access_token);
+    }
+
+    /// Builder-style method for setting the access token
+    pub fn with_access_token(mut self, access_token: impl Into<String>) -> Self {
+        self.set_access_token(access_token);
+        self
+    }
+
+    /// Return a reference to the internal http client
+    #[must_use]
+    pub fn http_client(&self) -> &reqwest::Client {
+        self.quick_client.http_client()
+    }
+
+    /// Swap out the internal http client for your own one.
+    pub fn set_http_client(&mut self, http_client: reqwest::Client) {
+        self.quick_client.set_http_client(http_client);
     }
 }

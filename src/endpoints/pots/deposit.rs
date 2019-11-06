@@ -2,11 +2,11 @@ use super::Pot;
 use crate::{endpoints::handle_response, Result};
 
 /// An object representing a request to the Monzo API for a list of accounts
-pub struct DepositIntoPot {
+pub struct Request {
     request_builder: reqwest::RequestBuilder,
 }
 
-impl DepositIntoPot {
+impl Request {
     pub(crate) fn new(
         http_client: &reqwest::Client,
         access_token: impl AsRef<str>,
@@ -36,15 +36,3 @@ impl DepositIntoPot {
         handle_response(self.request_builder).await
     }
 }
-
-/* use std::future::Future;
-use crate::into_future::IntoFuture;
-
-impl IntoFuture for DepositIntoPot {
-    type Output = Result<Pot>;
-    type Future = impl Future<Output = Self::Output>;
-
-    fn into_future(self) -> Self::Future {
-        self.send()
-    }
-} */

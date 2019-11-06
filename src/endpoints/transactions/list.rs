@@ -1,4 +1,4 @@
-use super::Transaction;
+use super::{Pagination, Since, Transaction};
 use crate::{endpoints::handle_response, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -6,12 +6,12 @@ use serde::{Deserialize, Serialize};
 /// A request to retrieve a list of transactions from the Monzo API
 ///
 /// Use the builder-style methods to set optional fields on the request
-pub struct ListTransactions<'a> {
+pub struct Request<'a> {
     reqwest_builder: reqwest::RequestBuilder,
     payload: Payload<'a>,
 }
 
-impl<'a> ListTransactions<'a> {
+impl<'a> Request<'a> {
     pub(crate) fn new(
         http_client: &reqwest::Client,
         access_token: &str,
@@ -36,8 +36,14 @@ impl<'a> ListTransactions<'a> {
     /// Consume the request and return a future that resolves to a List of
     /// Transactions
     pub async fn send(self) -> Result<Vec<Transaction>> {
-        let Transactions { transactions } =
+        #[derive(Deserialize)]
+        struct Response {
+            transactions: Vec<Transaction>,
+        }
+
+        let Response { transactions } =
             handle_response(self.reqwest_builder.form(&self.payload)).await?;
+
         Ok(transactions)
     }
 
@@ -75,11 +81,6 @@ impl<'a> ListTransactions<'a> {
     }
 }
 
-#[derive(Deserialize, Debug)]
-struct Transactions {
-    transactions: Vec<Transaction>,
-}
-
 #[derive(Serialize)]
 struct Payload<'a> {
     account_id: &'a str,
@@ -90,28 +91,4 @@ struct Payload<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "expand[]")]
     expand_merchant: Option<&'a str>,
-}
-
-#[derive(Serialize, Default)]
-pub struct Pagination {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u16>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    since: Option<Since>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    before: Option<DateTime<Utc>>,
-}
-
-/// The 'since' paramater of a pagination request can be either a timestamp or
-/// an object id
-#[derive(Serialize)]
-#[serde(untagged)]
-pub enum Since {
-    /// A timestamp
-    Timestamp(DateTime<Utc>),
-
-    /// An id of an object
-    ObjectId(String),
 }

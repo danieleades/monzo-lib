@@ -6,7 +6,7 @@
 //! ## `[Client]`
 //! for using with access token, refresh token, and client credentials
 
-mod quick_client;
-pub use quick_client::QuickClient;
-mod refreshable_client;
-pub use refreshable_client::Client;
+mod quick;
+pub use quick::Client as QuickClient;
+mod refreshable;
+pub use refreshable::Client;
