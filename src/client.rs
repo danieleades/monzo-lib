@@ -9,6 +9,6 @@
 mod monzo_client;
 pub use monzo_client::MonzoClient;
 mod quick;
-pub use quick::Client as QuickClient;
+pub use quick::Client as Quick;
 mod refreshable;
-pub use refreshable::Client;
+pub use refreshable::Client as Refreshable;

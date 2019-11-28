@@ -15,7 +15,7 @@
 //!
 //! ## Usage
 //! ```no_run
-//! use monzo::{Client, Result};
+//! use monzo::{Client, MonzoClient, Result};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<()> {
@@ -48,7 +48,8 @@
 //! ```
 
 pub mod client;
-pub use client::{Client, MonzoClient};
+pub use client::Refreshable as Client;
+pub use client::MonzoClient;
 pub mod endpoints;
 mod error;
 pub use self::error::Error;

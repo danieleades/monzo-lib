@@ -1,4 +1,4 @@
-use super::{Client as RefreshableClient, MonzoClient};
+use super::{refreshable::Client as RefreshableClient, MonzoClient};
 use crate::endpoints::{accounts, balance, feed_items, pots, transactions};
 use reqwest::Client as HttpClient;
 
@@ -26,7 +26,7 @@ impl Client {
         Self::from_http_client(http_client, access_token)
     }
 
-    /// BYO HTTP client.
+    /// BYO HTTP client.#~~~
     ///
     /// The Monzo client uses a reqwest http client under the hood. If you wish,
     /// you may use your own reqwest client with whatever configuration you see
@@ -61,101 +61,21 @@ impl MonzoClient for Client {
         &self.access_token
     }
 
-    /// Return a list of accounts
-    ///
-    /// # Example
-    /// ```no_run
-    /// # use monzo::{Client, Result};
-    /// #
-    /// # #[tokio::main]
-    /// # async fn main() -> Result<()> {
-    /// #
-    /// # let ACCESS_TOKEN = "ACCESS TOKEN";
-    /// # let client = Client::quick(ACCESS_TOKEN);
-    /// #
-    /// let accounts = client.accounts().send().await?;
-    /// #
-    /// # Ok(())
-    /// # }
     #[must_use]
     fn accounts(&self) -> accounts::List {
         accounts::List::new(self.http_client(), self.access_token())
     }
 
-    /// Return the balance of a given account
-    ///
-    /// # Example
-    /// ```no_run
-    /// # use monzo::{Client, Result};
-    /// #
-    /// # #[tokio::main]
-    /// # async fn main() -> Result<()> {
-    /// #
-    /// # let ACCESS_TOKEN = "ACCESS TOKEN";
-    /// # let ACCOUNT_ID = "ACCOUNT_ID";
-    /// # let client = Client::quick(ACCESS_TOKEN);
-    /// #
-    /// let balance = client.balance(ACCOUNT_ID).send().await?;
-    /// #
-    /// # Ok(())
-    /// # }
-    /// ```
     #[must_use]
     fn balance<'a>(&self, account_id: &'a str) -> balance::Get<'a> {
         balance::Get::new(self.http_client(), self.access_token(), account_id)
     }
 
-    /// Return a list of Pots
-    ///
-    /// # Example
-    /// ```no_run
-    /// # use monzo::{Client, Result};
-    /// #
-    /// # #[tokio::main]
-    /// # async fn main() -> Result<()> {
-    /// #
-    /// # let ACCESS_TOKEN = "ACCESS TOKEN";
-    /// # let client = Client::quick(ACCESS_TOKEN);
-    /// #
-    /// let pots = client.pots().send().await?;
-    /// #
-    /// # Ok(())
-    /// # }
-    /// ```
     #[must_use]
     fn pots(&self) -> pots::List {
         pots::List::new(self.http_client(), self.access_token())
     }
 
-    /// Post a basic item on the account feed.
-    ///
-    /// # Example
-    /// ```no_run
-    /// use monzo::Client;
-    /// # #[tokio::main]
-    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let access_token = "ACCESS_TOKEN";
-    /// # let client = Client::quick(access_token);
-    /// #
-    /// let account_id = "ACCOUNT_ID";
-    /// let title = "Feed Item Title";
-    /// let image_url = "http://www.nyan.cat/cats/original.gif";
-    ///
-    /// client.basic_feed_item(
-    ///     account_id,
-    ///     title,
-    ///     image_url,
-    /// ).body("i figured out how to send messages to monzo from my computer...")
-    /// .send().await?;
-    /// #
-    /// # Ok(())
-    /// # }
-    /// ```
-    ///
-    /// # Note
-    /// *At the time of writing the feed item API doesn't
-    /// appear to quite match the documentation.
-    /// 'image url' doesn't appear to do anything*
     #[must_use]
     fn basic_feed_item<'a>(
         &self,
@@ -189,64 +109,11 @@ impl MonzoClient for Client {
         )
     }
 
-    /// Get a list of transactions
-    ///
-    /// The only required field is the account id, however optional pagination
-    /// parameters can be supplied.
-    ///
-    /// # Example
-    /// ```no_run
-    /// use monzo::Client;
-    /// use chrono::{Duration, Utc};
-    /// # #[tokio::main]
-    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let access_token = "ACCESS_TOKEN";
-    /// # let client = Client::quick(access_token);
-    /// #
-    /// let account_id = "ACCOUNT_ID";
-    ///
-    /// let transactions = client.transactions(account_id)
-    ///     .since(Utc::now() - Duration::days(10))
-    ///     .limit(10)
-    ///     .send()
-    ///     .await?;
-    /// #
-    /// # Ok(())
-    /// # }
-    /// ```
-    ///
-    /// # Note
-    /// *The Monzo API will only return transactions from more than 90 days ago
-    /// in the first 5 minutes after authorising the Client. You can avoid this
-    /// by using the 'since' method.*
     #[must_use]
     fn transactions<'a>(&self, account_id: &'a str) -> transactions::List<'a> {
         transactions::List::new(self.http_client(), self.access_token(), account_id)
     }
 
-    /// Retrieve a transaction by transaction id
-    ///
-    /// # Example
-    /// ```no_run
-    /// use monzo::Client;
-    /// # #[tokio::main]
-    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let access_token = "ACCESS_TOKEN";
-    /// # let client = Client::quick(access_token);
-    /// #
-    /// let transaction_id = "TRANSACTION_ID";
-    ///
-    /// let transactions = client.transaction(transaction_id)
-    ///     .send()
-    ///     .await?;
-    /// #
-    /// # Ok(())
-    /// # }
-    /// ```
-    ///
-    /// # Note
-    /// *The Monzo API will only return transactions from more than 90 days ago
-    /// in the first 5 minutes after authorising the Client.
     #[must_use]
     fn transaction(&self, transaction_id: &str) -> transactions::Get {
         transactions::Get::new(self.http_client(), self.access_token(), transaction_id)

@@ -1,4 +1,4 @@
-use super::{MonzoClient, QuickClient};
+use super::{MonzoClient, Quick as QuickClient};
 use crate::{
     endpoints::{accounts, auth, balance, feed_items, pots, transactions},
     Result,
@@ -29,7 +29,7 @@ impl Client {
     ///
     /// # Example
     /// ```no_run
-    /// # use monzo::{Client, client::QuickClient};
+    /// # use monzo::{Client, client::Quick as QuickClient};
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// #
     /// let client: QuickClient = Client::quick(ACCESS_TOKEN);
