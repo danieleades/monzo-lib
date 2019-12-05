@@ -50,7 +50,8 @@
 pub mod client;
 pub use client::Refreshable as Client;
 pub use client::MonzoClient;
-pub mod endpoints;
+mod endpoints;
+pub use endpoints::{accounts, auth, balance, feed_items, pots, transactions};
 mod error;
 pub use self::error::Error;
 
