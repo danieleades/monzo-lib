@@ -48,8 +48,7 @@
 //! ```
 
 pub mod client;
-pub use client::Refreshable as Client;
-pub use client::MonzoClient;
+pub use client::{MonzoClient, Refreshable as Client};
 mod endpoints;
 pub use endpoints::{accounts, auth, balance, feed_items, pots, transactions};
 mod error;
