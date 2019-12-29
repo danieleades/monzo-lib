@@ -12,18 +12,18 @@ license = "Apache-2.0"
 
 [lib]
 name = "monzo"
-path = "src/lib.rs"
 
 [badges]
 travis-ci = { repository = "danieleades/monzo-lib" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-reqwest = { version = "0.10.0-alpha.1", features = ["json"] }
-chrono = { version = "0.4.9", features = ["serde"] }
-serde = { version = "1.0.102", features = ["derive"] }
+reqwest = { version = "0.10.0-alpha.2", features = ["json"] }
+chrono = { version = "0.4.10", features = ["serde"] }
+serde = { version = "1.0.103", features = ["derive"] }
 futures-util-preview = "0.3.0-alpha.19"
 rand = "0.7.2"
+serde_json = "1.0.44"
 
 [dev-dependencies]
 tokio = "0.2.0-alpha.6"

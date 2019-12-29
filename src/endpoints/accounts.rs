@@ -14,6 +14,7 @@ pub struct Account {
 
     description: String,
 
+    #[serde(rename = "type")]
     r#type: Type,
 
     currency: String,
@@ -54,11 +55,11 @@ impl Account {
         &self.description
     }
 
-    /// The type of the account
+/*     /// The type of the account
     #[must_use]
     pub fn account_type(&self) -> &Type {
         &self.r#type
-    }
+    } */
 
     /// This the a three-letter currency code
     #[must_use]
@@ -101,9 +102,7 @@ pub struct Owner {
 
 /// Types of monzo account
 #[derive(Deserialize, Debug)]
-#[serde(rename = "snake_case")]
-#[serde(untagged)]
-//#[non_exhaustive]
+#[serde(rename_all = "snake_case")]
 pub enum Type {
     /// A standard monzo account
     UkRetail,
@@ -121,7 +120,7 @@ mod list {
 
     /// A struct representing a collection of accounts
     #[derive(Deserialize, Debug)]
-    struct Accounts {
+    pub(in super) struct Accounts {
         accounts: Vec<Account>,
     }
 
@@ -146,5 +145,74 @@ mod list {
                 .await
                 .map(|accounts: Accounts| accounts.accounts)
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::list::Accounts;
+
+    #[test]
+    fn deserialise_account() {
+        let raw_account_string = r#"
+        {
+            "accounts": [
+                {
+                    "id": "acc_XXXX",
+                    "closed": false,
+                    "created": "2019-06-12T17:44:35.266Z",
+                    "description": "user_XXXX",
+                    "type": "uk_retail",
+                    "currency": "GBP",
+                    "country_code": "GB",
+                    "owners": [
+                        {
+                            "user_id": "user_XXXX",
+                            "preferred_name": "Daniel Eades",
+                            "preferred_first_name": "Daniel"
+                        }
+                    ],
+                    "account_number": "12345678",
+                    "sort_code": "040004",
+                    "payment_details": {
+                        "locale_uk": {
+                            "account_number": "12345678",
+                            "sort_code": "040004"
+                        }
+                    }
+                },
+                {
+                    "id": "acc_XXXX",
+                    "closed": false,
+                    "created": "2019-08-01T13:46:10.041Z",
+                    "description": "Joint account between user_XXXX and user_YYYY",
+                    "type": "uk_retail_joint",
+                    "currency": "GBP",
+                    "country_code": "GB",
+                    "owners": [
+                        {
+                            "user_id": "user_XXXX",
+                            "preferred_name": "Daniel Eades",
+                            "preferred_first_name": "Daniel"
+                        },
+                        {
+                            "user_id": "user_YYYY",
+                            "preferred_name": "Holly Johnstone",
+                            "preferred_first_name": "Holly"
+                        }
+                    ],
+                    "account_number": "87654321",
+                    "sort_code": "040004",
+                    "payment_details": {
+                        "locale_uk": {
+                            "account_number": "87654321",
+                            "sort_code": "040004"
+                        }
+                    }
+                }
+            ]
+        }"#;
+
+        serde_json::from_str::<Accounts>(&raw_account_string).unwrap();
     }
 }
