@@ -1,5 +1,6 @@
 use super::Pot;
 use crate::{endpoints::handle_response, Result};
+use std::future::{Future, IntoFuture};
 
 /// An object representing a request to the Monzo API for a list of accounts
 pub struct Request {
@@ -32,7 +33,15 @@ impl Request {
 
     /// Consume the request and a return a future that resolve to a [Pot] when
     /// the deposit has been completed
-    pub async fn send(self) -> Result<Pot> {
+    async fn send(self) -> Result<Pot> {
         handle_response(self.request_builder).await
+    }
+}
+
+impl IntoFuture for Request {
+    type Output = Result<Pot>;
+    type Future = impl Future<Output = Self::Output>;
+    fn into_future(self) -> Self::Future {
+        self.send()
     }
 }

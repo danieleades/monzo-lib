@@ -14,7 +14,6 @@ pub struct Account {
 
     description: String,
 
-    #[serde(rename = "type")]
     r#type: Type,
 
     currency: String,
@@ -22,7 +21,7 @@ pub struct Account {
     country_code: String,
 
     // TODO: this can be an enum. either its a normal account and there's one owner, or its a joint
-    // account and there's two
+    // account and there's two, or it's a business account
     owners: Vec<Owner>,
 
     account_number: String,
@@ -55,7 +54,7 @@ impl Account {
         &self.description
     }
 
-/*     /// The type of the account
+    /*     /// The type of the account
     #[must_use]
     pub fn account_type(&self) -> &Type {
         &self.r#type
@@ -117,10 +116,11 @@ mod list {
     use super::Account;
     use crate::{endpoints::handle_response, Result};
     use serde::Deserialize;
+    use std::future::{Future, IntoFuture};
 
     /// A struct representing a collection of accounts
     #[derive(Deserialize, Debug)]
-    pub(in super) struct Accounts {
+    pub(super) struct Accounts {
         accounts: Vec<Account>,
     }
 
@@ -144,6 +144,14 @@ mod list {
             handle_response(self.request_builder)
                 .await
                 .map(|accounts: Accounts| accounts.accounts)
+        }
+    }
+
+    impl IntoFuture for Request {
+        type Output = Result<Vec<Account>>;
+        type Future = impl Future<Output = Self::Output>;
+        fn into_future(self) -> Self::Future {
+            self.send()
         }
     }
 }

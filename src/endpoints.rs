@@ -14,9 +14,7 @@ where
     let response = request_builder.send().await?;
 
     match response.status() {
-        x if x.is_success() => {
-            Ok(response.json().await?)
-        },
+        x if x.is_success() => Ok(response.json().await?),
         x if x.is_client_error() || x.is_server_error() => {
             println!("response.body: {:#?}", response.text().await?);
             Err(Error::from(x))

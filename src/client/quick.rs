@@ -70,7 +70,7 @@ impl Client {
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let accounts = client.accounts().send().await?;
+    /// let accounts = client.accounts().await?;
     /// #
     /// # Ok(())
     /// # }
@@ -92,7 +92,7 @@ impl Client {
     /// # let ACCOUNT_ID = "ACCOUNT_ID";
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let balance = client.balance(ACCOUNT_ID).send().await?;
+    /// let balance = client.balance(ACCOUNT_ID).await?;
     /// #
     /// # Ok(())
     /// # }
@@ -114,7 +114,7 @@ impl Client {
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let pots = client.pots().send().await?;
+    /// let pots = client.pots().await?;
     /// #
     /// # Ok(())
     /// # }
@@ -205,7 +205,6 @@ impl Client {
     /// let transactions = client.transactions(account_id)
     ///     .since(Utc::now() - Duration::days(10))
     ///     .limit(10)
-    ///     .send()
     ///     .await?;
     /// #
     /// # Ok(())
@@ -234,7 +233,6 @@ impl Client {
     /// let transaction_id = "TRANSACTION_ID";
     ///
     /// let transactions = client.transaction(transaction_id)
-    ///     .send()
     ///     .await?;
     /// #
     /// # Ok(())

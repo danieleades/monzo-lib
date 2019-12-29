@@ -1,5 +1,6 @@
 use super::Transaction;
 use crate::{endpoints::handle_response, Result};
+use std::future::{Future, IntoFuture};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
@@ -30,7 +31,7 @@ impl Request {
 
     /// Consume the request and return a future that resolves to a List of
     /// Transactions
-    pub async fn send(self) -> Result<Transaction> {
+    async fn send(self) -> Result<Transaction> {
         let mut reqwest_builder = self.reqwest_builder;
         if self.expand_merchant {
             reqwest_builder = reqwest_builder.query(&("expand[]", "merchant"))
@@ -43,5 +44,13 @@ impl Request {
     pub fn expand_merchant(mut self) -> Self {
         self.expand_merchant = true;
         self
+    }
+}
+
+impl IntoFuture for Request {
+    type Output = Result<Transaction>;
+    type Future = impl Future<Output = Self::Output>;
+    fn into_future(self) -> Self::Future {
+        self.send()
     }
 }
