@@ -148,13 +148,12 @@ impl Client {
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let accounts = client.accounts().send().await?;
+    /// let accounts = client.accounts().await?;
     /// #
     /// # Ok(())
     /// # }
-    #[must_use]
-    pub fn accounts(&self) -> accounts::List {
-        self.quick_client.accounts()
+    pub async fn accounts(&self) -> Result<Vec<accounts::Account>> {
+        self.quick_client.accounts().await
     }
 
     /// Return the balance of a given account
@@ -175,9 +174,8 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    #[must_use]
-    pub fn balance<'a>(&self, account_id: &'a str) -> balance::Get<'a> {
-        self.quick_client.balance(account_id)
+    pub async fn balance(&self, account_id: &str) -> Result<balance::Balance> {
+        self.quick_client.balance(account_id).await
     }
 
     /// Return a list of Pots
@@ -197,9 +195,8 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    #[must_use]
-    pub fn pots(&self) -> pots::List {
-        self.quick_client.pots()
+    pub async fn pots(&self) -> Result<Vec<pots::Pot>> {
+        self.quick_client.pots().await
     }
 
     /// Post a basic item on the account feed.
@@ -273,6 +270,7 @@ impl Client {
     /// let transactions = client.transactions(account_id)
     ///     .since(Utc::now() - Duration::days(10))
     ///     .limit(10)
+    ///     .send()
     ///     .await?;
     /// #
     /// # Ok(())
@@ -301,6 +299,7 @@ impl Client {
     /// let transaction_id = "TRANSACTION_ID";
     ///
     /// let transactions = client.transaction(transaction_id)
+    ///     .send()
     ///     .await?;
     /// #
     /// # Ok(())

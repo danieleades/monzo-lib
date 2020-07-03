@@ -1,5 +1,8 @@
 use super::refreshable::Client as RefreshableClient;
-use crate::endpoints::{accounts, balance, feed_items, pots, transactions};
+use crate::{
+    endpoints::{accounts, balance, feed_items, pots, transactions},
+    Result,
+};
 
 /// A quick and dirty Monzo API client.
 ///
@@ -74,9 +77,10 @@ impl Client {
     /// #
     /// # Ok(())
     /// # }
-    #[must_use]
-    pub fn accounts(&self) -> accounts::List {
+    pub async fn accounts(&self) -> Result<Vec<accounts::Account>> {
         accounts::List::new(self.http_client(), self.access_token())
+            .send()
+            .await
     }
 
     /// Return the balance of a given account
@@ -97,9 +101,10 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    #[must_use]
-    pub fn balance<'a>(&self, account_id: &'a str) -> balance::Get<'a> {
+    pub async fn balance(&self, account_id: &str) -> Result<balance::Balance> {
         balance::Get::new(self.http_client(), self.access_token(), account_id)
+            .send()
+            .await
     }
 
     /// Return a list of Pots
@@ -119,9 +124,10 @@ impl Client {
     /// # Ok(())
     /// # }
     /// ```
-    #[must_use]
-    pub fn pots(&self) -> pots::List {
+    pub async fn pots(&self) -> Result<Vec<pots::Pot>> {
         pots::List::new(self.http_client(), self.access_token())
+            .send()
+            .await
     }
 
     /// Post a basic item on the account feed.
@@ -205,6 +211,7 @@ impl Client {
     /// let transactions = client.transactions(account_id)
     ///     .since(Utc::now() - Duration::days(10))
     ///     .limit(10)
+    ///     .send()
     ///     .await?;
     /// #
     /// # Ok(())
@@ -233,6 +240,7 @@ impl Client {
     /// let transaction_id = "TRANSACTION_ID";
     ///
     /// let transactions = client.transaction(transaction_id)
+    ///     .send()
     ///     .await?;
     /// #
     /// # Ok(())
