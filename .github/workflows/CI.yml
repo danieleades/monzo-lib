@@ -93,16 +93,3 @@ jobs:
           command: doc
           args: --no-deps
 
-  readme:
-    name: README
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          override: true
-          profile: minimal
-      - run: cargo install cargo-readme
-      - run: diff -y <(cargo readme) README.md
-
