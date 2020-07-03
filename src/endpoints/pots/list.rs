@@ -1,7 +1,6 @@
 use super::Pot;
 use crate::{endpoints::handle_response, Result};
 use serde::Deserialize;
-use std::future::{Future, IntoFuture};
 
 /// An object representing a request to the Monzo API for a list of accounts
 pub struct Request {
@@ -19,7 +18,7 @@ impl Request {
 
     /// Consume the request and return a response that will resolve to a list of
     /// pots
-    async fn send(self) -> Result<Vec<Pot>> {
+    pub async fn send(self) -> Result<Vec<Pot>> {
         /// A collection of Monzo pots
         #[derive(Deserialize)]
         struct Response {
@@ -29,13 +28,5 @@ impl Request {
         let Response { pots } = handle_response(self.request_builder).await?;
 
         Ok(pots)
-    }
-}
-
-impl IntoFuture for Request {
-    type Output = Result<Vec<Pot>>;
-    type Future = impl Future<Output = Self::Output>;
-    fn into_future(self) -> Self::Future {
-        self.send()
     }
 }

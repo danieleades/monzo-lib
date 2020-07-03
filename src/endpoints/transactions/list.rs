@@ -2,7 +2,6 @@ use super::{Pagination, Since, Transaction};
 use crate::{endpoints::handle_response, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::future::{Future, IntoFuture};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
@@ -36,7 +35,7 @@ impl<'a> Request<'a> {
 
     /// Consume the request and return a future that resolves to a List of
     /// Transactions
-    async fn send(self) -> Result<Vec<Transaction>> {
+    pub async fn send(self) -> Result<Vec<Transaction>> {
         #[derive(Deserialize)]
         struct Response {
             transactions: Vec<Transaction>,
@@ -92,12 +91,4 @@ struct Payload<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "expand[]")]
     expand_merchant: Option<&'a str>,
-}
-
-impl<'a> IntoFuture for Request<'a> {
-    type Output = Result<Vec<Transaction>>;
-    type Future = impl Future<Output = Self::Output> + 'a;
-    fn into_future(self) -> Self::Future {
-        self.send()
-    }
 }

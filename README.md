@@ -1,8 +1,8 @@
 
 # Monzo
 
-[![Build Status](https://travis-ci.org/danieleades/monzo-lib.svg?branch=master)](https://travis-ci.org/danieleades/monzo-lib)
 [![Latest Docs](https://docs.rs/monzo-lib/badge.svg)](https://docs.rs/monzo-lib/)
+![Continuous integration](https://github.com/danieleades/monzo-lib/workflows/Continuous%20integration/badge.svg)
 
 This crate is a Monzo client in pure rust.
 

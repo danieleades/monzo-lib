@@ -52,7 +52,6 @@ pub use get::Request as Get;
 mod get {
     use super::Balance;
     use crate::{endpoints::handle_response, Result};
-    use std::future::{Future, IntoFuture};
 
     /// An object representing a request to the Monzo API for a list of accounts
     pub struct Request<'a> {
@@ -78,20 +77,12 @@ mod get {
 
         /// Consume the request and return a future that will resolve to the
         /// balance of the given account
-        async fn send(self) -> Result<Balance> {
+        pub async fn send(self) -> Result<Balance> {
             handle_response(
                 self.reqwest_builder
                     .query(&[("account_id", self.account_id)]),
             )
             .await
-        }
-    }
-
-    impl<'a> IntoFuture for Request<'a> {
-        type Output = Result<Balance>;
-        type Future = impl Future<Output = Self::Output> + 'a;
-        fn into_future(self) -> Self::Future {
-            self.send()
         }
     }
 }

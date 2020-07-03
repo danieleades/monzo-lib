@@ -7,7 +7,6 @@ mod refresh {
     use crate::{endpoints::handle_response, Result};
     use reqwest::Client as HttpClient;
     use serde::{Deserialize, Serialize};
-    use std::future::{Future, IntoFuture};
 
     /// The response received from the Monzo API after a successful request to
     /// refresh the authentication.
@@ -79,16 +78,8 @@ mod refresh {
         /// This method consumes the request and produces a future which will
         /// resolve to a `[RefreshResponse]`. This method is effectively an
         /// alias for the `into_future` method.
-        async fn send(self) -> Result<Response> {
+        pub async fn send(self) -> Result<Response> {
             handle_response(self.reqwest_builder).await
-        }
-    }
-
-    impl IntoFuture for Request {
-        type Output = Result<Response>;
-        type Future = impl Future<Output = Self::Output>;
-        fn into_future(self) -> Self::Future {
-            self.send()
         }
     }
 }

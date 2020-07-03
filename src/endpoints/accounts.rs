@@ -116,8 +116,6 @@ mod list {
     use super::Account;
     use crate::{endpoints::handle_response, Result};
     use serde::Deserialize;
-    use std::future::{Future, IntoFuture};
-
     /// A struct representing a collection of accounts
     #[derive(Deserialize, Debug)]
     pub(super) struct Accounts {
@@ -144,14 +142,6 @@ mod list {
             handle_response(self.request_builder)
                 .await
                 .map(|accounts: Accounts| accounts.accounts)
-        }
-    }
-
-    impl IntoFuture for Request {
-        type Output = Result<Vec<Account>>;
-        type Future = impl Future<Output = Self::Output>;
-        fn into_future(self) -> Self::Future {
-            self.send()
         }
     }
 }
