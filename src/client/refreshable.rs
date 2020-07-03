@@ -122,7 +122,7 @@ impl Client {
 
     /// Refresh the access and refresh tokens for this client
     pub async fn refresh_auth(&mut self) -> Result<()> {
-        let response = self.get_refresh_tokens().await?;
+        let response = self.get_refresh_tokens().send().await?;
 
         self.set_access_token(response.access_token);
         self.refresh_token = response.refresh_token;

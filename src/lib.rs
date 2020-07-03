@@ -1,8 +1,6 @@
 #![deny(missing_docs)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
-#![feature(into_future)]
-#![feature(type_alias_impl_trait)]
 
 //! This crate is a Monzo client in pure rust.
 //!
