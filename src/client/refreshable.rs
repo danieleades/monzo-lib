@@ -213,12 +213,11 @@ impl Client {
     /// let title = "Feed Item Title";
     /// let image_url = "http://www.nyan.cat/cats/original.gif";
     ///
-    /// client.basic_feed_item(
-    ///     account_id,
-    ///     title,
-    ///     image_url,
-    /// ).body("i figured out how to send messages to monzo from my computer...")
-    /// .send().await?;
+    /// client
+    ///     .basic_feed_item(account_id, title, image_url)
+    ///     .body("i figured out how to send messages to monzo from my computer...")
+    ///     .send()
+    ///     .await?;
     /// #
     /// # Ok(())
     /// # }
@@ -258,8 +257,8 @@ impl Client {
     ///
     /// # Example
     /// ```no_run
-    /// use monzo::Client;
     /// use chrono::{Duration, Utc};
+    /// use monzo::Client;
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// # let access_token = "ACCESS_TOKEN";
@@ -267,7 +266,8 @@ impl Client {
     /// #
     /// let account_id = "ACCOUNT_ID";
     ///
-    /// let transactions = client.transactions(account_id)
+    /// let transactions = client
+    ///     .transactions(account_id)
     ///     .since(Utc::now() - Duration::days(10))
     ///     .limit(10)
     ///     .send()
@@ -298,9 +298,7 @@ impl Client {
     /// #
     /// let transaction_id = "TRANSACTION_ID";
     ///
-    /// let transactions = client.transaction(transaction_id)
-    ///     .send()
-    ///     .await?;
+    /// let transactions = client.transaction(transaction_id).send().await?;
     /// #
     /// # Ok(())
     /// # }

@@ -18,7 +18,6 @@
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<()> {
-//!
 //!     // You can create a simple monzo client using only an access token
 //!     let quick_client = Client::quick("ACCESS_TOKEN");
 //!
@@ -34,11 +33,8 @@
 //!     // If you have a refresh token and client credentials
 //!     // you can create or upgrade a client which is capable
 //!     // of refreshing its own access token.
-//!     let mut refreshable_client = quick_client.with_refresh_tokens(
-//!         "CLIENT_ID",
-//!         "CLIENT_SECRET",
-//!         "REFRESH_TOKEN",
-//!     );
+//!     let mut refreshable_client =
+//!         quick_client.with_refresh_tokens("CLIENT_ID", "CLIENT_SECRET", "REFRESH_TOKEN");
 //!
 //!     refreshable_client.refresh_auth().await?;
 //!

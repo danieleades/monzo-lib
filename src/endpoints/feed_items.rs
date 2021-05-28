@@ -134,7 +134,7 @@ mod basic {
 
     #[derive(Debug, Serialize)]
     pub struct Payload<'a> {
-        //required for all feed item requests
+        // required for all feed item requests
         account_id: &'a str,
         r#type: &'static str,
 
