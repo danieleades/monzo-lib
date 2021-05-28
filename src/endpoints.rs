@@ -3,7 +3,7 @@ use crate::{Error, Result};
 pub mod accounts;
 pub mod auth;
 pub mod balance;
-pub mod feed_items;
+pub(crate) mod feed_items;
 pub mod pots;
 pub mod transactions;
 

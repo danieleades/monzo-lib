@@ -42,7 +42,7 @@ impl Account {
         self.closed
     }
 
-    /// The DateTime that the account was created
+    /// The `DateTime` that the account was created
     #[must_use]
     pub fn created(&self) -> &DateTime<Utc> {
         &self.created

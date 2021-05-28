@@ -1,6 +1,7 @@
 #![deny(missing_docs)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![allow(clippy::missing_errors_doc)]
 
 //! This crate is a Monzo client in pure rust.
 //!
@@ -45,7 +46,12 @@
 pub mod client;
 pub use client::Client;
 mod endpoints;
-pub use endpoints::{accounts, auth, balance, feed_items, pots, transactions};
+pub use endpoints::{
+    accounts::{Account, Owner},
+    balance::Balance,
+    pots::Pot,
+    transactions,
+};
 mod error;
 pub use self::error::Error;
 

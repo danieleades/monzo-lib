@@ -1,9 +1,9 @@
 //! Monzo API clients
 //!
-//! ## `[QuickClient](struct.QuickClient.html)`
+//! ## [`QuickClient`]
 //! For using with only an access token
 //!
-//! ## `[Client]`
+//! ## [`Client`]
 //! for using with access token, refresh token, and client credentials
 
 mod quick;

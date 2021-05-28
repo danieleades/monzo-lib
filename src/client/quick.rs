@@ -9,8 +9,6 @@ use crate::{
 /// This client is easy to construct, because all you need is an access token.
 /// This client is not capable of refreshing the access token, hence this must
 /// be managed externally.
-///
-/// For a full list of client functionality, see the [MonzoClient] trait
 #[must_use]
 pub struct Client {
     http_client: reqwest::Client,
