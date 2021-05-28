@@ -15,7 +15,11 @@ impl Request {
     ) -> Self {
         use rand::{distributions::Alphanumeric, thread_rng, Rng};
 
-        let dedupe_id: String = thread_rng().sample_iter(&Alphanumeric).take(10).collect();
+        let dedupe_id: String = thread_rng()
+            .sample_iter(&Alphanumeric)
+            .map(char::from)
+            .take(10)
+            .collect();
 
         let request_builder = http_client
             .get(&format!("https://api.monzo.com/pots/{}/deposit", pot_id))

@@ -1,6 +1,7 @@
 #![deny(missing_docs)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
+#![allow(clippy::missing_errors_doc)]
 
 //! This crate is a Monzo client in pure rust.
 //!
@@ -18,7 +19,6 @@
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<()> {
-//!
 //!     // You can create a simple monzo client using only an access token
 //!     let quick_client = Client::quick("ACCESS_TOKEN");
 //!
@@ -34,11 +34,8 @@
 //!     // If you have a refresh token and client credentials
 //!     // you can create or upgrade a client which is capable
 //!     // of refreshing its own access token.
-//!     let mut refreshable_client = quick_client.with_refresh_tokens(
-//!         "CLIENT_ID",
-//!         "CLIENT_SECRET",
-//!         "REFRESH_TOKEN",
-//!     );
+//!     let mut refreshable_client =
+//!         quick_client.with_refresh_tokens("CLIENT_ID", "CLIENT_SECRET", "REFRESH_TOKEN");
 //!
 //!     refreshable_client.refresh_auth().await?;
 //!
@@ -49,7 +46,12 @@
 pub mod client;
 pub use client::Client;
 mod endpoints;
-pub use endpoints::{accounts, auth, balance, feed_items, pots, transactions};
+pub use endpoints::{
+    accounts::{Account, Owner},
+    balance::Balance,
+    pots::Pot,
+    transactions,
+};
 mod error;
 pub use self::error::Error;
 

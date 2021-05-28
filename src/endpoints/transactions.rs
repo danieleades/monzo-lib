@@ -5,11 +5,12 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 mod list;
-pub use list::Request as List;
+pub(crate) use list::Request as List;
 mod get;
-pub use get::Request as Get;
+pub(crate) use get::Request as Get;
 
 /// A Monzo transaction
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Deserialize, Debug)]
 pub struct Transaction {
     account_balance: i64,

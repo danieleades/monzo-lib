@@ -48,7 +48,7 @@ impl Balance {
         self.spend_today
     }
 }
-pub use get::Request as Get;
+pub(crate) use get::Request as Get;
 mod get {
     use super::Balance;
     use crate::{endpoints::handle_response, Result};

@@ -42,7 +42,7 @@ impl Account {
         self.closed
     }
 
-    /// The DateTime that the account was created
+    /// The `DateTime` that the account was created
     #[must_use]
     pub fn created(&self) -> &DateTime<Utc> {
         &self.created
@@ -54,11 +54,11 @@ impl Account {
         &self.description
     }
 
-    /*     /// The type of the account
-    #[must_use]
-    pub fn account_type(&self) -> &Type {
-        &self.r#type
-    } */
+    //     /// The type of the account
+    // #[must_use]
+    // pub fn account_type(&self) -> &Type {
+    // &self.r#type
+    // }
 
     /// This the a three-letter currency code
     #[must_use]
