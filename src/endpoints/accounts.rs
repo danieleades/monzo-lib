@@ -24,6 +24,8 @@ pub struct Account {
     // account and there's two, or it's a business account
     owners: Vec<Owner>,
 
+    business_id: Option<String>,
+
     account_number: String,
 
     sort_code: String,
@@ -78,6 +80,12 @@ impl Account {
         &self.owners
     }
 
+    /// The business ID
+    #[must_use]
+    pub fn business_id(&self) -> &Option<String> {
+        &self.business_id
+    }
+
     /// The account number
     #[must_use]
     pub fn account_number(&self) -> &String {
@@ -108,6 +116,9 @@ pub enum Type {
 
     /// A monzo joint account
     UkRetailJoint,
+
+    /// A monzo business account
+    UkBusiness,
 }
 
 pub use list::Request as List;
@@ -204,6 +215,31 @@ mod tests {
                     "payment_details": {
                         "locale_uk": {
                             "account_number": "87654321",
+                            "sort_code": "040004"
+                        }
+                    }
+                },
+                {
+                    "id": "acc_XXXX",
+                    "closed": false,
+                    "created": "2019-06-12T17:44:35.266Z",
+                    "description": "Business Name",
+                    "type": "uk_business",
+                    "currency": "GBP",
+                    "country_code": "GB",
+                    "owners": [
+                        {
+                            "user_id": "user_XXXX",
+                            "preferred_name": "Daniel Eades",
+                            "preferred_first_name": "Daniel"
+                        }
+                    ],
+                    "business_id": "business_XXXX",
+                    "account_number": "12345678",
+                    "sort_code": "040004",
+                    "payment_details": {
+                        "locale_uk": {
+                            "account_number": "12345678",
                             "sort_code": "040004"
                         }
                     }
