@@ -3,17 +3,25 @@ use crate::{endpoints::handle_response, Result};
 use serde::Deserialize;
 
 /// An object representing a request to the Monzo API for a list of accounts
-pub struct Request {
+pub struct Request<'a> {
     request_builder: reqwest::RequestBuilder,
+    account_id: &'a str,
 }
 
-impl Request {
-    pub(crate) fn new(http_client: &reqwest::Client, access_token: impl AsRef<str>) -> Self {
+impl<'a> Request<'a> {
+    pub(crate) fn new(
+        http_client: &reqwest::Client,
+        access_token: impl AsRef<str>,
+        account_id: &'a str,
+    ) -> Self {
         let request_builder = http_client
-            .get("https://api.monzo.com/accounts")
+            .get("https://api.monzo.com/pots")
             .bearer_auth(access_token.as_ref());
 
-        Self { request_builder }
+        Self {
+            request_builder,
+            account_id,
+        }
     }
 
     /// Consume the request and return a response that will resolve to a list of
@@ -25,7 +33,11 @@ impl Request {
             pots: Vec<Pot>,
         }
 
-        let Response { pots } = handle_response(self.request_builder).await?;
+        let Response { pots } = handle_response(
+            self.request_builder
+                .query(&[("current_account_id", self.account_id)]),
+        )
+        .await?;
 
         Ok(pots)
     }

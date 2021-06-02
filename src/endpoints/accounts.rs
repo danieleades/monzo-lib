@@ -20,8 +20,6 @@ pub struct Account {
 
     country_code: String,
 
-    // TODO: this can be an enum. either its a normal account and there's one owner, or its a joint
-    // account and there's two, or it's a business account
     owners: Vec<Owner>,
 
     business_id: Option<String>,
@@ -110,6 +108,7 @@ pub struct Owner {
 /// Types of monzo account
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]
+#[allow(clippy::pub_enum_variant_names)]
 pub enum Type {
     /// A standard monzo account
     UkRetail,
@@ -127,6 +126,7 @@ mod list {
     use super::Account;
     use crate::{endpoints::handle_response, Result};
     use serde::Deserialize;
+
     /// A struct representing a collection of accounts
     #[derive(Deserialize, Debug)]
     pub(super) struct Accounts {
