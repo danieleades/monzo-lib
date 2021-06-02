@@ -186,15 +186,17 @@ impl Client {
     /// # async fn main() -> Result<()> {
     /// #
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
+    /// # let ACCOUNT_ID = "ACCOUNT_ID";
+    /// #
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let pots = client.pots().await?;
+    /// let pots = client.pots(ACCOUNT_ID).await?;
     /// #
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn pots(&self) -> Result<Vec<pots::Pot>> {
-        self.quick_client.pots().await
+    pub async fn pots(&self, account_id: &str) -> Result<Vec<pots::Pot>> {
+        self.quick_client.pots(account_id).await
     }
 
     /// Post a basic item on the account feed.
@@ -237,15 +239,15 @@ impl Client {
     }
 
     /// Deposit money into a pot
-    #[must_use]
-    pub fn deposit_into_pot(
+    pub async fn deposit_into_pot(
         &self,
         pot_id: &str,
         source_account_id: &str,
         amount: i64,
-    ) -> pots::Deposit {
+    ) -> Result<pots::Pot> {
         self.quick_client
             .deposit_into_pot(pot_id, source_account_id, amount)
+            .await
     }
 
     /// Get a list of transactions
