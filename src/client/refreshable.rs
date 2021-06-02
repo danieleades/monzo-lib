@@ -186,9 +186,11 @@ impl Client {
     /// # async fn main() -> Result<()> {
     /// #
     /// # let ACCESS_TOKEN = "ACCESS TOKEN";
+    /// # let ACCOUNT_ID = "ACCOUNT_ID";
+    /// #
     /// # let client = Client::quick(ACCESS_TOKEN);
     /// #
-    /// let pots = client.pots().await?;
+    /// let pots = client.pots(ACCOUNT_ID).await?;
     /// #
     /// # Ok(())
     /// # }
