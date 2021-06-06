@@ -29,6 +29,13 @@ pub struct Pot {
     /// Three letter code for the pot's currency
     pub currency: String,
 
+    /// The goal balance for this pot, if set
+    #[serde(default)]
+    pub goal_amount: Option<i64>,
+
+    /// The unique ID of the account associated with this pot
+    pub current_account_id: String,
+
     /// The datetime that the pot was created
     pub created: DateTime<Utc>,
 
@@ -40,4 +47,40 @@ pub struct Pot {
     /// *Note that in future the API will simply not return pots which have been
     /// deleted*
     pub deleted: bool,
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::Pot;
+
+    #[test]
+    fn deserialise() {
+        let raw = r#"
+        {
+            "id": "pot_1234",
+            "name": "Savings",
+            "style": "teal",
+            "balance": 10,
+            "currency": "GBP",
+            "goal_amount": 1000000,
+            "type": "flexible_savings",
+            "product_id": "XXX",
+            "current_account_id": "acc_1234",
+            "cover_image_url": "",
+            "isa_wrapper": "ISA",
+            "round_up": false,
+            "round_up_multiplier": null,
+            "is_tax_pot": false,
+            "created": "2019-04-28T06:36:54.318Z",
+            "updated": "2019-05-11T00:31:04.256Z",
+            "deleted": false,
+            "locked": false,
+            "charity_id": "",
+            "available_for_bills": false
+        }
+        "#;
+
+        let _: Pot = serde_json::from_str(raw).expect("couldn't decode Pot from json");
+    }
 }
