@@ -22,7 +22,7 @@ impl Request {
             .collect();
 
         let request_builder = http_client
-            .get(&format!("https://api.monzo.com/pots/{}/deposit", pot_id))
+            .put(&format!("https://api.monzo.com/pots/{}/deposit", pot_id))
             .bearer_auth(access_token.as_ref())
             .form(&[
                 ("source_account_id", source_account_id),
