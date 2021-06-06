@@ -6,6 +6,7 @@ pub mod balance;
 pub(crate) mod feed_items;
 pub mod pots;
 pub mod transactions;
+mod utils;
 
 pub(crate) async fn handle_response<T>(request_builder: reqwest::RequestBuilder) -> Result<T>
 where

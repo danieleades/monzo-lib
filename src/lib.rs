@@ -26,7 +26,7 @@
 //!     let accounts = quick_client.accounts().await?;
 //!
 //!     // get the id of one of the accounts
-//!     let account_id = accounts[0].id();
+//!     let account_id = &accounts[0].id;
 //!
 //!     // get the balance of that account
 //!     let balance = quick_client.balance(account_id).await?;
@@ -47,7 +47,7 @@ pub mod client;
 pub use client::Client;
 mod endpoints;
 pub use endpoints::{
-    accounts::{Account, Owner},
+    accounts::{Account, Owner, Type as AccountType},
     balance::Balance,
     pots::Pot,
     transactions,
