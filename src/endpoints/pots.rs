@@ -8,6 +8,8 @@ mod list;
 pub(crate) use list::Request as List;
 mod deposit;
 pub(crate) use deposit::Request as Deposit;
+mod withdraw;
+pub(crate) use withdraw::Request as Withdraw;
 
 /// Representation of a Monzo pot
 #[derive(Deserialize, Debug)]

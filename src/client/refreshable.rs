@@ -250,6 +250,18 @@ impl Client {
             .await
     }
 
+    /// Withdraw money from a pot
+    pub async fn withdraw_from_pot(
+        &self,
+        pot_id: &str,
+        destination_account_id: &str,
+        amount: i64,
+    ) -> Result<pots::Pot> {
+        self.quick_client
+            .withdraw_from_pot(pot_id, destination_account_id, amount)
+            .await
+    }
+
     /// Get a list of transactions
     ///
     /// The only required field is the account id, however optional pagination
