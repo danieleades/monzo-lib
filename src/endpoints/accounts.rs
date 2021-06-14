@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 /// A struct representing a Monzo Account
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct Account {
     /// The unique ID of the account
@@ -45,7 +45,7 @@ pub struct Account {
 }
 
 /// Struct representating an owner of a Monzo account
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq, Eq)]
 pub struct Owner {
     user_id: String,
     preferred_name: String,
@@ -53,7 +53,7 @@ pub struct Owner {
 }
 
 /// Types of monzo account
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 #[allow(clippy::pub_enum_variant_names)]
 #[non_exhaustive]
