@@ -7,10 +7,7 @@ use crate::{
 };
 use async_trait::async_trait;
 
-mod quick;
-use quick::Quick;
-mod refreshable;
-use refreshable::Refreshable;
+pub mod inner;
 
 /// A generic trait of any HTTP client which also stores and manages an access
 /// token.

@@ -36,7 +36,7 @@ impl Client<Quick> {
         client_id: impl Into<String>,
         client_secret: impl Into<String>,
         refresh_token: impl Into<String>,
-    ) -> Client<client::Refreshable> {
+    ) -> Client<client::inner::Refreshable> {
         Client::from_quick_client(self.inner_client, client_id, client_secret, refresh_token)
     }
 }

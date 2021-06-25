@@ -13,7 +13,7 @@ use async_trait::async_trait;
 /// See the individual methods for descriptions of the API endpoints.
 #[must_use]
 pub struct Refreshable {
-    quick_client: client::Quick,
+    quick_client: client::inner::Quick,
 
     client_id: String,
     client_secret: String,
@@ -22,7 +22,7 @@ pub struct Refreshable {
 
 impl Client<Refreshable> {
     pub(crate) fn from_quick_client(
-        quick_client: client::Quick,
+        quick_client: client::inner::Quick,
         client_id: impl Into<String>,
         client_secret: impl Into<String>,
         refresh_token: impl Into<String>,

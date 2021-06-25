@@ -52,6 +52,7 @@ pub use endpoints::{
     transactions,
 };
 mod error;
+pub use client::inner as inner_client;
 pub use error::Error;
 
 /// Result type for all methods in this crate which can fail.
