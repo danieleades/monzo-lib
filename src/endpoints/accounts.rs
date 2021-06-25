@@ -55,7 +55,6 @@ pub struct Owner {
 /// Types of monzo account
 #[derive(Deserialize, Debug, PartialEq, Eq, Hash)]
 #[serde(rename_all = "snake_case")]
-#[allow(clippy::pub_enum_variant_names)]
 #[non_exhaustive]
 pub enum Type {
     /// A standard monzo account
@@ -72,35 +71,39 @@ pub use list::Request as List;
 mod list {
 
     use super::Account;
-    use crate::{endpoints::handle_response, Result};
+    use crate::endpoints::{Endpoint, Resolve};
     use serde::Deserialize;
 
     /// A struct representing a collection of accounts
     #[derive(Deserialize, Debug)]
-    pub(super) struct Accounts {
+    pub(crate) struct Accounts {
         accounts: Vec<Account>,
     }
 
-    /// An object representing a request to the Monzo API for a list of accounts
-    pub struct Request {
-        request_builder: reqwest::RequestBuilder,
+    impl From<Accounts> for Vec<Account> {
+        fn from(accounts: Accounts) -> Self {
+            accounts.accounts
+        }
     }
 
-    impl Request {
-        pub(crate) fn new(http_client: &reqwest::Client, access_token: impl AsRef<str>) -> Self {
-            let request_builder = http_client
-                .get("https://api.monzo.com/accounts")
-                .bearer_auth(access_token.as_ref());
+    /// An object representing a request to the Monzo API for a list of accounts
+    pub struct Request;
 
-            Self { request_builder }
+    impl Endpoint for Request {
+        fn method(&self) -> http::Method {
+            http::Method::GET
         }
 
-        /// Consume the request and return a future that will resolve to a list
-        /// of accounts
-        pub async fn send(self) -> Result<Vec<Account>> {
-            handle_response(self.request_builder)
-                .await
-                .map(|accounts: Accounts| accounts.accounts)
+        fn endpoint(&self) -> &str {
+            "https://api.monzo.com/accounts"
+        }
+    }
+
+    impl Resolve for Request {
+        type Response = Vec<Account>;
+
+        fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
+            serde_json::from_slice(bytes)
         }
     }
 }
@@ -195,6 +198,6 @@ mod tests {
             ]
         }"#;
 
-        serde_json::from_str::<Accounts>(&raw_account_string).unwrap();
+        serde_json::from_str::<Accounts>(raw_account_string).unwrap();
     }
 }

@@ -1,19 +1,39 @@
 use super::Pot;
-use crate::{endpoints::handle_response, Result};
-/// An object representing a request to the Monzo API for a list of accounts
-pub struct Request {
-    request_builder: reqwest::RequestBuilder,
+use crate::endpoints::{Endpoint, Resolve};
+use serde::Serialize;
+
+pub struct Request<'a> {
+    endpoint: String,
+    form: Form<'a>,
 }
 
-impl Request {
-    pub(crate) fn new(
-        http_client: &reqwest::Client,
-        access_token: impl AsRef<str>,
-        pot_id: &str,
-        source_account_id: &str,
-        amount: i64,
-    ) -> Self {
+impl<'a> Endpoint for Request<'a> {
+    fn method(&self) -> http::Method {
+        http::Method::PUT
+    }
+
+    fn endpoint(&self) -> &str {
+        &self.endpoint
+    }
+
+    fn form(&self) -> Option<&dyn erased_serde::Serialize> {
+        Some(&self.form)
+    }
+}
+
+impl<'a> Resolve for Request<'a> {
+    type Response = Pot;
+
+    fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
+        serde_json::from_slice(bytes)
+    }
+}
+
+impl<'a> Request<'a> {
+    pub(crate) fn new(pot_id: &'a str, source_account_id: &'a str, amount: u32) -> Self {
         use rand::{distributions::Alphanumeric, thread_rng, Rng};
+
+        let endpoint = format!("https://api.monzo.com/pots/{}/deposit", &pot_id);
 
         let dedupe_id: String = thread_rng()
             .sample_iter(&Alphanumeric)
@@ -21,21 +41,19 @@ impl Request {
             .take(10)
             .collect();
 
-        let request_builder = http_client
-            .put(&format!("https://api.monzo.com/pots/{}/deposit", pot_id))
-            .bearer_auth(access_token.as_ref())
-            .form(&[
-                ("source_account_id", source_account_id),
-                ("amount", &amount.to_string()),
-                ("dedupe_id", &dedupe_id),
-            ]);
+        let form = Form {
+            source_account_id,
+            amount,
+            dedupe_id,
+        };
 
-        Self { request_builder }
+        Self { endpoint, form }
     }
+}
 
-    /// Consume the request and a return a future that resolve to a [Pot] when
-    /// the deposit has been completed
-    pub async fn send(self) -> Result<Pot> {
-        handle_response(self.request_builder).await
-    }
+#[derive(Debug, Serialize)]
+struct Form<'a> {
+    source_account_id: &'a str,
+    amount: u32,
+    dedupe_id: String,
 }

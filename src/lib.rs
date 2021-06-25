@@ -1,26 +1,23 @@
-#![deny(missing_docs)]
+#![warn(missing_docs)]
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
 #![allow(clippy::missing_errors_doc)]
 
-//! This crate is a Monzo client in pure rust.
+//! This crate is a collecion of Monzo clients in pure rust.
 //!
 //! It's ergonomic, strongly-typed, and asynchronous.
 //!
-//! The majority of the endpoints are already supported. If you need a piece of
-//! functionality that is not yet implemented, please open an issue or even
-//! better, a pull request.
 //!
 //! In order to use this client, you will first need to get an access token and/or refresh token for the Monzo API (see [the docs](https://docs.monzo.com/))
 //!
 //! ## Usage
 //! ```no_run
-//! use monzo::{Client, Result};
+//! use monzo::Client;
 //!
 //! #[tokio::main]
-//! async fn main() -> Result<()> {
+//! async fn main() -> Result<(), Box<dyn std::error::Error>> {
 //!     // You can create a simple monzo client using only an access token
-//!     let quick_client = Client::quick("ACCESS_TOKEN");
+//!     let quick_client = Client::new("ACCESS_TOKEN");
 //!
 //!     // get a list of accounts
 //!     let accounts = quick_client.accounts().await?;
@@ -43,9 +40,11 @@
 //! }
 //! ```
 
-pub mod client;
+mod client;
+#[doc(inline)]
 pub use client::Client;
 mod endpoints;
+mod request_builder;
 pub use endpoints::{
     accounts::{Account, Owner, Type as AccountType},
     balance::Balance,
@@ -53,7 +52,7 @@ pub use endpoints::{
     transactions,
 };
 mod error;
-pub use self::error::Error;
+pub use error::Error;
 
 /// Result type for all methods in this crate which can fail.
 pub type Result<T> = std::result::Result<T, Error>;

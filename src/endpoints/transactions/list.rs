@@ -1,5 +1,9 @@
 use super::{Pagination, Since, Transaction};
-use crate::{endpoints::handle_response, Result};
+use crate::{
+    client,
+    endpoints::{Endpoint, Resolve},
+    request_builder::RequestBuilder,
+};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -7,49 +11,51 @@ use serde::{Deserialize, Serialize};
 ///
 /// Use the builder-style methods to set optional fields on the request
 pub struct Request<'a> {
-    reqwest_builder: reqwest::RequestBuilder,
-    payload: Payload<'a>,
+    form: Form<'a>,
+}
+
+impl<'a> Endpoint for Request<'a> {
+    fn method(&self) -> http::Method {
+        http::Method::GET
+    }
+
+    fn endpoint(&self) -> &str {
+        "https://api.monzo.com/transactions"
+    }
+
+    fn form(&self) -> Option<&dyn erased_serde::Serialize> {
+        Some(&self.form)
+    }
+}
+
+impl<'a> Resolve for Request<'a> {
+    type Response = Vec<Transaction>;
+
+    fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
+        let response: Response = serde_json::from_slice(bytes)?;
+        Ok(response.transactions)
+    }
 }
 
 impl<'a> Request<'a> {
-    pub(crate) fn new(
-        http_client: &reqwest::Client,
-        access_token: &str,
-        account_id: &'a str,
-    ) -> Self {
-        let reqwest_builder = http_client
-            .get("https://api.monzo.com/transactions")
-            .bearer_auth(access_token);
-
-        let payload = Payload {
+    pub(crate) fn new(account_id: &'a str) -> Self {
+        let form = Form {
             account_id,
             pagination: Pagination::default(),
             expand_merchant: None,
         };
 
-        Self {
-            reqwest_builder,
-            payload,
-        }
+        Self { form }
     }
+}
 
-    /// Consume the request and return a future that resolves to a List of
-    /// Transactions
-    pub async fn send(self) -> Result<Vec<Transaction>> {
-        #[derive(Deserialize)]
-        struct Response {
-            transactions: Vec<Transaction>,
-        }
-
-        let Response { transactions } =
-            handle_response(self.reqwest_builder.form(&self.payload)).await?;
-
-        Ok(transactions)
-    }
-
+impl<'a, M> RequestBuilder<'a, M, Request<'a>>
+where
+    M: client::Inner,
+{
     /// Only return transactions which occurred after the given `DateTime`
     pub fn since(mut self, datetime: DateTime<Utc>) -> Self {
-        self.payload.pagination.since = Some(Since::Timestamp(datetime));
+        self.endpoint_ref_mut().form.pagination.since = Some(Since::Timestamp(datetime));
         self
     }
 
@@ -57,32 +63,32 @@ impl<'a> Request<'a> {
     ///
     /// This can be used for paginating.
     pub fn since_transaction(mut self, transaction_id: String) -> Self {
-        self.payload.pagination.since = Some(Since::ObjectId(transaction_id));
+        self.endpoint_ref_mut().form.pagination.since = Some(Since::ObjectId(transaction_id));
         self
     }
 
     /// Only return transactions which occurred before a given `DateTime`
     pub fn before(mut self, datetime: DateTime<Utc>) -> Self {
-        self.payload.pagination.before = Some(datetime);
+        self.endpoint_ref_mut().form.pagination.before = Some(datetime);
         self
     }
 
     /// Set the maximum number of transactions to be returned
     pub fn limit(mut self, limit: u16) -> Self {
-        self.payload.pagination.limit = Some(limit);
+        self.endpoint_ref_mut().form.pagination.limit = Some(limit);
         self
     }
 
     /// Optionally expand the merchant field from an id string into a struct
     /// container merchant details
     pub fn expand_merchant(mut self) -> Self {
-        self.payload.expand_merchant = Some("merchant");
+        self.endpoint_ref_mut().form.expand_merchant = Some("merchant");
         self
     }
 }
 
 #[derive(Serialize)]
-struct Payload<'a> {
+struct Form<'a> {
     account_id: &'a str,
 
     #[serde(flatten)]
@@ -91,4 +97,15 @@ struct Payload<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "expand[]")]
     expand_merchant: Option<&'a str>,
+}
+
+#[derive(Deserialize)]
+pub(crate) struct Response {
+    transactions: Vec<Transaction>,
+}
+
+impl From<Response> for Vec<Transaction> {
+    fn from(response: Response) -> Self {
+        response.transactions
+    }
 }

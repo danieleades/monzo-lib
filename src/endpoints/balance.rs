@@ -51,38 +51,45 @@ impl Balance {
 pub(crate) use get::Request as Get;
 mod get {
     use super::Balance;
-    use crate::{endpoints::handle_response, Result};
+    use crate::endpoints::{Endpoint, Resolve};
+    use serde::Serialize;
 
     /// An object representing a request to the Monzo API for a list of accounts
     pub struct Request<'a> {
-        reqwest_builder: reqwest::RequestBuilder,
-        account_id: &'a str,
+        query: Query<'a>,
     }
 
     impl<'a> Request<'a> {
-        pub(crate) fn new(
-            http_client: &reqwest::Client,
-            access_token: impl AsRef<str>,
-            account_id: &'a str,
-        ) -> Self {
-            let reqwest_builder = http_client
-                .get("https://api.monzo.com/balance")
-                .bearer_auth(access_token.as_ref());
+        pub(crate) fn new(account_id: &'a str) -> Self {
+            let query = Query { account_id };
+            Self { query }
+        }
+    }
 
-            Self {
-                reqwest_builder,
-                account_id,
-            }
+    impl<'a> Endpoint for Request<'a> {
+        fn method(&self) -> http::Method {
+            http::Method::GET
         }
 
-        /// Consume the request and return a future that will resolve to the
-        /// balance of the given account
-        pub async fn send(self) -> Result<Balance> {
-            handle_response(
-                self.reqwest_builder
-                    .query(&[("account_id", self.account_id)]),
-            )
-            .await
+        fn endpoint(&self) -> &str {
+            "https://api.monzo.com/balance"
+        }
+
+        fn query(&self) -> Option<&dyn erased_serde::Serialize> {
+            Some(&self.query)
+        }
+    }
+
+    #[derive(Debug, Serialize)]
+    struct Query<'a> {
+        account_id: &'a str,
+    }
+
+    impl<'a> Resolve for Request<'a> {
+        type Response = Balance;
+
+        fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
+            serde_json::from_slice(bytes)
         }
     }
 }

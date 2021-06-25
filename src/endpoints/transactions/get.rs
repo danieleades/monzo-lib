@@ -1,47 +1,62 @@
 use super::Transaction;
-use crate::{endpoints::handle_response, Result};
+use crate::{
+    client,
+    endpoints::{Endpoint, Resolve},
+    request_builder::RequestBuilder,
+};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
 /// Use the builder-style methods to set optional fields on the request
 pub struct Request {
-    reqwest_builder: reqwest::RequestBuilder,
+    endpoint: String,
     expand_merchant: bool,
 }
 
-impl Request {
-    pub(crate) fn new(
-        http_client: &reqwest::Client,
-        access_token: &str,
-        transaction_id: &str,
-    ) -> Self {
-        let reqwest_builder = http_client
-            .get(&format!(
-                "https://api.monzo.com/transactions/{}",
-                transaction_id
-            ))
-            .bearer_auth(access_token);
+impl Endpoint for Request {
+    fn method(&self) -> http::Method {
+        http::Method::GET
+    }
 
+    fn endpoint(&self) -> &str {
+        &self.endpoint
+    }
+
+    fn query(&self) -> Option<&dyn erased_serde::Serialize> {
+        if self.expand_merchant {
+            Some(&("expand[]", "merchant"))
+        } else {
+            None
+        }
+    }
+}
+
+impl Resolve for Request {
+    type Response = Transaction;
+
+    fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
+        serde_json::from_slice(bytes)
+    }
+}
+
+impl Request {
+    pub(crate) fn new(transaction_id: &str) -> Self {
+        let endpoint = format!("https://api.monzo.com/transactions/{}", transaction_id);
         Self {
-            reqwest_builder,
+            endpoint,
             expand_merchant: false,
         }
     }
+}
 
-    /// Consume the request and return a future that resolves to a List of
-    /// Transactions
-    pub async fn send(self) -> Result<Transaction> {
-        let mut reqwest_builder = self.reqwest_builder;
-        if self.expand_merchant {
-            reqwest_builder = reqwest_builder.query(&("expand[]", "merchant"))
-        }
-        handle_response(reqwest_builder).await
-    }
-
+impl<'a, M> RequestBuilder<'a, M, Request>
+where
+    M: client::Inner,
+{
     /// Optionally expand the merchant field from an id string into a struct
     /// container merchant details
     pub fn expand_merchant(mut self) -> Self {
-        self.expand_merchant = true;
+        self.endpoint_ref_mut().expand_merchant = true;
         self
     }
 }

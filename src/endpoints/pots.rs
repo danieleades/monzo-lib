@@ -83,6 +83,6 @@ mod tests {
         }
         "#;
 
-        let _: Pot = serde_json::from_str(raw).expect("couldn't decode Pot from json");
+        serde_json::from_str::<Pot>(raw).expect("couldn't decode Pot from json");
     }
 }

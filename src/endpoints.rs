@@ -1,4 +1,4 @@
-use crate::{Error, Result};
+use erased_serde::Serialize as ErasedSerialize;
 
 pub mod accounts;
 pub mod auth;
@@ -8,18 +8,22 @@ pub mod pots;
 pub mod transactions;
 mod utils;
 
-pub(crate) async fn handle_response<T>(request_builder: reqwest::RequestBuilder) -> Result<T>
-where
-    T: serde::de::DeserializeOwned,
-{
-    let response = request_builder.send().await?;
-
-    match response.status() {
-        x if x.is_success() => Ok(response.json().await?),
-        x if x.is_client_error() || x.is_server_error() => {
-            println!("response.body: {:#?}", response.text().await?);
-            Err(Error::from(x))
-        }
-        _ => unreachable!(),
+pub trait Endpoint: Sync {
+    fn method(&self) -> http::Method;
+    fn endpoint(&self) -> &str;
+    fn query(&self) -> Option<&dyn ErasedSerialize> {
+        None
     }
+    fn form(&self) -> Option<&dyn ErasedSerialize> {
+        None
+    }
+    fn json(&self) -> Option<&dyn ErasedSerialize> {
+        None
+    }
+}
+
+pub trait Resolve {
+    type Response;
+
+    fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response>;
 }
