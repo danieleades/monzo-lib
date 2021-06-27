@@ -11,6 +11,7 @@ use async_trait::async_trait;
 ///
 /// This client can refresh it's own access token if it expires
 /// See the individual methods for descriptions of the API endpoints.
+#[derive(Debug, Clone)]
 #[must_use]
 pub struct Refreshable {
     quick_client: client::inner::Quick,

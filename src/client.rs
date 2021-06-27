@@ -24,6 +24,7 @@ pub trait Inner {
 }
 
 /// A Monzo API client
+#[derive(Debug)]
 pub struct Client<M>
 where
     M: Inner,

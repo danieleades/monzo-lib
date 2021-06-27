@@ -8,6 +8,7 @@ use crate::{
 /// A request to retrieve a list of transactions from the Monzo API
 ///
 /// Use the builder-style methods to set optional fields on the request
+#[derive(Debug)]
 pub struct Request {
     endpoint: String,
     expand_merchant: bool,

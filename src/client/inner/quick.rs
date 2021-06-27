@@ -6,6 +6,7 @@ use async_trait::async_trait;
 /// This client is easy to construct, because all you need is an access token.
 /// This client is not capable of refreshing the access token, hence this must
 /// be managed externally.
+#[derive(Debug, Clone)]
 #[must_use]
 pub struct Quick {
     http_client: reqwest::Client,

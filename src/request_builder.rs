@@ -6,6 +6,7 @@ use crate::{
 
 /// A wrapper around a type that implements [`Endpoint`] and [`Resolve`] that
 /// handles making requests to the Monzo API.
+#[derive(Debug)]
 #[must_use]
 pub struct RequestBuilder<'a, C, E>
 where

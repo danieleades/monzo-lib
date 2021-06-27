@@ -1,6 +1,9 @@
-#![warn(missing_docs)]
-#![deny(clippy::all)]
-#![warn(clippy::pedantic)]
+#![deny(
+    clippy::all,
+    missing_debug_implementations,
+    missing_copy_implementations
+)]
+#![warn(clippy::pedantic, missing_docs)]
 #![allow(clippy::missing_errors_doc)]
 
 //! This crate is a collecion of Monzo clients in pure rust.

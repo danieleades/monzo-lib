@@ -53,7 +53,7 @@ pub struct Owner {
 }
 
 /// Types of monzo account
-#[derive(Deserialize, Debug, PartialEq, Eq, Hash)]
+#[derive(Deserialize, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 pub enum Type {

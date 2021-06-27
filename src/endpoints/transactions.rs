@@ -78,7 +78,7 @@ pub struct Transaction {
 }
 
 /// The set of reasons for which a monzo transaction may be declined
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[non_exhaustive]
 pub enum DeclineReason {
@@ -100,7 +100,7 @@ pub enum DeclineReason {
 
 /// The set of categories by which Monzo transactions and merchants can be
 /// categorised
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 #[non_exhaustive]
 #[serde(rename_all = "snake_case")]
 pub enum Category {
@@ -174,7 +174,7 @@ pub struct Address {
     region: String,
 }
 
-#[derive(Serialize, Default)]
+#[derive(Serialize, Default, Debug)]
 struct Pagination {
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u16>,
@@ -188,7 +188,7 @@ struct Pagination {
 
 /// The 'since' paramater of a pagination request can be either a timestamp or
 /// an object id
-#[derive(Serialize)]
+#[derive(Debug, Serialize, Clone)]
 #[serde(untagged)]
 pub enum Since {
     /// A timestamp

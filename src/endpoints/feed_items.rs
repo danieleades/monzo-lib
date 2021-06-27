@@ -16,6 +16,7 @@ mod basic {
     /// of feed item which is supported
     ///
     /// Use the builder methods to set optional fields
+    #[derive(Debug)]
     pub struct Request<'a> {
         payload: Payload<'a>,
     }

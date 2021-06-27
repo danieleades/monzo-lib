@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 /// A request to retrieve a list of transactions from the Monzo API
 ///
 /// Use the builder-style methods to set optional fields on the request
+#[derive(Debug)]
 pub struct Request<'a> {
     form: Form<'a>,
 }
@@ -87,7 +88,7 @@ where
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 struct Form<'a> {
     account_id: &'a str,
 
