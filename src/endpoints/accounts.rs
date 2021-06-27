@@ -74,18 +74,6 @@ mod list {
     use crate::endpoints::{Endpoint, Resolve};
     use serde::Deserialize;
 
-    /// A struct representing a collection of accounts
-    #[derive(Deserialize, Debug)]
-    pub(crate) struct Accounts {
-        accounts: Vec<Account>,
-    }
-
-    impl From<Accounts> for Vec<Account> {
-        fn from(accounts: Accounts) -> Self {
-            accounts.accounts
-        }
-    }
-
     /// An object representing a request to the Monzo API for a list of accounts
     pub struct Request;
 
@@ -103,18 +91,24 @@ mod list {
         type Response = Vec<Account>;
 
         fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-            serde_json::from_slice(bytes)
+            /// A struct representing a collection of accounts
+            #[derive(Deserialize)]
+            pub(crate) struct Accounts {
+                accounts: Vec<Account>,
+            }
+            let accounts: Accounts = serde_json::from_slice(bytes)?;
+            Ok(accounts.accounts)
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::list::Accounts;
+    use crate::endpoints::Resolve;
 
     #[test]
-    fn deserialise_account() {
-        let raw_account_string = r#"
+    fn deserialise() {
+        let bytes = r#"
         {
             "accounts": [
                 {
@@ -196,8 +190,9 @@ mod tests {
                     }
                 }
             ]
-        }"#;
+        }"#
+        .as_bytes();
 
-        serde_json::from_str::<Accounts>(raw_account_string).unwrap();
+        super::list::Request.resolve(&bytes).unwrap();
     }
 }
