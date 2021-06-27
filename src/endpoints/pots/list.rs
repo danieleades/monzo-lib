@@ -1,6 +1,6 @@
 use super::Pot;
 use crate::endpoints::{Endpoint, Resolve};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// An object representing a request to the Monzo API for a list of accounts
 pub struct Request<'a> {
@@ -32,7 +32,12 @@ impl<'a> Resolve for Request<'a> {
     type Response = Vec<Pot>;
 
     fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-        serde_json::from_slice(bytes)
+        #[derive(Deserialize)]
+        struct Pots {
+            pots: Vec<Pot>,
+        }
+        let pots: Pots = serde_json::from_slice(bytes)?;
+        Ok(pots.pots)
     }
 }
 
