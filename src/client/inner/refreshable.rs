@@ -62,7 +62,7 @@ impl Client<Refreshable> {
             &self.inner_client,
             auth::Refresh::new(self.client_id(), self.client_secret(), self.refresh_token()),
         )
-        .send()
+        .send_no_auth()
         .await
     }
 
@@ -79,8 +79,12 @@ impl Client<Refreshable> {
 
 #[async_trait]
 impl client::Inner for Refreshable {
-    async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response> {
-        self.quick_client.execute(endpoint).await
+    async fn execute(
+        &self,
+        endpoint: &dyn Endpoint,
+        access_token: Option<&str>,
+    ) -> reqwest::Result<reqwest::Response> {
+        self.quick_client.execute(endpoint, access_token).await
     }
 
     fn access_token(&self) -> &String {

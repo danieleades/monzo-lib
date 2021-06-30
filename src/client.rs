@@ -12,9 +12,22 @@ pub mod inner;
 /// A generic trait of any HTTP client which also stores and manages an access
 /// token.
 #[async_trait]
-pub trait Inner {
+pub trait Inner: Send + Sync {
+    /// Construct end send an HTTP request using the provided Endpoint with
+    /// bearer token authentication.
+    async fn execute(
+        &self,
+        endpoint: &dyn Endpoint,
+        access_token: Option<&str>,
+    ) -> reqwest::Result<reqwest::Response>;
+
     /// Construct end send an HTTP request using the provided Endpoint.
-    async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response>;
+    async fn execute_authenticated(
+        &self,
+        endpoint: &dyn Endpoint,
+    ) -> reqwest::Result<reqwest::Response> {
+        self.execute(endpoint, Some(self.access_token())).await
+    }
 
     /// Return a reference to the current access token
     fn access_token(&self) -> &String;

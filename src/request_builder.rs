@@ -1,5 +1,7 @@
+use reqwest::Response;
+
 use crate::{
-    client,
+    client::{self, Inner},
     endpoints::{Endpoint, Resolve},
     Error, Result,
 };
@@ -30,14 +32,22 @@ where
         &mut self.endpoint
     }
 
+    /// Consume the [`RequestBuilder`] and return the result. This method omits
+    /// bearer authentication.
+    pub(crate) async fn send_no_auth(self) -> Result<E::Response> {
+        let response = self.client.execute(&self.endpoint, None).await?;
+
+        self.handle_response(response).await
+    }
+
     /// Consume the [`RequestBuilder`] and return the result
     pub async fn send(self) -> Result<E::Response> {
-        let response = self
-            .client
-            .execute(&self.endpoint)
-            .await
-            .map_err(Error::Http)?;
+        let response = self.client.execute_authenticated(&self.endpoint).await?;
 
+        self.handle_response(response).await
+    }
+
+    async fn handle_response(&self, response: Response) -> Result<E::Response> {
         let status = response.status();
 
         if status.is_success() {
