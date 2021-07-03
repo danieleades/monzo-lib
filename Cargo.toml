@@ -17,7 +17,7 @@ name = "monzo"
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-reqwest = { version = "0.11.4", features = ["json", "stream"] }
+reqwest = { version = "0.11.4", features = ["json"] }
 chrono = { version = "0.4.19", features = ["serde"] }
 serde = { version = "1.0.125", features = ["derive"] }
 rand = "0.8.3"
