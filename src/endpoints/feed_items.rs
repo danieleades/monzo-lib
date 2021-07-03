@@ -4,7 +4,6 @@ pub use basic::Request as Basic;
 
 mod basic {
     use crate::{
-        client,
         endpoints::{Endpoint, Resolve},
         request_builder::RequestBuilder,
     };
@@ -90,10 +89,7 @@ mod basic {
         }
     }
 
-    impl<'a, M> RequestBuilder<'a, M, Request<'a>>
-    where
-        M: client::Inner,
-    {
+    impl<'a> RequestBuilder<'a, Request<'a>> {
         /// Set the url of the feed item.
         ///
         /// This is the url the user will be redirected to after

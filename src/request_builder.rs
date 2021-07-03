@@ -10,21 +10,19 @@ use crate::{
 /// handles making requests to the Monzo API.
 #[derive(Debug)]
 #[must_use]
-pub struct RequestBuilder<'a, C, E>
+pub struct RequestBuilder<'a, E>
 where
-    E: Endpoint,
-    C: client::Inner,
+    E: Endpoint + Resolve,
 {
-    client: &'a C,
+    client: &'a dyn client::Inner,
     endpoint: E,
 }
 
-impl<'a, C, E> RequestBuilder<'a, C, E>
+impl<'a, E> RequestBuilder<'a, E>
 where
     E: Endpoint + Resolve,
-    C: client::Inner,
 {
-    pub(crate) fn new(client: &'a C, endpoint: E) -> Self {
+    pub(crate) fn new(client: &'a dyn client::Inner, endpoint: E) -> Self {
         Self { client, endpoint }
     }
 

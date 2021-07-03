@@ -12,7 +12,7 @@ pub mod inner;
 /// A generic trait of any HTTP client which also stores and manages an access
 /// token.
 #[async_trait]
-pub trait Inner: Send + Sync {
+pub trait Inner: Send + Sync + std::fmt::Debug {
     /// Construct end send an HTTP request using the provided Endpoint with
     /// bearer token authentication.
     async fn execute(
@@ -159,7 +159,7 @@ where
         account_id: &'a str,
         title: &'a str,
         image_url: &'a str,
-    ) -> RequestBuilder<'a, M, feed_items::Basic<'a>> {
+    ) -> RequestBuilder<'a, feed_items::Basic<'a>> {
         RequestBuilder::new(
             &self.inner_client,
             feed_items::Basic::new(account_id, title, image_url),
@@ -230,7 +230,7 @@ where
     pub fn transactions<'a>(
         &'a self,
         account_id: &'a str,
-    ) -> RequestBuilder<'a, M, transactions::List<'a>> {
+    ) -> RequestBuilder<'a, transactions::List<'a>> {
         RequestBuilder::new(&self.inner_client, transactions::List::new(account_id))
     }
 
@@ -254,11 +254,11 @@ where
     ///
     /// # Note
     /// *The Monzo API will only return transactions from more than 90 days ago
-    /// in the first 5 minutes after authorising the Client.
+    /// in the first 5 minutes after authorising the Client.*
     pub fn transaction<'a>(
         &'a self,
         transaction_id: &'a str,
-    ) -> RequestBuilder<'a, M, transactions::Get> {
+    ) -> RequestBuilder<'a, transactions::Get> {
         RequestBuilder::new(&self.inner_client, transactions::Get::new(transaction_id))
     }
 

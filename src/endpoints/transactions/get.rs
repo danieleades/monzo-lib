@@ -1,6 +1,5 @@
 use super::Transaction;
 use crate::{
-    client,
     endpoints::{Endpoint, Resolve},
     request_builder::RequestBuilder,
 };
@@ -50,10 +49,7 @@ impl Request {
     }
 }
 
-impl<'a, M> RequestBuilder<'a, M, Request>
-where
-    M: client::Inner,
-{
+impl<'a> RequestBuilder<'a, Request> {
     /// Optionally expand the merchant field from an id string into a struct
     /// container merchant details
     pub fn expand_merchant(mut self) -> Self {

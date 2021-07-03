@@ -54,6 +54,7 @@ pub use endpoints::{
     pots::Pot,
     transactions,
 };
+pub use request_builder::RequestBuilder;
 mod error;
 pub use client::inner as inner_client;
 pub use error::Error;

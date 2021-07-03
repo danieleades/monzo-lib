@@ -1,6 +1,5 @@
 use super::{Pagination, Since, Transaction};
 use crate::{
-    client,
     endpoints::{Endpoint, Resolve},
     request_builder::RequestBuilder,
 };
@@ -50,10 +49,7 @@ impl<'a> Request<'a> {
     }
 }
 
-impl<'a, M> RequestBuilder<'a, M, Request<'a>>
-where
-    M: client::Inner,
-{
+impl<'a> RequestBuilder<'a, Request<'a>> {
     /// Only return transactions which occurred after the given `DateTime`
     pub fn since(mut self, datetime: DateTime<Utc>) -> Self {
         self.endpoint_ref_mut().form.pagination.since = Some(Since::Timestamp(datetime));
