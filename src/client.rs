@@ -1,7 +1,7 @@
 //! Monzo API clients
 
 use crate::{
-    endpoints::{accounts, balance, feed_items, pots, transactions, Endpoint},
+    endpoints::{accounts, balance, feed_items, pots, transactions, who_am_i, Endpoint},
     request_builder::RequestBuilder,
     Result,
 };
@@ -260,5 +260,12 @@ where
         transaction_id: &'a str,
     ) -> RequestBuilder<'a, M, transactions::Get> {
         RequestBuilder::new(&self.inner_client, transactions::Get::new(transaction_id))
+    }
+
+    /// Return information about the current session
+    pub async fn who_am_i(&self) -> Result<who_am_i::Response> {
+        RequestBuilder::new(&self.inner_client, who_am_i::Request)
+            .send()
+            .await
     }
 }

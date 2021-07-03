@@ -54,7 +54,7 @@ impl client::Inner for Quick {
             .request(endpoint.method(), endpoint.endpoint());
 
         if let Some(t) = access_token {
-            request = request.bearer_auth(t)
+            request = request.bearer_auth(t);
         }
 
         if let Some(query) = endpoint.query() {

@@ -7,6 +7,7 @@ pub(crate) mod feed_items;
 pub mod pots;
 pub mod transactions;
 mod utils;
+pub(crate) mod who_am_i;
 
 pub trait Endpoint: Sync {
     fn method(&self) -> http::Method;

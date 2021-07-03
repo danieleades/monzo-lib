@@ -1,7 +1,7 @@
 use reqwest::Response;
 
 use crate::{
-    client::{self, Inner},
+    client,
     endpoints::{Endpoint, Resolve},
     Error, Result,
 };
