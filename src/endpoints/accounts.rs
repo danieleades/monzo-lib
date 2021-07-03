@@ -47,9 +47,14 @@ pub struct Account {
 /// Struct representating an owner of a Monzo account
 #[derive(Deserialize, Debug, PartialEq, Eq, Hash)]
 pub struct Owner {
-    user_id: String,
-    preferred_name: String,
-    preferred_first_name: String,
+    /// The user ID of the owner
+    pub user_id: String,
+
+    /// The preferred name of the owner
+    pub preferred_name: String,
+
+    /// The preferred first name of the owner
+    pub preferred_first_name: String,
 }
 
 /// Types of monzo account

@@ -28,13 +28,17 @@ pub struct Transaction {
     /// Whether the transaction is pending, or complete
     pub amount_is_pending: bool,
 
-    can_add_to_tab: bool,
+    /// Whether the transaction can be added to a tab
+    pub can_add_to_tab: bool,
 
-    can_be_excluded_from_breakdown: bool,
+    /// Whether the transaction can be excluded from breakdown
+    pub can_be_excluded_from_breakdown: bool,
 
-    can_be_made_subscription: bool,
+    /// Whether the transaction can be made into a recurring subscription
+    pub can_be_made_subscription: bool,
 
-    can_split_the_bill: bool,
+    /// Whether the transaction can be split
+    pub can_split_the_bill: bool,
 
     /// The transaction category
     pub category: Category,
@@ -51,13 +55,15 @@ pub struct Transaction {
     /// The unique transaction ID
     pub id: String,
 
-    include_in_spending: bool,
+    /// Whether transaction is included in spending
+    pub include_in_spending: bool,
 
     /// This can be either the merchant ID, or an object containing the merchant
     /// details
     pub merchant: MerchantInfo,
 
-    metadata: HashMap<String, String>,
+    /// Any custom metadata which has been added to the transaction
+    pub metadata: HashMap<String, String>,
 
     /// User-added transaction notes
     pub notes: String,
@@ -151,27 +157,29 @@ pub enum MerchantInfo {
 
 /// Merchant details
 #[derive(Deserialize, Debug)]
+#[allow(missing_docs)]
 pub struct Merchant {
-    address: Address,
-    created: DateTime<Utc>,
-    group_id: String,
-    id: String,
-    logo: String,
-    emoji: String,
-    name: String,
-    category: Category,
+    pub address: Address,
+    pub created: DateTime<Utc>,
+    pub group_id: String,
+    pub id: String,
+    pub logo: String,
+    pub emoji: String,
+    pub name: String,
+    pub category: Category,
 }
 
 /// Address details
 #[derive(Deserialize, Debug)]
+#[allow(missing_docs)]
 pub struct Address {
-    address: String,
-    city: String,
-    country: String,
-    latitude: f32,
-    longitude: f32,
-    postcode: String,
-    region: String,
+    pub address: String,
+    pub city: String,
+    pub country: String,
+    pub latitude: f32,
+    pub longitude: f32,
+    pub postcode: String,
+    pub region: String,
 }
 
 #[derive(Serialize, Default, Debug)]

@@ -14,7 +14,7 @@ async fn main() -> monzo::Result<()> {
     for account in client.accounts().await? {
         let balance = client.balance(&account.id).await?;
 
-        println!("{}: {}", account.id, balance.balance());
+        println!("{}: {}", account.id, &balance.balance);
     }
 
     Ok(())
