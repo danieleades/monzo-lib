@@ -60,6 +60,10 @@ mod refresh {
         fn auth_required(&self) -> bool {
             false
         }
+
+        fn form(&self) -> Option<&dyn erased_serde::Serialize> {
+            Some(&self.form)
+        }
     }
 
     #[derive(Serialize)]
