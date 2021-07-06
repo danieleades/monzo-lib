@@ -82,8 +82,8 @@ mod list {
     pub struct Request;
 
     impl Endpoint for Request {
-        fn method(&self) -> http::Method {
-            http::Method::GET
+        fn method(&self) -> reqwest::Method {
+            reqwest::Method::GET
         }
 
         fn endpoint(&self) -> &str {

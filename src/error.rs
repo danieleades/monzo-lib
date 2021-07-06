@@ -1,4 +1,4 @@
-use http::StatusCode;
+use reqwest::StatusCode;
 
 /// Common error type for anything that can go wrong with this crate
 #[derive(Debug, thiserror::Error)]

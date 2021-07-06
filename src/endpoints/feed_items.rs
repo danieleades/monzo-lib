@@ -100,8 +100,8 @@ pub(crate) mod basic {
     }
 
     impl<'a> Endpoint for Request<'a> {
-        fn method(&self) -> http::Method {
-            http::Method::POST
+        fn method(&self) -> reqwest::Method {
+            reqwest::Method::POST
         }
 
         fn endpoint(&self) -> &str {

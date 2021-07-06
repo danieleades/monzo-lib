@@ -10,7 +10,7 @@ mod utils;
 pub(crate) mod who_am_i;
 
 pub trait Endpoint: Sync {
-    fn method(&self) -> http::Method;
+    fn method(&self) -> reqwest::Method;
     fn endpoint(&self) -> &str;
     fn query(&self) -> Option<&dyn ErasedSerialize> {
         None

@@ -7,8 +7,8 @@ pub struct Request<'a> {
 }
 
 impl<'a> Endpoint for Request<'a> {
-    fn method(&self) -> http::Method {
-        http::Method::PUT
+    fn method(&self) -> reqwest::Method {
+        reqwest::Method::PUT
     }
 
     fn endpoint(&self) -> &str {
