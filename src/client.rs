@@ -2,10 +2,10 @@
 
 use crate::{
     endpoints::{accounts, balance, feed_items, pots, transactions, who_am_i, Endpoint},
-    request_builder::RequestBuilder,
     Result,
 };
 use async_trait::async_trait;
+use serde::{de::DeserializeOwned, Deserialize};
 
 pub mod inner;
 
@@ -15,19 +15,7 @@ pub mod inner;
 pub trait Inner: Send + Sync + std::fmt::Debug {
     /// Construct end send an HTTP request using the provided Endpoint with
     /// bearer token authentication.
-    async fn execute(
-        &self,
-        endpoint: &dyn Endpoint,
-        access_token: Option<&str>,
-    ) -> reqwest::Result<reqwest::Response>;
-
-    /// Construct end send an HTTP request using the provided Endpoint.
-    async fn execute_authenticated(
-        &self,
-        endpoint: &dyn Endpoint,
-    ) -> reqwest::Result<reqwest::Response> {
-        self.execute(endpoint, Some(self.access_token())).await
-    }
+    async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response>;
 
     /// Return a reference to the current access token
     fn access_token(&self) -> &String;
@@ -77,9 +65,14 @@ where
     /// # Ok(())
     /// # }
     pub async fn accounts(&self) -> Result<Vec<accounts::Account>> {
-        RequestBuilder::new(&self.inner_client, accounts::List)
-            .send()
-            .await
+        #[derive(Deserialize)]
+        pub(crate) struct Response {
+            accounts: Vec<accounts::Account>,
+        }
+        let response: Response =
+            send_and_resolve_request(&self.inner_client, &accounts::List).await?;
+
+        Ok(response.accounts)
     }
 
     /// Return the balance of a given account
@@ -101,9 +94,7 @@ where
     /// # }
     /// ```
     pub async fn balance(&self, account_id: &str) -> Result<balance::Balance> {
-        RequestBuilder::new(&self.inner_client, balance::Get::new(account_id))
-            .send()
-            .await
+        send_and_resolve_request(&self.inner_client, &balance::Get::new(account_id)).await
     }
 
     /// Return a list of Pots
@@ -126,9 +117,15 @@ where
     /// # }
     /// ```
     pub async fn pots(&self, account_id: &str) -> Result<Vec<pots::Pot>> {
-        RequestBuilder::new(&self.inner_client, pots::List::new(account_id))
-            .send()
-            .await
+        #[derive(Deserialize)]
+        struct Response {
+            pots: Vec<pots::Pot>,
+        }
+
+        let response: Response =
+            send_and_resolve_request(&self.inner_client, &pots::List::new(account_id)).await?;
+
+        Ok(response.pots)
     }
 
     /// Post a basic item on the account feed.
@@ -159,11 +156,8 @@ where
         account_id: &'a str,
         title: &'a str,
         image_url: &'a str,
-    ) -> RequestBuilder<'a, feed_items::Basic<'a>> {
-        RequestBuilder::new(
-            &self.inner_client,
-            feed_items::Basic::new(account_id, title, image_url),
-        )
+    ) -> feed_items::basic::Request<'a> {
+        feed_items::basic::Request::new(&self.inner_client, account_id, title, image_url)
     }
 
     /// Deposit money into a pot
@@ -173,11 +167,10 @@ where
         source_account_id: &str,
         amount: u32,
     ) -> Result<pots::Pot> {
-        RequestBuilder::new(
+        send_and_resolve_request(
             &self.inner_client,
-            pots::Deposit::new(pot_id, source_account_id, amount),
+            &pots::Deposit::new(pot_id, source_account_id, amount),
         )
-        .send()
         .await
     }
 
@@ -188,11 +181,10 @@ where
         destination_account_id: &str,
         amount: u32,
     ) -> Result<pots::Pot> {
-        RequestBuilder::new(
+        send_and_resolve_request(
             &self.inner_client,
-            pots::Withdraw::new(pot_id, destination_account_id, amount),
+            &pots::Withdraw::new(pot_id, destination_account_id, amount),
         )
-        .send()
         .await
     }
 
@@ -227,11 +219,8 @@ where
     /// *The Monzo API will only return transactions from more than 90 days ago
     /// in the first 5 minutes after authorising the Client. You can avoid this
     /// by using the 'since' method.*
-    pub fn transactions<'a>(
-        &'a self,
-        account_id: &'a str,
-    ) -> RequestBuilder<'a, transactions::List<'a>> {
-        RequestBuilder::new(&self.inner_client, transactions::List::new(account_id))
+    pub fn transactions<'a>(&'a self, account_id: &'a str) -> transactions::List<'a> {
+        transactions::List::new(&self.inner_client, account_id)
     }
 
     /// Retrieve a transaction by transaction id
@@ -255,17 +244,27 @@ where
     /// # Note
     /// *The Monzo API will only return transactions from more than 90 days ago
     /// in the first 5 minutes after authorising the Client.*
-    pub fn transaction<'a>(
-        &'a self,
-        transaction_id: &'a str,
-    ) -> RequestBuilder<'a, transactions::Get> {
-        RequestBuilder::new(&self.inner_client, transactions::Get::new(transaction_id))
+    pub fn transaction<'a>(&'a self, transaction_id: &'a str) -> transactions::Get<'a> {
+        transactions::Get::new(&self.inner_client, transaction_id)
     }
 
     /// Return information about the current session
     pub async fn who_am_i(&self) -> Result<who_am_i::Response> {
-        RequestBuilder::new(&self.inner_client, who_am_i::Request)
-            .send()
-            .await
+        send_and_resolve_request(&self.inner_client, &who_am_i::Request).await
+    }
+}
+
+pub async fn send_and_resolve_request<R>(client: &dyn Inner, endpoint: &dyn Endpoint) -> Result<R>
+where
+    R: DeserializeOwned,
+{
+    let response = client.execute(endpoint).await?;
+
+    let status = response.status();
+
+    if status.is_success() {
+        Ok(serde_json::from_slice(&response.bytes().await?)?)
+    } else {
+        Err(status.into())
     }
 }

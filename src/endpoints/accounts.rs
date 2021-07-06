@@ -58,6 +58,7 @@ pub struct Owner {
 }
 
 /// Types of monzo account
+#[allow(clippy::enum_variant_names)]
 #[derive(Deserialize, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
@@ -75,9 +76,7 @@ pub enum Type {
 pub use list::Request as List;
 mod list {
 
-    use super::Account;
-    use crate::endpoints::{Endpoint, Resolve};
-    use serde::Deserialize;
+    use crate::endpoints::Endpoint;
 
     /// An object representing a request to the Monzo API for a list of accounts
     pub struct Request;
@@ -90,114 +89,5 @@ mod list {
         fn endpoint(&self) -> &str {
             "https://api.monzo.com/accounts"
         }
-    }
-
-    impl Resolve for Request {
-        type Response = Vec<Account>;
-
-        fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-            /// A struct representing a collection of accounts
-            #[derive(Deserialize)]
-            pub(crate) struct Accounts {
-                accounts: Vec<Account>,
-            }
-            let accounts: Accounts = serde_json::from_slice(bytes)?;
-            Ok(accounts.accounts)
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::endpoints::Resolve;
-
-    #[test]
-    fn deserialise() {
-        let bytes = r#"
-        {
-            "accounts": [
-                {
-                    "id": "acc_XXXX",
-                    "closed": false,
-                    "created": "2019-06-12T17:44:35.266Z",
-                    "description": "user_XXXX",
-                    "type": "uk_retail",
-                    "currency": "GBP",
-                    "country_code": "GB",
-                    "owners": [
-                        {
-                            "user_id": "user_XXXX",
-                            "preferred_name": "Daniel Eades",
-                            "preferred_first_name": "Daniel"
-                        }
-                    ],
-                    "account_number": "12345678",
-                    "sort_code": "040004",
-                    "payment_details": {
-                        "locale_uk": {
-                            "account_number": "12345678",
-                            "sort_code": "040004"
-                        }
-                    }
-                },
-                {
-                    "id": "acc_XXXX",
-                    "closed": false,
-                    "created": "2019-08-01T13:46:10.041Z",
-                    "description": "Joint account between user_XXXX and user_YYYY",
-                    "type": "uk_retail_joint",
-                    "currency": "GBP",
-                    "country_code": "GB",
-                    "owners": [
-                        {
-                            "user_id": "user_XXXX",
-                            "preferred_name": "Daniel Eades",
-                            "preferred_first_name": "Daniel"
-                        },
-                        {
-                            "user_id": "user_YYYY",
-                            "preferred_name": "Holly Johnstone",
-                            "preferred_first_name": "Holly"
-                        }
-                    ],
-                    "account_number": "87654321",
-                    "sort_code": "040004",
-                    "payment_details": {
-                        "locale_uk": {
-                            "account_number": "87654321",
-                            "sort_code": "040004"
-                        }
-                    }
-                },
-                {
-                    "id": "acc_XXXX",
-                    "closed": false,
-                    "created": "2019-06-12T17:44:35.266Z",
-                    "description": "Business Name",
-                    "type": "uk_business",
-                    "currency": "GBP",
-                    "country_code": "GB",
-                    "owners": [
-                        {
-                            "user_id": "user_XXXX",
-                            "preferred_name": "Daniel Eades",
-                            "preferred_first_name": "Daniel"
-                        }
-                    ],
-                    "business_id": "business_XXXX",
-                    "account_number": "12345678",
-                    "sort_code": "040004",
-                    "payment_details": {
-                        "locale_uk": {
-                            "account_number": "12345678",
-                            "sort_code": "040004"
-                        }
-                    }
-                }
-            ]
-        }"#
-        .as_bytes();
-
-        super::list::Request.resolve(&bytes).unwrap();
     }
 }

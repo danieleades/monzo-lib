@@ -1,5 +1,4 @@
-use super::Pot;
-use crate::endpoints::{Endpoint, Resolve};
+use crate::endpoints::Endpoint;
 use serde::Serialize;
 
 pub struct Request<'a> {
@@ -18,14 +17,6 @@ impl<'a> Endpoint for Request<'a> {
 
     fn form(&self) -> Option<&dyn erased_serde::Serialize> {
         Some(&self.form)
-    }
-}
-
-impl<'a> Resolve for Request<'a> {
-    type Response = Pot;
-
-    fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-        serde_json::from_slice(bytes)
     }
 }
 

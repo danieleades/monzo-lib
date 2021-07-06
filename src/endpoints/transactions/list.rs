@@ -1,7 +1,8 @@
 use super::{Pagination, Since, Transaction};
 use crate::{
-    endpoints::{Endpoint, Resolve},
-    request_builder::RequestBuilder,
+    client::{self, send_and_resolve_request},
+    endpoints::Endpoint,
+    Result,
 };
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -11,6 +12,7 @@ use serde::{Deserialize, Serialize};
 /// Use the builder-style methods to set optional fields on the request
 #[derive(Debug)]
 pub struct Request<'a> {
+    client: &'a dyn client::Inner,
     form: Form<'a>,
 }
 
@@ -28,31 +30,20 @@ impl<'a> Endpoint for Request<'a> {
     }
 }
 
-impl<'a> Resolve for Request<'a> {
-    type Response = Vec<Transaction>;
-
-    fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-        let response: Response = serde_json::from_slice(bytes)?;
-        Ok(response.transactions)
-    }
-}
-
 impl<'a> Request<'a> {
-    pub(crate) fn new(account_id: &'a str) -> Self {
+    pub(crate) fn new(client: &'a dyn client::Inner, account_id: &'a str) -> Self {
         let form = Form {
             account_id,
             pagination: Pagination::default(),
             expand_merchant: None,
         };
 
-        Self { form }
+        Self { client, form }
     }
-}
 
-impl<'a> RequestBuilder<'a, Request<'a>> {
     /// Only return transactions which occurred after the given `DateTime`
     pub fn since(mut self, datetime: DateTime<Utc>) -> Self {
-        self.endpoint_ref_mut().form.pagination.since = Some(Since::Timestamp(datetime));
+        self.form.pagination.since = Some(Since::Timestamp(datetime));
         self
     }
 
@@ -60,27 +51,38 @@ impl<'a> RequestBuilder<'a, Request<'a>> {
     ///
     /// This can be used for paginating.
     pub fn since_transaction(mut self, transaction_id: String) -> Self {
-        self.endpoint_ref_mut().form.pagination.since = Some(Since::ObjectId(transaction_id));
+        self.form.pagination.since = Some(Since::ObjectId(transaction_id));
         self
     }
 
     /// Only return transactions which occurred before a given `DateTime`
     pub fn before(mut self, datetime: DateTime<Utc>) -> Self {
-        self.endpoint_ref_mut().form.pagination.before = Some(datetime);
+        self.form.pagination.before = Some(datetime);
         self
     }
 
     /// Set the maximum number of transactions to be returned
     pub fn limit(mut self, limit: u16) -> Self {
-        self.endpoint_ref_mut().form.pagination.limit = Some(limit);
+        self.form.pagination.limit = Some(limit);
         self
     }
 
     /// Optionally expand the merchant field from an id string into a struct
     /// container merchant details
     pub fn expand_merchant(mut self) -> Self {
-        self.endpoint_ref_mut().form.expand_merchant = Some("merchant");
+        self.form.expand_merchant = Some("merchant");
         self
+    }
+
+    pub async fn send(self) -> Result<Vec<Transaction>> {
+        #[derive(Deserialize)]
+        struct Response {
+            transactions: Vec<Transaction>,
+        }
+
+        let response: Response = send_and_resolve_request(self.client, &self).await?;
+
+        Ok(response.transactions)
     }
 }
 

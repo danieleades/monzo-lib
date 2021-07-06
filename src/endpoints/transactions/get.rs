@@ -1,19 +1,21 @@
 use super::Transaction;
 use crate::{
-    endpoints::{Endpoint, Resolve},
-    request_builder::RequestBuilder,
+    client::{self, send_and_resolve_request},
+    endpoints::Endpoint,
+    Result,
 };
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
 /// Use the builder-style methods to set optional fields on the request
 #[derive(Debug)]
-pub struct Request {
+pub struct Request<'a> {
+    client: &'a dyn client::Inner,
     endpoint: String,
     expand_merchant: bool,
 }
 
-impl Endpoint for Request {
+impl<'a> Endpoint for Request<'a> {
     fn method(&self) -> http::Method {
         http::Method::GET
     }
@@ -31,29 +33,24 @@ impl Endpoint for Request {
     }
 }
 
-impl Resolve for Request {
-    type Response = Transaction;
-
-    fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-        serde_json::from_slice(bytes)
-    }
-}
-
-impl Request {
-    pub(crate) fn new(transaction_id: &str) -> Self {
+impl<'a> Request<'a> {
+    pub(crate) fn new(client: &'a dyn client::Inner, transaction_id: &str) -> Self {
         let endpoint = format!("https://api.monzo.com/transactions/{}", transaction_id);
         Self {
+            client,
             endpoint,
             expand_merchant: false,
         }
     }
-}
 
-impl<'a> RequestBuilder<'a, Request> {
     /// Optionally expand the merchant field from an id string into a struct
     /// container merchant details
     pub fn expand_merchant(mut self) -> Self {
-        self.endpoint_ref_mut().expand_merchant = true;
+        self.expand_merchant = true;
         self
+    }
+
+    pub async fn send(self) -> Result<Transaction> {
+        send_and_resolve_request(self.client, &self).await
     }
 }

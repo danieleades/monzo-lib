@@ -6,7 +6,7 @@
 #![warn(clippy::pedantic, missing_docs)]
 #![allow(clippy::missing_errors_doc)]
 
-//! This crate is a collecion of Monzo clients in pure rust.
+//! A Monzo client in pure rust.
 //!
 //! It's ergonomic, strongly-typed, and asynchronous.
 //!
@@ -18,7 +18,7 @@
 //! use monzo::Client;
 //!
 //! #[tokio::main]
-//! async fn main() -> Result<(), Box<dyn std::error::Error>> {
+//! async fn main() -> monzo::Result<()> {
 //!     // You can create a simple monzo client using only an access token
 //!     let quick_client = Client::new("ACCESS_TOKEN");
 //!
@@ -47,14 +47,14 @@ mod client;
 #[doc(inline)]
 pub use client::Client;
 mod endpoints;
-mod request_builder;
 pub use endpoints::{
-    accounts::{Account, Owner, Type as AccountType},
+    accounts::{Account, Owner},
     balance::Balance,
+    feed_items,
     pots::Pot,
     transactions,
+    transactions::Transaction,
 };
-pub use request_builder::RequestBuilder;
 mod error;
 pub use client::inner as inner_client;
 pub use error::Error;

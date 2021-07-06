@@ -2,12 +2,9 @@
 
 pub use basic::Request as Basic;
 
-mod basic {
-    use crate::{
-        endpoints::{Endpoint, Resolve},
-        request_builder::RequestBuilder,
-    };
-    use serde::{Deserialize, Serialize};
+pub(crate) mod basic {
+    use crate::{client, client::send_and_resolve_request, endpoints::Endpoint, Result};
+    use serde::Serialize;
 
     /// A request to create a new basic feed item.
     ///
@@ -16,8 +13,90 @@ mod basic {
     ///
     /// Use the builder methods to set optional fields
     #[derive(Debug)]
+    #[must_use]
     pub struct Request<'a> {
+        client: &'a dyn client::Inner,
         payload: Payload<'a>,
+    }
+
+    impl<'a> Request<'a> {
+        pub(crate) fn new(
+            client: &'a dyn client::Inner,
+            account_id: &'a str,
+            title: &'a str,
+            image_url: &'a str,
+        ) -> Self {
+            let params = Params {
+                title,
+                image_url,
+                background_color: None,
+                body_color: None,
+                title_color: None,
+                body: None,
+            };
+
+            let payload = Payload {
+                account_id,
+                url: None,
+                r#type: "basic",
+                params,
+            };
+
+            Self { client, payload }
+        }
+
+        /// Set the url of the feed item.
+        ///
+        /// This is the url the user will be redirected to after
+        /// tapping on the feed item
+        pub fn url(mut self, url: &'a str) -> Self {
+            self.payload.url = Some(url);
+            self
+        }
+
+        /// Set the title of the feed item.
+        pub fn title(mut self, title: &'a str) -> Self {
+            self.payload.params.title = title;
+            self
+        }
+
+        /// Set the image of the feed item.
+        ///
+        /// # Note
+        /// *This doesn't currently seem to do anything*
+        pub fn image_url(mut self, image_url: &'a str) -> Self {
+            self.payload.params.image_url = image_url;
+            self
+        }
+
+        /// Set the background colour of the feed item
+        pub fn background_color(mut self, background_color: &'a str) -> Self {
+            self.payload.params.background_color = Some(background_color);
+            self
+        }
+
+        /// Set the body colour of the feed item
+        pub fn body_color(mut self, body_color: &'a str) -> Self {
+            self.payload.params.body_color = Some(body_color);
+            self
+        }
+
+        /// Set the title colour of the feed item
+        pub fn title_color(mut self, title_color: &'a str) -> Self {
+            self.payload.params.title_color = Some(title_color);
+            self
+        }
+
+        /// Set the body text of the feed item
+        pub fn body(mut self, body: &'a str) -> Self {
+            self.payload.params.body = Some(body);
+            self
+        }
+
+        /// Consume and send the [`Request`].
+        pub async fn send(self) -> Result<()> {
+            send_and_resolve_request(self.client, &self).await
+        }
     }
 
     impl<'a> Endpoint for Request<'a> {
@@ -31,14 +110,6 @@ mod basic {
 
         fn json(&self) -> Option<&dyn erased_serde::Serialize> {
             Some(&self.payload)
-        }
-    }
-
-    impl<'a> Resolve for Request<'a> {
-        type Response = ();
-
-        fn resolve(&self, _bytes: &[u8]) -> serde_json::Result<Self::Response> {
-            Ok(())
         }
     }
 
@@ -67,80 +138,8 @@ mod basic {
         body: Option<&'a str>,
     }
 
-    impl<'a> Request<'a> {
-        pub(crate) fn new(account_id: &'a str, title: &'a str, image_url: &'a str) -> Self {
-            let params = Params {
-                title,
-                image_url,
-                background_color: None,
-                body_color: None,
-                title_color: None,
-                body: None,
-            };
-
-            let payload = Payload {
-                account_id,
-                url: None,
-                r#type: "basic",
-                params,
-            };
-
-            Self { payload }
-        }
-    }
-
-    impl<'a> RequestBuilder<'a, Request<'a>> {
-        /// Set the url of the feed item.
-        ///
-        /// This is the url the user will be redirected to after
-        /// tapping on the feed item
-        pub fn url(mut self, url: &'a str) -> Self {
-            self.endpoint_ref_mut().payload.url = Some(url);
-            self
-        }
-
-        /// Set the title of the feed item.
-        pub fn title(mut self, title: &'a str) -> Self {
-            self.endpoint_ref_mut().payload.params.title = title;
-            self
-        }
-
-        /// Set the image of the feed item.
-        ///
-        /// # Note
-        /// *This doesn't currently seem to do anything*
-        pub fn image_url(mut self, image_url: &'a str) -> Self {
-            self.endpoint_ref_mut().payload.params.image_url = image_url;
-            self
-        }
-
-        /// Set the background colour of the feed item
-        pub fn background_color(mut self, background_color: &'a str) -> Self {
-            self.endpoint_ref_mut().payload.params.background_color = Some(background_color);
-            self
-        }
-
-        /// Set the body colour of the feed item
-        pub fn body_color(mut self, body_color: &'a str) -> Self {
-            self.endpoint_ref_mut().payload.params.body_color = Some(body_color);
-            self
-        }
-
-        /// Set the title colour of the feed item
-        pub fn title_color(mut self, title_color: &'a str) -> Self {
-            self.endpoint_ref_mut().payload.params.title_color = Some(title_color);
-            self
-        }
-
-        /// Set the body text of the feed item
-        pub fn body(mut self, body: &'a str) -> Self {
-            self.endpoint_ref_mut().payload.params.body = Some(body);
-            self
-        }
-    }
-
     #[derive(Debug, Serialize)]
-    pub struct Payload<'a> {
+    struct Payload<'a> {
         // required for all feed item requests
         account_id: &'a str,
         r#type: &'static str,
@@ -150,12 +149,5 @@ mod basic {
 
         #[serde(flatten)]
         params: Params<'a>,
-    }
-
-    #[derive(Deserialize)]
-    pub(crate) struct Response {}
-
-    impl From<Response> for () {
-        fn from(_response: Response) -> Self {}
     }
 }

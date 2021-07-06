@@ -1,8 +1,7 @@
 use crate::{
     client,
-    client::Client,
+    client::{send_and_resolve_request, Client},
     endpoints::{auth, Endpoint},
-    request_builder::RequestBuilder,
     Result,
 };
 use async_trait::async_trait;
@@ -58,11 +57,10 @@ impl Client<Refreshable> {
 
     /// Hit the Monzo auth endpoint and request new access and refresh tokens
     async fn get_refresh_tokens(&self) -> Result<auth::RefreshResponse> {
-        RequestBuilder::new(
+        send_and_resolve_request(
             &self.inner_client,
-            auth::Refresh::new(self.client_id(), self.client_secret(), self.refresh_token()),
+            &auth::Refresh::new(self.client_id(), self.client_secret(), self.refresh_token()),
         )
-        .send_no_auth()
         .await
     }
 
@@ -79,12 +77,8 @@ impl Client<Refreshable> {
 
 #[async_trait]
 impl client::Inner for Refreshable {
-    async fn execute(
-        &self,
-        endpoint: &dyn Endpoint,
-        access_token: Option<&str>,
-    ) -> reqwest::Result<reqwest::Response> {
-        self.quick_client.execute(endpoint, access_token).await
+    async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response> {
+        self.quick_client.execute(endpoint).await
     }
 
     fn access_token(&self) -> &String {

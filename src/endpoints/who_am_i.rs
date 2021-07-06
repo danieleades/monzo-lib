@@ -1,4 +1,4 @@
-use super::{Endpoint, Resolve};
+use super::Endpoint;
 use serde::Deserialize;
 
 pub struct Request;
@@ -10,14 +10,6 @@ impl Endpoint for Request {
 
     fn endpoint(&self) -> &str {
         "https://api.monzo.com/ping/whoami"
-    }
-}
-
-impl Resolve for Request {
-    type Response = Response;
-
-    fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-        serde_json::from_slice(bytes)
     }
 }
 

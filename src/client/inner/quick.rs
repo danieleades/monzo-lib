@@ -44,17 +44,13 @@ impl Client<Quick> {
 
 #[async_trait]
 impl client::Inner for Quick {
-    async fn execute(
-        &self,
-        endpoint: &dyn Endpoint,
-        access_token: Option<&str>,
-    ) -> reqwest::Result<reqwest::Response> {
+    async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response> {
         let mut request = self
             .http_client
             .request(endpoint.method(), endpoint.endpoint());
 
-        if let Some(t) = access_token {
-            request = request.bearer_auth(t);
+        if endpoint.auth_required() {
+            request = request.bearer_auth(&self.access_token);
         }
 
         if let Some(query) = endpoint.query() {

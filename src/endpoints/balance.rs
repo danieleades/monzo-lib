@@ -23,8 +23,7 @@ pub struct Balance {
 
 pub(crate) use get::Request as Get;
 mod get {
-    use super::Balance;
-    use crate::endpoints::{Endpoint, Resolve};
+    use crate::endpoints::Endpoint;
     use serde::Serialize;
 
     /// An object representing a request to the Monzo API for a list of accounts
@@ -56,13 +55,5 @@ mod get {
     #[derive(Debug, Serialize)]
     struct Query<'a> {
         account_id: &'a str,
-    }
-
-    impl<'a> Resolve for Request<'a> {
-        type Response = Balance;
-
-        fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-            serde_json::from_slice(bytes)
-        }
     }
 }

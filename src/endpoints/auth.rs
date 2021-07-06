@@ -4,7 +4,7 @@ pub use refresh::{Request as Refresh, Response as RefreshResponse};
 
 mod refresh {
 
-    use crate::endpoints::{Endpoint, Resolve};
+    use crate::endpoints::Endpoint;
     use serde::{Deserialize, Serialize};
 
     /// The response received from the Monzo API after a successful request to
@@ -68,13 +68,9 @@ mod refresh {
         fn json(&self) -> Option<&dyn erased_serde::Serialize> {
             None
         }
-    }
 
-    impl<'a> Resolve for Request<'a> {
-        type Response = Response;
-
-        fn resolve(&self, bytes: &[u8]) -> serde_json::Result<Self::Response> {
-            serde_json::from_slice(bytes)
+        fn auth_required(&self) -> bool {
+            false
         }
     }
 
