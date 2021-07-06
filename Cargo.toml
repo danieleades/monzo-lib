@@ -6,6 +6,7 @@ edition = "2018"
 description = "async Monzo client in pure rust."
 readme = "README.md"
 keywords = ["monzo", "mondo", "async", "client"]
+categories = ["api-bindings", "asynchronous"]
 homepage = "https://github.com/danieleades/monzo-lib"
 repository = "https://github.com/danieleades/monzo-lib"
 license = "Apache-2.0"
