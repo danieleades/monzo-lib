@@ -57,18 +57,6 @@ mod refresh {
             "https://api.monzo.com/oauth2/token"
         }
 
-        fn query(&self) -> Option<&dyn erased_serde::Serialize> {
-            None
-        }
-
-        fn form(&self) -> Option<&dyn erased_serde::Serialize> {
-            Some(&self.form)
-        }
-
-        fn json(&self) -> Option<&dyn erased_serde::Serialize> {
-            None
-        }
-
         fn auth_required(&self) -> bool {
             false
         }
