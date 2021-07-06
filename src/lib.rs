@@ -1,7 +1,8 @@
 #![deny(
     clippy::all,
     missing_debug_implementations,
-    missing_copy_implementations
+    missing_copy_implementations,
+    clippy::cargo
 )]
 #![warn(clippy::pedantic, missing_docs)]
 #![allow(clippy::missing_errors_doc)]
