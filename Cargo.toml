@@ -1,6 +1,6 @@
 [package]
 name = "monzo-lib"
-version = "0.3.0-alpha"
+version = "0.3.0"
 authors = ["Daniel Eades <danieleades@hotmail.com>"]
 edition = "2018"
 description = "async Monzo client in pure rust."
