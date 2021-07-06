@@ -1,5 +1,6 @@
 //! Retrieve and manipulate transactions
 
+use crate::endpoints::utils::empty_string_as_none;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -11,53 +12,81 @@ pub(crate) use get::Request as Get;
 
 /// A Monzo transaction
 #[allow(clippy::struct_excessive_bools)]
+#[non_exhaustive]
 #[derive(Deserialize, Debug)]
 pub struct Transaction {
-    account_balance: i64,
+    /// The account balance after the transation
+    pub account_balance: i64,
 
-    account_id: String,
+    /// The unique ID of the account associated with the transaction
+    pub account_id: String,
 
-    amount: i64,
+    /// The amount of the transaction, in the smallest unit of currency (ie.
+    /// 'pence' or 'cents')
+    pub amount: i64,
 
-    amount_is_pending: bool,
+    /// Whether the transaction is pending, or complete
+    pub amount_is_pending: bool,
 
-    can_add_to_tab: bool,
+    /// Whether the transaction can be added to a tab
+    pub can_add_to_tab: bool,
 
-    can_be_excluded_from_breakdown: bool,
+    /// Whether the transaction can be excluded from breakdown
+    pub can_be_excluded_from_breakdown: bool,
 
-    can_be_made_subscription: bool,
+    /// Whether the transaction can be made into a recurring subscription
+    pub can_be_made_subscription: bool,
 
-    can_split_the_bill: bool,
+    /// Whether the transaction can be split
+    pub can_split_the_bill: bool,
 
-    category: Category,
+    /// The transaction category
+    pub category: Category,
 
-    created: DateTime<Utc>,
+    /// The timestamp when the transaction was created
+    pub created: DateTime<Utc>,
 
-    currency: String,
+    /// The three-letter currency string for the transaction
+    pub currency: String,
 
-    description: String,
+    /// The transaction description
+    pub description: String,
 
-    id: String,
+    /// The unique transaction ID
+    pub id: String,
 
-    include_in_spending: bool,
+    /// Whether transaction is included in spending
+    pub include_in_spending: bool,
 
-    merchant: Option<MerchantInfo>,
+    /// This can be either the merchant ID, or an object containing the merchant
+    /// details
+    pub merchant: MerchantInfo,
 
-    metadata: HashMap<String, String>,
+    /// Any custom metadata which has been added to the transaction
+    pub metadata: HashMap<String, String>,
 
-    notes: String,
+    /// User-added transaction notes
+    pub notes: String,
 
-    decline_reason: Option<DeclineReason>,
+    /// If the transaction was declined, this enum will encode the reason
+    pub decline_reason: Option<DeclineReason>,
 
-    is_load: bool,
+    /// Top-ups to an account are represented as transactions with a positive
+    /// amount and is_load = true. Other transactions such as refunds, reversals
+    /// or chargebacks may have a positive amount but is_load = false
+    pub is_load: bool,
 
+    /// The timestamp at wich the transaction was settled
+    ///
+    /// This is `None` if the transaction is authorised, but not yet complete.
     #[serde(deserialize_with = "empty_string_as_none")]
-    settled: Option<DateTime<Utc>>,
+    pub settled: Option<DateTime<Utc>>,
 }
 
 /// The set of reasons for which a monzo transaction may be declined
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[non_exhaustive]
 pub enum DeclineReason {
     /// Not enough funds in account to complete transaction
     InsufficientFunds,
@@ -77,7 +106,7 @@ pub enum DeclineReason {
 
 /// The set of categories by which Monzo transactions and merchants can be
 /// categorised
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, Copy)]
 #[non_exhaustive]
 #[serde(rename_all = "snake_case")]
 pub enum Category {
@@ -128,46 +157,32 @@ pub enum MerchantInfo {
 
 /// Merchant details
 #[derive(Deserialize, Debug)]
+#[allow(missing_docs)]
 pub struct Merchant {
-    address: Address,
-    created: DateTime<Utc>,
-    group_id: String,
-    id: String,
-    logo: String,
-    emoji: String,
-    name: String,
-    category: Category,
+    pub address: Address,
+    pub created: DateTime<Utc>,
+    pub group_id: String,
+    pub id: String,
+    pub logo: String,
+    pub emoji: String,
+    pub name: String,
+    pub category: Category,
 }
 
 /// Address details
 #[derive(Deserialize, Debug)]
+#[allow(missing_docs)]
 pub struct Address {
-    address: String,
-    city: String,
-    country: String,
-    latitude: f32,
-    longitude: f32,
-    postcode: String,
-    region: String,
+    pub address: String,
+    pub city: String,
+    pub country: String,
+    pub latitude: f32,
+    pub longitude: f32,
+    pub postcode: String,
+    pub region: String,
 }
 
-use serde::de::IntoDeserializer;
-
-// see https://github.com/serde-rs/serde/issues/1425#issuecomment-439729881
-fn empty_string_as_none<'de, D, T>(de: D) -> Result<Option<T>, D::Error>
-where
-    D: serde::Deserializer<'de>,
-    T: serde::Deserialize<'de>,
-{
-    let opt = Option::<String>::deserialize(de)?;
-    let opt = opt.as_deref();
-    match opt {
-        None | Some("") => Ok(None),
-        Some(s) => T::deserialize(s.into_deserializer()).map(Some),
-    }
-}
-
-#[derive(Serialize, Default)]
+#[derive(Serialize, Default, Debug)]
 struct Pagination {
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u16>,
@@ -181,7 +196,7 @@ struct Pagination {
 
 /// The 'since' paramater of a pagination request can be either a timestamp or
 /// an object id
-#[derive(Serialize)]
+#[derive(Debug, Serialize, Clone)]
 #[serde(untagged)]
 pub enum Since {
     /// A timestamp

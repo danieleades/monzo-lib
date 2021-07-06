@@ -15,7 +15,7 @@ In order to use this client, you will first need to get an access token and/or r
 use monzo::{Client, Result};
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // You can create a simple monzo client using only an access token
     let quick_client = Client::quick("ACCESS_TOKEN");

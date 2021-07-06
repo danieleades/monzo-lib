@@ -4,8 +4,7 @@ pub use refresh::{Request as Refresh, Response as RefreshResponse};
 
 mod refresh {
 
-    use crate::{endpoints::handle_response, Result};
-    use reqwest::Client as HttpClient;
+    use crate::endpoints::Endpoint;
     use serde::{Deserialize, Serialize};
 
     /// The response received from the Monzo API after a successful request to
@@ -34,52 +33,55 @@ mod refresh {
     }
 
     /// A request for new authentication tokens.
-    pub struct Request {
-        reqwest_builder: reqwest::RequestBuilder,
+    pub struct Request<'a> {
+        form: Form<'a>,
+    }
+
+    impl<'a> Request<'a> {
+        pub(crate) fn new(
+            client_id: &'a str,
+            client_secret: &'a str,
+            refresh_token: &'a str,
+        ) -> Self {
+            let form = Form::new(client_id, client_secret, refresh_token);
+            Self { form }
+        }
+    }
+
+    impl<'a> Endpoint for Request<'a> {
+        fn method(&self) -> reqwest::Method {
+            reqwest::Method::POST
+        }
+
+        fn endpoint(&self) -> &str {
+            "https://api.monzo.com/oauth2/token"
+        }
+
+        fn auth_required(&self) -> bool {
+            false
+        }
+
+        fn form(&self) -> Option<&dyn erased_serde::Serialize> {
+            Some(&self.form)
+        }
     }
 
     #[derive(Serialize)]
-    struct Payload<'a> {
+    struct Form<'a> {
         grant_type: &'static str,
         client_id: &'a str,
         client_secret: &'a str,
         refresh_token: &'a str,
     }
 
-    impl<'a> Payload<'a> {
+    impl<'a> Form<'a> {
         fn new(client_id: &'a str, client_secret: &'a str, refresh_token: &'a str) -> Self {
-            Payload {
+            Self {
                 grant_type: "refresh_token",
                 client_id,
                 client_secret,
                 refresh_token,
             }
-        }
-    }
-
-    impl Request {
-        pub(crate) fn new(
-            http_client: &HttpClient,
-            client_id: &str,
-            client_secret: &str,
-            refresh_token: &str,
-        ) -> Self {
-            let payload = Payload::new(client_id, client_secret, refresh_token);
-
-            let reqwest_builder = http_client
-                .post("https://api.monzo.com/oauth2/token")
-                .form(&payload);
-
-            Self { reqwest_builder }
-        }
-
-        /// Send the response to the Monzo server.
-        ///
-        /// This method consumes the request and produces a future which will
-        /// resolve to a `[RefreshResponse]`. This method is effectively an
-        /// alias for the `into_future` method.
-        pub async fn send(self) -> Result<Response> {
-            handle_response(self.reqwest_builder).await
         }
     }
 }

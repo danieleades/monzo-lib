@@ -2,9 +2,9 @@
 
 pub use basic::Request as Basic;
 
-mod basic {
-    use crate::{endpoints::handle_response, Result};
-    use serde::{Deserialize, Serialize};
+pub(crate) mod basic {
+    use crate::{client, client::send_and_resolve_request, endpoints::Endpoint, Result};
+    use serde::Serialize;
 
     /// A request to create a new basic feed item.
     ///
@@ -12,48 +12,20 @@ mod basic {
     /// of feed item which is supported
     ///
     /// Use the builder methods to set optional fields
+    #[derive(Debug)]
+    #[must_use]
     pub struct Request<'a> {
-        reqwest_builder: reqwest::RequestBuilder,
+        client: &'a dyn client::Inner,
         payload: Payload<'a>,
-    }
-
-    #[derive(Debug, Serialize)]
-    struct Params<'a> {
-        #[serde(rename = "params[title]")]
-        title: &'a str,
-
-        #[serde(rename = "params[image_url]")]
-        image_url: &'a str,
-
-        #[serde(rename = "params[background_color]")]
-        #[serde(skip_serializing_if = "Option::is_none")]
-        background_color: Option<&'a str>,
-
-        #[serde(rename = "params[body_color]")]
-        #[serde(skip_serializing_if = "Option::is_none")]
-        body_color: Option<&'a str>,
-
-        #[serde(rename = "params[title_color]")]
-        #[serde(skip_serializing_if = "Option::is_none")]
-        title_color: Option<&'a str>,
-
-        #[serde(rename = "params[body]")]
-        #[serde(skip_serializing_if = "Option::is_none")]
-        body: Option<&'a str>,
     }
 
     impl<'a> Request<'a> {
         pub(crate) fn new(
-            http_client: &reqwest::Client,
-            access_token: impl AsRef<str>,
+            client: &'a dyn client::Inner,
             account_id: &'a str,
             title: &'a str,
             image_url: &'a str,
         ) -> Self {
-            let reqwest_builder = http_client
-                .post("https://api.monzo.com/feed")
-                .bearer_auth(access_token.as_ref());
-
             let params = Params {
                 title,
                 image_url,
@@ -70,10 +42,7 @@ mod basic {
                 params,
             };
 
-            Self {
-                reqwest_builder,
-                payload,
-            }
+            Self { client, payload }
         }
 
         /// Set the url of the feed item.
@@ -124,16 +93,53 @@ mod basic {
             self
         }
 
-        /// Consume the request and return a future which will resolve when the
-        /// feed item is posted
+        /// Consume and send the [`Request`].
         pub async fn send(self) -> Result<()> {
-            let Response {} = handle_response(self.reqwest_builder.form(&self.payload)).await?;
-            Ok(())
+            send_and_resolve_request(self.client, &self).await
+        }
+    }
+
+    impl<'a> Endpoint for Request<'a> {
+        fn method(&self) -> reqwest::Method {
+            reqwest::Method::POST
+        }
+
+        fn endpoint(&self) -> &str {
+            "https://api.monzo.com/feed"
+        }
+
+        fn json(&self) -> Option<&dyn erased_serde::Serialize> {
+            Some(&self.payload)
         }
     }
 
     #[derive(Debug, Serialize)]
-    pub struct Payload<'a> {
+    struct Params<'a> {
+        #[serde(rename = "params[title]")]
+        title: &'a str,
+
+        #[serde(rename = "params[image_url]")]
+        image_url: &'a str,
+
+        #[serde(rename = "params[background_color]")]
+        #[serde(skip_serializing_if = "Option::is_none")]
+        background_color: Option<&'a str>,
+
+        #[serde(rename = "params[body_color]")]
+        #[serde(skip_serializing_if = "Option::is_none")]
+        body_color: Option<&'a str>,
+
+        #[serde(rename = "params[title_color]")]
+        #[serde(skip_serializing_if = "Option::is_none")]
+        title_color: Option<&'a str>,
+
+        #[serde(rename = "params[body]")]
+        #[serde(skip_serializing_if = "Option::is_none")]
+        body: Option<&'a str>,
+    }
+
+    #[derive(Debug, Serialize)]
+    struct Payload<'a> {
         // required for all feed item requests
         account_id: &'a str,
         r#type: &'static str,
@@ -144,7 +150,4 @@ mod basic {
         #[serde(flatten)]
         params: Params<'a>,
     }
-
-    #[derive(Deserialize)]
-    struct Response {}
 }

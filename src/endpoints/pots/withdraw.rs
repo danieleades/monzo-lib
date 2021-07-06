@@ -21,10 +21,10 @@ impl<'a> Endpoint for Request<'a> {
 }
 
 impl<'a> Request<'a> {
-    pub(crate) fn new(pot_id: &'a str, source_account_id: &'a str, amount: u32) -> Self {
+    pub(crate) fn new(pot_id: &'a str, destination_account_id: &'a str, amount: u32) -> Self {
         use rand::{distributions::Alphanumeric, thread_rng, Rng};
 
-        let endpoint = format!("https://api.monzo.com/pots/{}/deposit", &pot_id);
+        let endpoint = format!("https://api.monzo.com/pots/{}/withdraw", &pot_id);
 
         let dedupe_id: String = thread_rng()
             .sample_iter(&Alphanumeric)
@@ -33,7 +33,7 @@ impl<'a> Request<'a> {
             .collect();
 
         let form = Form {
-            source_account_id,
+            destination_account_id,
             amount,
             dedupe_id,
         };
@@ -44,7 +44,7 @@ impl<'a> Request<'a> {
 
 #[derive(Debug, Serialize)]
 struct Form<'a> {
-    source_account_id: &'a str,
+    destination_account_id: &'a str,
     amount: u32,
     dedupe_id: String,
 }

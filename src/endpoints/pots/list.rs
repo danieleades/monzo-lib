@@ -1,44 +1,33 @@
-use super::Pot;
-use crate::{endpoints::handle_response, Result};
-use serde::Deserialize;
+use crate::endpoints::Endpoint;
+use serde::Serialize;
 
 /// An object representing a request to the Monzo API for a list of accounts
 pub struct Request<'a> {
-    request_builder: reqwest::RequestBuilder,
-    account_id: &'a str,
+    query: Query<'a>,
 }
 
 impl<'a> Request<'a> {
-    pub(crate) fn new(
-        http_client: &reqwest::Client,
-        access_token: impl AsRef<str>,
-        account_id: &'a str,
-    ) -> Self {
-        let request_builder = http_client
-            .get("https://api.monzo.com/pots")
-            .bearer_auth(access_token.as_ref());
+    pub(crate) fn new(current_account_id: &'a str) -> Self {
+        let query = Query { current_account_id };
+        Self { query }
+    }
+}
 
-        Self {
-            request_builder,
-            account_id,
-        }
+impl<'a> Endpoint for Request<'a> {
+    fn method(&self) -> reqwest::Method {
+        reqwest::Method::GET
     }
 
-    /// Consume the request and return a response that will resolve to a list of
-    /// pots
-    pub async fn send(self) -> Result<Vec<Pot>> {
-        /// A collection of Monzo pots
-        #[derive(Deserialize)]
-        struct Response {
-            pots: Vec<Pot>,
-        }
-
-        let Response { pots } = handle_response(
-            self.request_builder
-                .query(&[("current_account_id", self.account_id)]),
-        )
-        .await?;
-
-        Ok(pots)
+    fn endpoint(&self) -> &str {
+        "https://api.monzo.com/pots"
     }
+
+    fn query(&self) -> Option<&dyn erased_serde::Serialize> {
+        Some(&self.query)
+    }
+}
+
+#[derive(Debug, Serialize)]
+struct Query<'a> {
+    current_account_id: &'a str,
 }

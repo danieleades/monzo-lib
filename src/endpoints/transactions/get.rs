@@ -1,41 +1,46 @@
 use super::Transaction;
-use crate::{endpoints::handle_response, Result};
+use crate::{
+    client::{self, send_and_resolve_request},
+    endpoints::Endpoint,
+    Result,
+};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
 /// Use the builder-style methods to set optional fields on the request
-pub struct Request {
-    reqwest_builder: reqwest::RequestBuilder,
+#[derive(Debug)]
+pub struct Request<'a> {
+    client: &'a dyn client::Inner,
+    endpoint: String,
     expand_merchant: bool,
 }
 
-impl Request {
-    pub(crate) fn new(
-        http_client: &reqwest::Client,
-        access_token: &str,
-        transaction_id: &str,
-    ) -> Self {
-        let reqwest_builder = http_client
-            .get(&format!(
-                "https://api.monzo.com/transactions/{}",
-                transaction_id
-            ))
-            .bearer_auth(access_token);
-
-        Self {
-            reqwest_builder,
-            expand_merchant: false,
-        }
+impl<'a> Endpoint for Request<'a> {
+    fn method(&self) -> reqwest::Method {
+        reqwest::Method::GET
     }
 
-    /// Consume the request and return a future that resolves to a List of
-    /// Transactions
-    pub async fn send(self) -> Result<Transaction> {
-        let mut reqwest_builder = self.reqwest_builder;
+    fn endpoint(&self) -> &str {
+        &self.endpoint
+    }
+
+    fn query(&self) -> Option<&dyn erased_serde::Serialize> {
         if self.expand_merchant {
-            reqwest_builder = reqwest_builder.query(&("expand[]", "merchant"))
+            Some(&("expand[]", "merchant"))
+        } else {
+            None
         }
-        handle_response(reqwest_builder).await
+    }
+}
+
+impl<'a> Request<'a> {
+    pub(crate) fn new(client: &'a dyn client::Inner, transaction_id: &str) -> Self {
+        let endpoint = format!("https://api.monzo.com/transactions/{}", transaction_id);
+        Self {
+            client,
+            endpoint,
+            expand_merchant: false,
+        }
     }
 
     /// Optionally expand the merchant field from an id string into a struct
@@ -43,5 +48,9 @@ impl Request {
     pub fn expand_merchant(mut self) -> Self {
         self.expand_merchant = true;
         self
+    }
+
+    pub async fn send(self) -> Result<Transaction> {
+        send_and_resolve_request(self.client, &self).await
     }
 }
