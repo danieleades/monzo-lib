@@ -1,6 +1,6 @@
+use chrono::{Duration, Utc};
 use clap::Clap;
 use monzo::Client;
-use chrono::{Duration, Utc};
 
 #[derive(Clap)]
 struct Args {
@@ -23,8 +23,7 @@ async fn main() -> monzo::Result<()> {
         .await?;
 
     println!("account: {}", account_id);
-    transactions.iter()
-        .for_each(|t| println!("\t{}", t.id));
+    transactions.iter().for_each(|t| println!("\t{}", t.id));
 
     Ok(())
 }
