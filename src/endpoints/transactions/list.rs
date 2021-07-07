@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug)]
 pub struct Request<'a> {
     client: &'a dyn client::Inner,
-    form: Form<'a>,
+    query: Query<'a>,
 }
 
 impl<'a> Endpoint for Request<'a> {
@@ -25,25 +25,25 @@ impl<'a> Endpoint for Request<'a> {
         "https://api.monzo.com/transactions"
     }
 
-    fn form(&self) -> Option<&dyn erased_serde::Serialize> {
-        Some(&self.form)
+    fn query(&self) -> Option<&dyn erased_serde::Serialize> {
+        Some(&self.query)
     }
 }
 
 impl<'a> Request<'a> {
     pub(crate) fn new(client: &'a dyn client::Inner, account_id: &'a str) -> Self {
-        let form = Form {
+        let query = Query {
             account_id,
             pagination: Pagination::default(),
             expand_merchant: None,
         };
 
-        Self { client, form }
+        Self { client, query }
     }
 
     /// Only return transactions which occurred after the given `DateTime`
     pub fn since(mut self, datetime: DateTime<Utc>) -> Self {
-        self.form.pagination.since = Some(Since::Timestamp(datetime));
+        self.query.pagination.since = Some(Since::Timestamp(datetime));
         self
     }
 
@@ -51,26 +51,26 @@ impl<'a> Request<'a> {
     ///
     /// This can be used for paginating.
     pub fn since_transaction(mut self, transaction_id: String) -> Self {
-        self.form.pagination.since = Some(Since::ObjectId(transaction_id));
+        self.query.pagination.since = Some(Since::ObjectId(transaction_id));
         self
     }
 
     /// Only return transactions which occurred before a given `DateTime`
     pub fn before(mut self, datetime: DateTime<Utc>) -> Self {
-        self.form.pagination.before = Some(datetime);
+        self.query.pagination.before = Some(datetime);
         self
     }
 
     /// Set the maximum number of transactions to be returned
     pub fn limit(mut self, limit: u16) -> Self {
-        self.form.pagination.limit = Some(limit);
+        self.query.pagination.limit = Some(limit);
         self
     }
 
     /// Optionally expand the merchant field from an id string into a struct
     /// container merchant details
     pub fn expand_merchant(mut self) -> Self {
-        self.form.expand_merchant = Some("merchant");
+        self.query.expand_merchant = Some("merchant");
         self
     }
 
@@ -87,7 +87,7 @@ impl<'a> Request<'a> {
 }
 
 #[derive(Serialize, Debug)]
-struct Form<'a> {
+struct Query<'a> {
     account_id: &'a str,
 
     #[serde(flatten)]
