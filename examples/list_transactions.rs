@@ -5,6 +5,10 @@ use monzo::Client;
 #[derive(Clap)]
 struct Args {
     access_token: String,
+    #[clap(long, default_value = "2")]
+    limit: u16,
+    #[clap(long, default_value = "89")]
+    days: i64,
 }
 
 #[tokio::main]
@@ -17,8 +21,8 @@ async fn main() -> monzo::Result<()> {
 
     let transactions = client
         .transactions(account_id)
-        .since(Utc::now() - Duration::days(89))
-        .limit(2)
+        .since(Utc::now() - Duration::days(args.days))
+        .limit(args.limit)
         .send()
         .await?;
 
