@@ -55,9 +55,9 @@ pub struct Transaction {
     /// Whether transaction is included in spending
     pub include_in_spending: bool,
 
-    /// This can be either the merchant ID, or an object containing the merchant
-    /// details
-    pub merchant: MerchantInfo,
+    /// This can be either None, the merchant ID, or an object containing the
+    /// merchant details
+    pub merchant: Option<MerchantInfo>,
 
     /// Any custom metadata which has been added to the transaction
     pub metadata: HashMap<String, String>,
@@ -108,8 +108,8 @@ pub enum DeclineReason {
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
 pub enum MerchantInfo {
-    /// A unique ID associated with a merchant (or null)
-    Id(Option<String>),
+    /// A unique ID associated with a merchant
+    Id(String),
 
     /// Extra merchant information which may optionally be requested
     Details(Box<Merchant>),
