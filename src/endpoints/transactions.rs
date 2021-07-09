@@ -38,7 +38,7 @@ pub struct Transaction {
     pub can_split_the_bill: bool,
 
     /// The transaction category
-    pub category: Category,
+    pub category: String,
 
     /// The timestamp when the transaction was created
     pub created: DateTime<Utc>,
@@ -101,43 +101,6 @@ pub enum DeclineReason {
     Other,
 }
 
-/// The set of categories by which Monzo transactions and merchants can be
-/// categorised
-#[derive(Deserialize, Debug, Clone, Copy)]
-#[non_exhaustive]
-#[serde(rename_all = "snake_case")]
-pub enum Category {
-    /// General expenses
-    General,
-
-    /// Restaurants, Cafes, etc
-    EatingOut,
-
-    /// Work-related expenses
-    Expenses,
-
-    /// Getting around
-    Transport,
-
-    /// Cash withdrawals
-    Cash,
-
-    /// Bills and regular expenses
-    Bills,
-
-    /// Fun and Entertainment
-    Entertainment,
-
-    /// Treat yourself
-    Shopping,
-
-    /// Holiday expenses
-    Holidays,
-
-    /// Food and household items
-    Groceries,
-}
-
 /// Merchant information which might be returned in transactions data.
 ///
 /// An id or a struct may be returned depending on whether the 'expand merchant'
@@ -163,7 +126,7 @@ pub struct Merchant {
     pub logo: String,
     pub emoji: String,
     pub name: String,
-    pub category: Category,
+    pub category: String,
 }
 
 /// Address details
