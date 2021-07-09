@@ -108,8 +108,8 @@ pub enum DeclineReason {
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
 pub enum MerchantInfo {
-    /// A unique ID associated with a merchant
-    Id(String),
+    /// A unique ID associated with a merchant (or null)
+    Id(Option<String>),
 
     /// Extra merchant information which may optionally be requested
     Details(Box<Merchant>),
