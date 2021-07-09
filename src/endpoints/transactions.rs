@@ -15,9 +15,6 @@ pub(crate) use get::Request as Get;
 #[non_exhaustive]
 #[derive(Deserialize, Debug)]
 pub struct Transaction {
-    /// The account balance after the transation
-    pub account_balance: i64,
-
     /// The unique ID of the account associated with the transaction
     pub account_id: String,
 
