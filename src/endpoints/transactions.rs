@@ -168,6 +168,7 @@ pub enum Since {
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::too_many_lines, clippy::non_ascii_literal)]
     use super::Transaction;
 
     #[test]

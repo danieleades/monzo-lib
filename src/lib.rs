@@ -44,6 +44,9 @@
 //! }
 //! ```
 
+#[cfg(doctest)]
+doc_comment::doctest!("../README.md");
+
 mod client;
 #[doc(inline)]
 pub use client::Client;
