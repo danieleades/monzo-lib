@@ -2,9 +2,10 @@
     clippy::all,
     missing_debug_implementations,
     missing_copy_implementations,
+    missing_docs,
     clippy::cargo
 )]
-#![warn(clippy::pedantic, missing_docs)]
+#![warn(clippy::pedantic)]
 #![allow(clippy::missing_errors_doc)]
 
 //! A Monzo client in pure rust.

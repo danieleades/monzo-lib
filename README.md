@@ -11,7 +11,7 @@ It's ergonomic, strongly-typed, and asynchronous.
 In order to use this client, you will first need to get an access token and/or refresh token for the Monzo API (see [the monzo API docs](https://docs.monzo.com/))
 
 ## Usage
-```rust,no_run
+```rust no_run
 use monzo::Client;
 
 #[tokio::main]
