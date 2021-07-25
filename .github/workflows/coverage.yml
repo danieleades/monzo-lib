@@ -7,7 +7,7 @@ name: Code Coverage
 
 jobs:
   coverage:
-    name: Test Coverage
+    name: coverage
     runs-on: ubuntu-latest
     steps:
 
