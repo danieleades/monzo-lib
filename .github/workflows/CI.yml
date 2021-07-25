@@ -6,7 +6,6 @@ on:
 name: Continuous integration
 
 jobs:
-
   test:
     name: test
     runs-on: ${{ matrix.os }}
