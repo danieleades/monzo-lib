@@ -6,35 +6,31 @@ on:
 name: Continuous integration
 
 jobs:
-  check:
-    name: Check
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust:
-          - stable
-          - nightly
-          - 1.46.0 # MSRV
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.rust }}
-          override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          command: check
-
   test:
-    name: Test Suite
-    runs-on: ubuntu-latest
+    name: test
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        rust:
-          - stable
-          - nightly
-          - 1.46.0 # MSRV
+        build: [msrv, stable, beta, nightly, macos, windows]
+        include:
+          - build: msrv
+            os: ubuntu-latest
+            rust: 1.46
+          - build: stable
+            os: ubuntu-latest
+            rust: stable
+          - build: beta
+            os: ubuntu-latest
+            rust: beta
+          - build: nightly
+            os: ubuntu-latest
+            rust: nightly
+          - build: macos
+            os: macos-latest
+            rust: stable
+          - build: windows
+            os: windows-latest
+            rust: stable
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -48,7 +44,7 @@ jobs:
           args: --all-features
 
   fmt:
-    name: Rustfmt
+    name: format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -64,7 +60,7 @@ jobs:
           args: --all -- --check
 
   clippy:
-    name: Clippy
+    name: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -80,7 +76,7 @@ jobs:
           args: --all-features
 
   docs:
-    name: Docs
+    name: docs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
