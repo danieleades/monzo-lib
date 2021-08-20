@@ -97,6 +97,9 @@ pub enum DeclineReason {
     /// Incorrect CVC code used
     InvalidCvc,
 
+    /// Strong Customer Authentication blocking 'not present' transaction
+    ScaNotAuthenticatedCardNotPresent,
+
     /// All other errors
     Other,
 }
