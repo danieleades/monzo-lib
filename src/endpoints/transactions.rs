@@ -100,6 +100,9 @@ pub enum DeclineReason {
     /// Strong Customer Authentication blocking 'not present' transaction
     ScaNotAuthenticatedCardNotPresent,
 
+    /// Requires SCA
+    StrongCustomerAuthenticationRequired,
+
     /// All other errors
     Other,
 }
