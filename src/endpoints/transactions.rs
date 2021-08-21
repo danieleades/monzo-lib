@@ -97,6 +97,12 @@ pub enum DeclineReason {
     /// Incorrect CVC code used
     InvalidCvc,
 
+    /// Strong Customer Authentication blocking 'not present' transaction
+    ScaNotAuthenticatedCardNotPresent,
+
+    /// Requires SCA
+    StrongCustomerAuthenticationRequired,
+
     /// All other errors
     Other,
 }
@@ -234,6 +240,92 @@ mod tests {
           },
           "is_load": false,
           "settled": "2021-06-30T00:46:44.233Z",
+          "local_amount": -3900,
+          "local_currency": "GBP",
+          "updated": "2021-06-30T00:46:44.589Z",
+          "account_id": "acc_99999aAbBc0DEFH1I2JdKL",
+          "user_id": "user_000000abcABCDEFGdHIeJ",
+          "counterparty": {},
+          "scheme": "mastercard",
+          "dedupe_id": "mclifecycle",
+          "originator": false,
+          "include_in_spending": true,
+          "can_be_excluded_from_breakdown": true,
+          "can_be_made_subscription": true,
+          "can_split_the_bill": true,
+          "can_add_to_tab": true,
+          "amount_is_pending": false,
+          "atm_fees_detailed": null
+        }
+        "##;
+
+        serde_json::from_str::<Transaction>(raw).expect("couldn't decode Transaction from json");
+    }
+
+    #[test]
+    fn deserialise_declined_transaction() {
+        let raw = r##"
+        {
+          "id": "tx_0000A1aBC2Dbc34Ede5fEH",
+          "created": "2021-06-29T13:10:09.992Z",
+          "description": "Online Subscription",
+          "amount": -5000,
+          "fees": {},
+          "currency": "GBP",
+          "merchant": {
+            "id": "merch_000000abcABCDEFGdHIeJ0",
+            "group_id": "grp_000000abc1ABde2fChDE34",
+            "created": "2016-01-08T00:20:13.969Z",
+            "name": "Online Service",
+            "logo": "https://mondo-logo-cache.appspot.com/twitter/ServiceUk/?size=large",
+            "emoji": "💻",
+            "category": "entertainment",
+            "online": true,
+            "atm": false,
+            "address": {
+              "short_formatted": "Somewhere in the world",
+              "formatted": "world",
+              "address": "",
+              "city": "",
+              "region": "",
+              "country": "GLO",
+              "postcode": "",
+              "latitude": 50.99999999999999,
+              "longitude": 5.111111111111111,
+              "zoom_level": 5,
+              "approximate": true
+            },
+            "updated": "2021-06-17T14:21:38.608Z",
+            "metadata": {
+              "created_for_merchant": "merch_000000abcABCDEFGdHIeJ0",
+              "created_for_transaction": "tx_0000A1aBC2Dbc34Ede5fEH",
+              "provider": "user",
+              "provider_id": "",
+              "suggested_tags": "#subscription #personal",
+              "twitter_id": "ServiceUk",
+              "website": "service.co.uk"
+            },
+            "disable_feedback": false
+          },
+          "notes": "Subscription to online service",
+          "metadata": {
+            "ledger_insertion_id": "entryset_0000A2bBcDEF3HdIJK4LMe",
+            "mastercard_approval_type": "full",
+            "mastercard_auth_message_id": "mcauthmsg_0000A2bBcDEF3HdIJK4LMe",
+            "mastercard_card_id": "mccard_0000A2bBcDEF3HdIJK4LMe",
+            "mastercard_lifecycle_id": "mclifecycle_0000A2bBcDEF3HdIJK4LMe",
+            "mcc": "1234"
+          },
+          "labels": null,
+          "attachments": null,
+          "international": null,
+          "category": "bills",
+          "categories": {
+            "bills": -5000
+          },
+          "is_load": false,
+          "settled": "2021-06-30T00:46:44.233Z",
+          "decline_reason": "SCA_NOT_AUTHENTICATED_CARD_NOT_PRESENT",
           "local_amount": -3900,
           "local_currency": "GBP",
           "updated": "2021-06-30T00:46:44.589Z",
