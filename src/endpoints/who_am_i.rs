@@ -15,7 +15,7 @@ impl Endpoint for Request {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Response {
-    authenticated: bool,
-    client_id: String,
-    user_id: String,
+    pub authenticated: bool,
+    pub client_id: String,
+    pub user_id: String,
 }
