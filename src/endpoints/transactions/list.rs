@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// Use the builder-style methods to set optional fields on the request
 #[derive(Debug)]
+#[must_use]
 pub struct Request<'a> {
     client: &'a dyn client::Inner,
     query: Query<'a>,
@@ -74,6 +75,7 @@ impl<'a> Request<'a> {
         self
     }
 
+    /// Consume the request and return the list of [`Transaction`]s
     pub async fn send(self) -> Result<Vec<Transaction>> {
         #[derive(Deserialize)]
         struct Response {

@@ -13,9 +13,16 @@ impl Endpoint for Request {
     }
 }
 
+/// The response returned by the [`Client::who_am_i`](crate::Client::who_am_i)
+/// method.
 #[derive(Debug, Deserialize, Clone)]
 pub struct Response {
+    /// Whether the current user is authenticated
     pub authenticated: bool,
+
+    /// The client ID
     pub client_id: String,
+
+    /// The unique identifier of the current user
     pub user_id: String,
 }

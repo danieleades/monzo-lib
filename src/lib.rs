@@ -59,6 +59,7 @@ pub use endpoints::{
     pots::Pot,
     transactions,
     transactions::Transaction,
+    who_am_i::Response as WhoAmI,
 };
 mod error;
 pub use client::inner as inner_client;

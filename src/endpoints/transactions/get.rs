@@ -9,6 +9,7 @@ use crate::{
 ///
 /// Use the builder-style methods to set optional fields on the request
 #[derive(Debug)]
+#[must_use]
 pub struct Request<'a> {
     client: &'a dyn client::Inner,
     endpoint: String,
@@ -50,6 +51,7 @@ impl<'a> Request<'a> {
         self
     }
 
+    /// Consume the request and return the [`Transaction`]
     pub async fn send(self) -> Result<Transaction> {
         send_and_resolve_request(self.client, &self).await
     }
