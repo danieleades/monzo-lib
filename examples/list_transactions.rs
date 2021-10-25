@@ -1,8 +1,8 @@
 use chrono::{Duration, Utc};
-use clap::Clap;
+use clap::Parser;
 use monzo::Client;
 
-#[derive(Clap)]
+#[derive(Parser)]
 struct Args {
     access_token: String,
     #[clap(long, default_value = "2")]

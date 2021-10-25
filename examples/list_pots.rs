@@ -1,7 +1,7 @@
-use clap::Clap;
+use clap::Parser;
 use monzo::Client;
 
-#[derive(Clap)]
+#[derive(Parser)]
 struct Args {
     access_token: String,
 }
