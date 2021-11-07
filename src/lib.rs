@@ -52,13 +52,10 @@ mod client;
 #[doc(inline)]
 pub use client::Client;
 mod endpoints;
+#[doc(inline)]
+pub use endpoints::accounts::{Account, Owner};
 pub use endpoints::{
-    accounts::{Account, Owner},
-    balance::Balance,
-    feed_items,
-    pots::Pot,
-    transactions,
-    transactions::Transaction,
+    accounts, balance::Balance, feed_items, pots::Pot, transactions, transactions::Transaction,
     who_am_i::Response as WhoAmI,
 };
 mod error;

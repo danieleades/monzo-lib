@@ -73,7 +73,7 @@ pub enum Type {
     UkBusiness,
 }
 
-pub use list::Request as List;
+pub(crate) use list::Request as List;
 mod list {
 
     use crate::endpoints::Endpoint;
