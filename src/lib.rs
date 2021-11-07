@@ -52,9 +52,10 @@ mod client;
 #[doc(inline)]
 pub use client::Client;
 mod endpoints;
+#[doc(inline)]
+pub use endpoints::accounts::{Account, Owner};
 pub use endpoints::{
     accounts,
-    accounts::{Account, Owner},
     balance::Balance,
     feed_items,
     pots::Pot,
