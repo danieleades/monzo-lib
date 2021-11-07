@@ -29,11 +29,6 @@ impl Client {
         }
     }
 
-    //     pub async fn accounts(&self) -> monzo::Result<Vec<Account>> {
-    // self.with_retry(|| async { self.client.read().await.accounts().await })
-    // .await
-    // }
-
     pub async fn balance(&self, account_id: &str) -> monzo::Result<Balance> {
         self.with_retry(|| async { self.client.read().await.balance(account_id).await })
             .await
