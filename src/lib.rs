@@ -53,7 +53,8 @@ mod client;
 pub use client::Client;
 mod endpoints;
 pub use endpoints::{
-    accounts::{Account, Owner, Type as AccountType},
+    accounts,
+    accounts::{Account, Owner},
     balance::Balance,
     feed_items,
     pots::Pot,
