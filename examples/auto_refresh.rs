@@ -3,6 +3,10 @@ use serde::{Deserialize, Serialize};
 use std::future::Future;
 use tokio::sync::{Mutex, RwLock};
 
+fn main() {
+    // no op
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Auth {
     access_token: String,
