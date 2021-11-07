@@ -55,12 +55,7 @@ mod endpoints;
 #[doc(inline)]
 pub use endpoints::accounts::{Account, Owner};
 pub use endpoints::{
-    accounts,
-    balance::Balance,
-    feed_items,
-    pots::Pot,
-    transactions,
-    transactions::Transaction,
+    accounts, balance::Balance, feed_items, pots::Pot, transactions, transactions::Transaction,
     who_am_i::Response as WhoAmI,
 };
 mod error;
