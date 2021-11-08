@@ -65,13 +65,16 @@ impl Client<Refreshable> {
     }
 
     /// Refresh the access and refresh tokens for this client
-    pub async fn refresh_auth(&mut self) -> Result<()> {
+    ///
+    /// Returns the time (in seconds) until the token expires
+    pub async fn refresh_auth(&mut self) -> Result<i64> {
         let response = self.get_refresh_tokens().await?;
+        let expires_in = response.expires_in;
 
         self.set_access_token(response.access_token);
         self.inner_client.refresh_token = response.refresh_token;
 
-        Ok(())
+        Ok(expires_in)
     }
 }
 
