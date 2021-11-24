@@ -1,8 +1,9 @@
 //! endpoints for working with Monzo pots
 
-use crate::endpoints::utils::empty_string_as_none;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+
+use crate::endpoints::utils::empty_string_as_none;
 
 mod list;
 pub(crate) use list::Request as List;

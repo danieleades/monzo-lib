@@ -1,5 +1,6 @@
-use crate::endpoints::Endpoint;
 use serde::Serialize;
+
+use crate::endpoints::Endpoint;
 
 pub struct Request<'a> {
     endpoint: String,

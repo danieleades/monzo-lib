@@ -3,8 +3,9 @@
 pub use basic::Request as Basic;
 
 pub(crate) mod basic {
-    use crate::{client, client::send_and_resolve_request, endpoints::Endpoint, Result};
     use serde::Serialize;
+
+    use crate::{client, client::send_and_resolve_request, endpoints::Endpoint, Result};
 
     /// A request to create a new basic feed item.
     ///

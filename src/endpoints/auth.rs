@@ -4,8 +4,9 @@ pub use refresh::{Request as Refresh, Response as RefreshResponse};
 
 mod refresh {
 
-    use crate::endpoints::Endpoint;
     use serde::{Deserialize, Serialize};
+
+    use crate::endpoints::Endpoint;
 
     /// The response received from the Monzo API after a successful request to
     /// refresh the authentication.

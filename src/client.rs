@@ -1,11 +1,12 @@
 //! Monzo API clients
 
+use async_trait::async_trait;
+use serde::{de::DeserializeOwned, Deserialize};
+
 use crate::{
     endpoints::{accounts, balance, feed_items, pots, transactions, who_am_i, Endpoint},
     Result,
 };
-use async_trait::async_trait;
-use serde::{de::DeserializeOwned, Deserialize};
 
 pub mod inner;
 

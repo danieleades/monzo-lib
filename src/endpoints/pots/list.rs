@@ -1,5 +1,6 @@
-use crate::endpoints::Endpoint;
 use serde::Serialize;
+
+use crate::endpoints::Endpoint;
 
 /// An object representing a request to the Monzo API for a list of accounts
 pub struct Request<'a> {

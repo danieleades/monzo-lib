@@ -1,5 +1,6 @@
-use super::Endpoint;
 use serde::Deserialize;
+
+use super::Endpoint;
 
 pub struct Request;
 

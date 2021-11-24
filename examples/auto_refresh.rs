@@ -1,6 +1,7 @@
+use std::future::Future;
+
 use monzo::{inner_client::Refreshable, Balance, Pot};
 use serde::{Deserialize, Serialize};
-use std::future::Future;
 use tokio::sync::{Mutex, RwLock};
 
 fn main() {
