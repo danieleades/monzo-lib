@@ -1,10 +1,11 @@
+use async_trait::async_trait;
+
 use crate::{
     client,
     client::{send_and_resolve_request, Client},
     endpoints::{auth, Endpoint},
     Result,
 };
-use async_trait::async_trait;
 
 /// A full-featured Monzo API client.
 ///

@@ -1,9 +1,11 @@
 //! Retrieve and manipulate transactions
 
-use crate::endpoints::utils::empty_string_as_none;
+use std::collections::HashMap;
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+
+use crate::endpoints::utils::empty_string_as_none;
 
 mod list;
 pub use list::Request as List;

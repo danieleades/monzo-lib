@@ -1,5 +1,6 @@
-use crate::{client, client::Client, endpoints::Endpoint};
 use async_trait::async_trait;
+
+use crate::{client, client::Client, endpoints::Endpoint};
 
 /// A quick and dirty Monzo API client.
 ///

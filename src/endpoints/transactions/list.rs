@@ -1,11 +1,12 @@
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+
 use super::{Pagination, Since, Transaction};
 use crate::{
     client::{self, send_and_resolve_request},
     endpoints::Endpoint,
     Result,
 };
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
