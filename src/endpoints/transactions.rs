@@ -15,7 +15,7 @@ pub use get::Request as Get;
 /// A Monzo transaction
 #[allow(clippy::struct_excessive_bools)]
 #[non_exhaustive]
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, PartialEq)]
 pub struct Transaction {
     /// The unique ID of the account associated with the transaction
     pub account_id: String,
@@ -83,7 +83,7 @@ pub struct Transaction {
 }
 
 /// The set of reasons for which a monzo transaction may be declined
-#[derive(Deserialize, Debug, Clone, Copy)]
+#[derive(Deserialize, Debug, Clone, Copy, PartialEq)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[non_exhaustive]
 pub enum DeclineReason {
@@ -113,7 +113,7 @@ pub enum DeclineReason {
 ///
 /// An id or a struct may be returned depending on whether the 'expand merchant'
 /// flag is set in the transactions request.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 #[serde(untagged)]
 pub enum MerchantInfo {
     /// A unique ID associated with a merchant
@@ -124,7 +124,7 @@ pub enum MerchantInfo {
 }
 
 /// Merchant details
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 #[allow(missing_docs)]
 pub struct Merchant {
     pub address: Address,
@@ -138,7 +138,7 @@ pub struct Merchant {
 }
 
 /// Address details
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 #[allow(missing_docs)]
 pub struct Address {
     pub address: String,

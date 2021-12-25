@@ -13,7 +13,7 @@ mod withdraw;
 pub(crate) use withdraw::Request as Withdraw;
 
 /// Representation of a Monzo pot
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone, PartialEq)]
 #[non_exhaustive]
 pub struct Pot {
     /// Unique ID for this Monzo pot
