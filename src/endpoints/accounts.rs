@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 /// A struct representing a Monzo Account
-#[derive(Deserialize, Debug, PartialEq, Eq, Hash)]
+#[derive(Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 #[non_exhaustive]
 pub struct Account {
     /// The unique ID of the account
@@ -45,7 +45,7 @@ pub struct Account {
 }
 
 /// Struct representating an owner of a Monzo account
-#[derive(Deserialize, Debug, PartialEq, Eq, Hash)]
+#[derive(Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Owner {
     /// The user ID of the owner
     pub user_id: String,
