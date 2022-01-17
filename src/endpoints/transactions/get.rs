@@ -1,6 +1,6 @@
 use super::Transaction;
 use crate::{
-    client::{self, send_and_resolve_request},
+    client::{self, handle_request},
     endpoints::Endpoint,
     Result,
 };
@@ -53,6 +53,6 @@ impl<'a> Request<'a> {
 
     /// Consume the request and return the [`Transaction`]
     pub async fn send(self) -> Result<Transaction> {
-        send_and_resolve_request(self.client, &self).await
+        handle_request(self.client, &self).await
     }
 }

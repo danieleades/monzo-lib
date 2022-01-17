@@ -2,7 +2,7 @@ use async_trait::async_trait;
 
 use crate::{
     client,
-    client::{send_and_resolve_request, Client},
+    client::{handle_request, Client},
     endpoints::{auth, Endpoint},
     Result,
 };
@@ -58,7 +58,7 @@ impl Client<Refreshable> {
 
     /// Hit the Monzo auth endpoint and request new access and refresh tokens
     async fn get_refresh_tokens(&self) -> Result<auth::RefreshResponse> {
-        send_and_resolve_request(
+        handle_request(
             &self.inner_client,
             &auth::Refresh::new(self.client_id(), self.client_secret(), self.refresh_token()),
         )

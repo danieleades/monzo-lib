@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{Pagination, Since, Transaction};
 use crate::{
-    client::{self, send_and_resolve_request},
+    client::{self, handle_request},
     endpoints::Endpoint,
     Result,
 };
@@ -83,7 +83,7 @@ impl<'a> Request<'a> {
             transactions: Vec<Transaction>,
         }
 
-        let response: Response = send_and_resolve_request(self.client, &self).await?;
+        let response: Response = handle_request(self.client, &self).await?;
 
         Ok(response.transactions)
     }
