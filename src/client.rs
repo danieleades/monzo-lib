@@ -2,6 +2,7 @@
 
 use async_trait::async_trait;
 use serde::{de::DeserializeOwned, Deserialize};
+use tracing::instrument;
 
 use crate::{
     endpoints::{accounts, balance, feed_items, pots, transactions, who_am_i, Endpoint},
@@ -70,8 +71,7 @@ where
         pub(crate) struct Response {
             accounts: Vec<accounts::Account>,
         }
-        let response: Response =
-            send_and_resolve_request(&self.inner_client, &accounts::List).await?;
+        let response: Response = handle_request(&self.inner_client, &accounts::List).await?;
 
         Ok(response.accounts)
     }
@@ -95,7 +95,7 @@ where
     /// # }
     /// ```
     pub async fn balance(&self, account_id: &str) -> Result<balance::Balance> {
-        send_and_resolve_request(&self.inner_client, &balance::Get::new(account_id)).await
+        handle_request(&self.inner_client, &balance::Get::new(account_id)).await
     }
 
     /// Return a list of Pots
@@ -124,7 +124,7 @@ where
         }
 
         let response: Response =
-            send_and_resolve_request(&self.inner_client, &pots::List::new(account_id)).await?;
+            handle_request(&self.inner_client, &pots::List::new(account_id)).await?;
 
         Ok(response.pots)
     }
@@ -168,7 +168,7 @@ where
         source_account_id: &str,
         amount: u32,
     ) -> Result<pots::Pot> {
-        send_and_resolve_request(
+        handle_request(
             &self.inner_client,
             &pots::Deposit::new(pot_id, source_account_id, amount),
         )
@@ -182,7 +182,7 @@ where
         destination_account_id: &str,
         amount: u32,
     ) -> Result<pots::Pot> {
-        send_and_resolve_request(
+        handle_request(
             &self.inner_client,
             &pots::Withdraw::new(pot_id, destination_account_id, amount),
         )
@@ -251,16 +251,36 @@ where
 
     /// Return information about the current session
     pub async fn who_am_i(&self) -> Result<who_am_i::Response> {
-        send_and_resolve_request(&self.inner_client, &who_am_i::Request).await
+        handle_request(&self.inner_client, &who_am_i::Request).await
     }
 }
 
-pub async fn send_and_resolve_request<R>(client: &dyn Inner, endpoint: &dyn Endpoint) -> Result<R>
+#[instrument(skip(client, endpoint), fields(endpoint = endpoint.endpoint()))]
+pub async fn handle_request<R>(client: &dyn Inner, endpoint: &dyn Endpoint) -> Result<R>
 where
     R: DeserializeOwned,
 {
+    tracing::info!("sending request");
     let response = client.execute(endpoint).await?;
+    tracing::info!("response received");
 
+    let result = handle_response(response).await;
+
+    match &result {
+        Ok(_) => {
+            tracing::info!("request successful");
+        }
+        Err(e) => {
+            tracing::info!("request failed: {}", e);
+        }
+    };
+    result
+}
+
+async fn handle_response<R>(response: reqwest::Response) -> Result<R>
+where
+    R: DeserializeOwned,
+{
     let status = response.status();
 
     if status.is_success() {
