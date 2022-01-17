@@ -92,4 +92,8 @@ impl client::Inner for Refreshable {
     fn set_access_token(&mut self, access_token: String) {
         self.quick_client.set_access_token(access_token);
     }
+
+    fn url(&self) -> &str {
+        self.quick_client.url()
+    }
 }

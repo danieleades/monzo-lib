@@ -78,4 +78,8 @@ impl client::Inner for Quick {
     fn set_access_token(&mut self, access_token: String) {
         self.access_token = access_token;
     }
+
+    fn url(&self) -> &str {
+        &self.url
+    }
 }
