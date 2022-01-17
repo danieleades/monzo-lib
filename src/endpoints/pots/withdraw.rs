@@ -25,7 +25,7 @@ impl<'a> Request<'a> {
     pub(crate) fn new(pot_id: &'a str, destination_account_id: &'a str, amount: u32) -> Self {
         use rand::{distributions::Alphanumeric, thread_rng, Rng};
 
-        let endpoint = format!("https://api.monzo.com/pots/{}/withdraw", &pot_id);
+        let endpoint = format!("/pots/{}/withdraw", &pot_id);
 
         let dedupe_id: String = thread_rng()
             .sample_iter(&Alphanumeric)

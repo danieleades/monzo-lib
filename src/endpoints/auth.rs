@@ -55,7 +55,7 @@ mod refresh {
         }
 
         fn endpoint(&self) -> &str {
-            "https://api.monzo.com/oauth2/token"
+            "/oauth2/token"
         }
 
         fn auth_required(&self) -> bool {
