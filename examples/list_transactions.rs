@@ -27,7 +27,9 @@ async fn main() -> monzo::Result<()> {
         .await?;
 
     println!("account: {}", account_id);
-    transactions.iter().for_each(|t| println!("\t{}", t.id));
+    for t in &transactions {
+        println!("\t{}", t.id);
+    }
 
     Ok(())
 }

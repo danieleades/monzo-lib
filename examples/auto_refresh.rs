@@ -1,3 +1,5 @@
+#![allow(clippy::missing_errors_doc)]
+
 use std::future::Future;
 
 use monzo::{inner_client::Refreshable, Balance, Pot};
