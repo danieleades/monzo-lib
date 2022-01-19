@@ -46,7 +46,7 @@ impl<'a> Request<'a> {
 
     /// Optionally expand the merchant field from an id string into a struct
     /// container merchant details
-    pub fn expand_merchant(mut self) -> Self {
+    pub const fn expand_merchant(mut self) -> Self {
         self.expand_merchant = true;
         self
     }

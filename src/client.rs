@@ -68,7 +68,7 @@ where
     /// # }
     pub async fn accounts(&self) -> Result<Vec<accounts::Account>> {
         #[derive(Deserialize)]
-        pub(crate) struct Response {
+        pub struct Response {
             accounts: Vec<accounts::Account>,
         }
         let response: Response = handle_request(&self.inner_client, &accounts::List).await?;
