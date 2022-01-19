@@ -58,20 +58,20 @@ impl<'a> Request<'a> {
     }
 
     /// Only return transactions which occurred before a given `DateTime`
-    pub fn before(mut self, datetime: DateTime<Utc>) -> Self {
+    pub const fn before(mut self, datetime: DateTime<Utc>) -> Self {
         self.query.pagination.before = Some(datetime);
         self
     }
 
     /// Set the maximum number of transactions to be returned
-    pub fn limit(mut self, limit: u16) -> Self {
+    pub const fn limit(mut self, limit: u16) -> Self {
         self.query.pagination.limit = Some(limit);
         self
     }
 
     /// Optionally expand the merchant field from an id string into a struct
     /// container merchant details
-    pub fn expand_merchant(mut self) -> Self {
+    pub const fn expand_merchant(mut self) -> Self {
         self.query.expand_merchant = Some("merchant");
         self
     }
@@ -101,8 +101,8 @@ struct Query<'a> {
     expand_merchant: Option<&'a str>,
 }
 
-#[derive(Deserialize)]
-pub(crate) struct Response {
+#[derive(Deserialize, Debug)]
+pub struct Response {
     transactions: Vec<Transaction>,
 }
 

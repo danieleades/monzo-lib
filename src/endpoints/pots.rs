@@ -6,11 +6,11 @@ use serde::Deserialize;
 use crate::endpoints::utils::empty_string_as_none;
 
 mod list;
-pub(crate) use list::Request as List;
+pub use list::Request as List;
 mod deposit;
-pub(crate) use deposit::Request as Deposit;
+pub use deposit::Request as Deposit;
 mod withdraw;
-pub(crate) use withdraw::Request as Withdraw;
+pub use withdraw::Request as Withdraw;
 
 /// Representation of a Monzo pot
 #[derive(Deserialize, Debug, Clone, PartialEq)]

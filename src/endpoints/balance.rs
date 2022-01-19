@@ -21,7 +21,7 @@ pub struct Balance {
     pub spend_today: i64,
 }
 
-pub(crate) use get::Request as Get;
+pub use get::Request as Get;
 mod get {
     use serde::Serialize;
 
@@ -33,7 +33,7 @@ mod get {
     }
 
     impl<'a> Request<'a> {
-        pub(crate) fn new(account_id: &'a str) -> Self {
+        pub(crate) const fn new(account_id: &'a str) -> Self {
             let query = Query { account_id };
             Self { query }
         }

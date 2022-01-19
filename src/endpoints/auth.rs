@@ -39,7 +39,7 @@ mod refresh {
     }
 
     impl<'a> Request<'a> {
-        pub(crate) fn new(
+        pub(crate) const fn new(
             client_id: &'a str,
             client_secret: &'a str,
             refresh_token: &'a str,
@@ -76,7 +76,7 @@ mod refresh {
     }
 
     impl<'a> Form<'a> {
-        fn new(client_id: &'a str, client_secret: &'a str, refresh_token: &'a str) -> Self {
+        const fn new(client_id: &'a str, client_secret: &'a str, refresh_token: &'a str) -> Self {
             Self {
                 grant_type: "refresh_token",
                 client_id,

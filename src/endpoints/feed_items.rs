@@ -50,13 +50,13 @@ pub(crate) mod basic {
         ///
         /// This is the url the user will be redirected to after
         /// tapping on the feed item
-        pub fn url(mut self, url: &'a str) -> Self {
+        pub const fn url(mut self, url: &'a str) -> Self {
             self.payload.url = Some(url);
             self
         }
 
         /// Set the title of the feed item.
-        pub fn title(mut self, title: &'a str) -> Self {
+        pub const fn title(mut self, title: &'a str) -> Self {
             self.payload.params.title = title;
             self
         }
@@ -65,31 +65,31 @@ pub(crate) mod basic {
         ///
         /// # Note
         /// *This doesn't currently seem to do anything*
-        pub fn image_url(mut self, image_url: &'a str) -> Self {
+        pub const fn image_url(mut self, image_url: &'a str) -> Self {
             self.payload.params.image_url = image_url;
             self
         }
 
         /// Set the background colour of the feed item
-        pub fn background_color(mut self, background_color: &'a str) -> Self {
+        pub const fn background_color(mut self, background_color: &'a str) -> Self {
             self.payload.params.background_color = Some(background_color);
             self
         }
 
         /// Set the body colour of the feed item
-        pub fn body_color(mut self, body_color: &'a str) -> Self {
+        pub const fn body_color(mut self, body_color: &'a str) -> Self {
             self.payload.params.body_color = Some(body_color);
             self
         }
 
         /// Set the title colour of the feed item
-        pub fn title_color(mut self, title_color: &'a str) -> Self {
+        pub const fn title_color(mut self, title_color: &'a str) -> Self {
             self.payload.params.title_color = Some(title_color);
             self
         }
 
         /// Set the body text of the feed item
-        pub fn body(mut self, body: &'a str) -> Self {
+        pub const fn body(mut self, body: &'a str) -> Self {
             self.payload.params.body = Some(body);
             self
         }

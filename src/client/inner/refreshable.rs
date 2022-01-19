@@ -40,19 +40,19 @@ impl Client<Refreshable> {
 
     /// Get a reference to the client id
     #[must_use]
-    pub fn client_id(&self) -> &String {
+    pub const fn client_id(&self) -> &String {
         &self.inner_client.client_id
     }
 
     /// Get a reference to the client secret
     #[must_use]
-    pub fn client_secret(&self) -> &String {
+    pub const fn client_secret(&self) -> &String {
         &self.inner_client.client_secret
     }
 
     /// Get a reference to the refresh token
     #[must_use]
-    pub fn refresh_token(&self) -> &String {
+    pub const fn refresh_token(&self) -> &String {
         &self.inner_client.refresh_token
     }
 

@@ -8,7 +8,7 @@ pub struct Request<'a> {
 }
 
 impl<'a> Request<'a> {
-    pub(crate) fn new(current_account_id: &'a str) -> Self {
+    pub(crate) const fn new(current_account_id: &'a str) -> Self {
         let query = Query { current_account_id };
         Self { query }
     }

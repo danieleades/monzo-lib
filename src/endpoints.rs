@@ -7,7 +7,7 @@ pub mod feed_items;
 pub mod pots;
 pub mod transactions;
 mod utils;
-pub(crate) mod who_am_i;
+pub mod who_am_i;
 
 pub trait Endpoint: Sync {
     fn method(&self) -> reqwest::Method;
