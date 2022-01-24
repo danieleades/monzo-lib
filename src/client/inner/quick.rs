@@ -12,6 +12,7 @@ use crate::{client, client::Client, endpoints::Endpoint};
 pub struct Quick {
     http_client: reqwest::Client,
     access_token: String,
+    url: String,
 }
 
 impl Client<Quick> {
@@ -25,6 +26,7 @@ impl Client<Quick> {
         let inner_client = Quick {
             http_client,
             access_token: access_token.into(),
+            url: "https://api.monzo.com".into(),
         };
         Self { inner_client }
     }
@@ -48,7 +50,7 @@ impl client::Inner for Quick {
     async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response> {
         let mut request = self
             .http_client
-            .request(endpoint.method(), endpoint.endpoint());
+            .request(endpoint.method(), self.url.clone() + endpoint.endpoint());
 
         if endpoint.auth_required() {
             request = request.bearer_auth(&self.access_token);
@@ -75,5 +77,9 @@ impl client::Inner for Quick {
 
     fn set_access_token(&mut self, access_token: String) {
         self.access_token = access_token;
+    }
+
+    fn url(&self) -> &str {
+        &self.url
     }
 }

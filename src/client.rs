@@ -24,6 +24,9 @@ pub trait Inner: Send + Sync + std::fmt::Debug {
 
     /// Manually set the access token
     fn set_access_token(&mut self, access_token: String);
+
+    /// The base URL of the API
+    fn url(&self) -> &str;
 }
 
 /// A Monzo API client
@@ -255,7 +258,7 @@ where
     }
 }
 
-#[instrument(skip(client, endpoint), fields(endpoint = endpoint.endpoint()))]
+#[instrument(skip(client, endpoint), fields(url = client.url(), endpoint = endpoint.endpoint()))]
 pub async fn handle_request<R>(client: &dyn Inner, endpoint: &dyn Endpoint) -> Result<R>
 where
     R: DeserializeOwned,

@@ -45,7 +45,7 @@ mod get {
         }
 
         fn endpoint(&self) -> &str {
-            "https://api.monzo.com/balance"
+            "/balance"
         }
 
         fn query(&self) -> Option<&dyn erased_serde::Serialize> {

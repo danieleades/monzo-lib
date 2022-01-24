@@ -106,7 +106,7 @@ pub(crate) mod basic {
         }
 
         fn endpoint(&self) -> &str {
-            "https://api.monzo.com/feed"
+            "/feed"
         }
 
         fn json(&self) -> Option<&dyn erased_serde::Serialize> {

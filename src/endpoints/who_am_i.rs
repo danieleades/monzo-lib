@@ -10,7 +10,7 @@ impl Endpoint for Request {
     }
 
     fn endpoint(&self) -> &str {
-        "https://api.monzo.com/ping/whoami"
+        "/ping/whoami"
     }
 }
 

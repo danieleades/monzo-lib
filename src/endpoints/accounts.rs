@@ -87,7 +87,7 @@ mod list {
         }
 
         fn endpoint(&self) -> &str {
-            "https://api.monzo.com/accounts"
+            "/accounts"
         }
     }
 }

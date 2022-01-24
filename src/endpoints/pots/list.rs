@@ -20,7 +20,7 @@ impl<'a> Endpoint for Request<'a> {
     }
 
     fn endpoint(&self) -> &str {
-        "https://api.monzo.com/pots"
+        "/pots"
     }
 
     fn query(&self) -> Option<&dyn erased_serde::Serialize> {
