@@ -80,8 +80,9 @@ impl Client {
 
     async fn with_retry<F, Fut, R>(&self, f: F) -> monzo::Result<R>
     where
-        F: Fn() -> Fut,
-        Fut: Future<Output = monzo::Result<R>>,
+        F: Fn() -> Fut + Send + Sync,
+        Fut: Future<Output = monzo::Result<R>> + Send,
+        R: Send,
     {
         let response = f().await;
 
