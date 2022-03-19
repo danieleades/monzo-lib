@@ -1,3 +1,5 @@
+use std::future::{Future, IntoFuture};
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -78,17 +80,26 @@ where
         self.query.expand_merchant = Some("merchant");
         self
     }
+}
+
+impl<'a, C> IntoFuture for Request<'a, C>
+where
+    C: client::Inner,
+{
+    type Output = Result<Vec<Transaction>>;
+
+    type IntoFuture = impl Future<Output = Self::Output>;
 
     /// Consume the request and return the list of [`Transaction`]s
-    pub async fn send(self) -> Result<Vec<Transaction>> {
+    fn into_future(self) -> Self::IntoFuture {
         #[derive(Deserialize)]
         struct Response {
             transactions: Vec<Transaction>,
         }
-
-        let response: Response = self.client.handle_request(&self).await?;
-
-        Ok(response.transactions)
+        async move {
+            let response: Response = self.client.handle_request(&self).await?;
+            Ok(response.transactions)
+        }
     }
 }
 
