@@ -19,7 +19,10 @@ jobs:
           toolchain: nightly
           profile: minimal
           override: true
-          components: llvm-tools-preview, cargo-llvm-cov
+          components: llvm-tools-preview
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
 
       - name: Run llvm-cov
         run: cargo llvm-cov --all-features --doctests --workspace --lcov --output-path lcov.info
