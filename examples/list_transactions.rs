@@ -23,7 +23,6 @@ async fn main() -> monzo::Result<()> {
         .transactions(account_id)
         .since(Utc::now() - Duration::try_days(args.days).unwrap())
         .limit(args.limit)
-        .send()
         .await?;
 
     println!("account: {account_id}");
