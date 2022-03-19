@@ -183,7 +183,6 @@ where
     /// client
     ///     .basic_feed_item(account_id, title, image_url)
     ///     .body("i figured out how to send messages to monzo from my computer...")
-    ///     .send()
     ///     .await?;
     /// #
     /// # Ok(())
@@ -242,7 +241,6 @@ where
     ///     .transactions(account_id)
     ///     .since(Utc::now() - Duration::days(10))
     ///     .limit(10)
-    ///     .send()
     ///     .await?;
     /// #
     /// # Ok(())
@@ -269,7 +267,7 @@ where
     /// #
     /// let transaction_id = "TRANSACTION_ID";
     ///
-    /// let transactions = client.transaction(transaction_id).send().await?;
+    /// let transactions = client.transaction(transaction_id).await?;
     /// #
     /// # Ok(())
     /// # }
