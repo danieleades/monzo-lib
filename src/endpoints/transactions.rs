@@ -105,6 +105,9 @@ pub enum DeclineReason {
     /// Requires SCA
     StrongCustomerAuthenticationRequired,
 
+    /// Transaction declined by the cardholder
+    AuthenticationRejectedByCardholder,
+
     /// All other errors
     Other,
 }
@@ -348,6 +351,12 @@ mod tests {
         "##;
 
         serde_json::from_str::<Transaction>(raw).expect("couldn't decode Transaction from json");
+
+        let new = raw.replace(
+            "SCA_NOT_AUTHENTICATED_CARD_NOT_PRESENT",
+            "AUTHENTICATION_REJECTED_BY_CARDHOLDER",
+        );
+        serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
     }
 
     #[test]
