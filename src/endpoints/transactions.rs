@@ -83,7 +83,7 @@ pub struct Transaction {
 }
 
 /// The set of reasons for which a monzo transaction may be declined
-#[derive(Deserialize, Debug, Clone, Copy, PartialEq)]
+#[derive(Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[non_exhaustive]
 pub enum DeclineReason {
