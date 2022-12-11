@@ -36,7 +36,7 @@ impl<'a> Endpoint for Request<'a> {
 
 impl<'a> Request<'a> {
     pub(crate) fn new(client: &'a dyn client::Inner, transaction_id: &str) -> Self {
-        let endpoint = format!("/transactions/{}", transaction_id);
+        let endpoint = format!("/transactions/{transaction_id}");
         Self {
             client,
             endpoint,
