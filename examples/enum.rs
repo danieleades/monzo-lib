@@ -30,6 +30,6 @@ async fn main() {
     let accounts = monzo_client.accounts().await.unwrap();
 
     for account in accounts {
-        println!("{:#?}", account);
+        println!("{account:#?}");
     }
 }

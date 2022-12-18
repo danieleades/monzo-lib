@@ -12,7 +12,7 @@ async fn main() -> monzo::Result<()> {
     let client = Client::new(args.access_token);
 
     for account in client.accounts().await? {
-        println!("{:#?}", account);
+        println!("{account:#?}");
     }
 
     Ok(())
