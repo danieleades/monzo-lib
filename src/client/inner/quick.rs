@@ -1,5 +1,3 @@
-use async_trait::async_trait;
-
 use crate::{client, client::Client, endpoints::Endpoint};
 
 /// A quick and dirty Monzo API client.
@@ -45,7 +43,6 @@ impl Client<Quick> {
     }
 }
 
-#[async_trait]
 impl client::Inner for Quick {
     async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response> {
         let mut request = self

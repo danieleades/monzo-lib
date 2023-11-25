@@ -1,6 +1,5 @@
 //! Monzo API clients
 
-use async_trait::async_trait;
 use serde::{de::DeserializeOwned, Deserialize};
 use tracing::instrument;
 
@@ -13,7 +12,6 @@ pub mod inner;
 
 /// A generic trait of any HTTP client which also stores and manages an access
 /// token.
-#[async_trait]
 pub trait Inner: Send + Sync + std::fmt::Debug {
     /// Construct end send an HTTP request using the provided Endpoint with
     /// bearer token authentication.

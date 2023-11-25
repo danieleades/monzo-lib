@@ -1,5 +1,3 @@
-use async_trait::async_trait;
-
 use crate::{
     client,
     client::{handle_request, Client},
@@ -79,7 +77,6 @@ impl Client<Refreshable> {
     }
 }
 
-#[async_trait]
 impl client::Inner for Refreshable {
     async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response> {
         self.quick_client.execute(endpoint).await
