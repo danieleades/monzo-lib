@@ -98,9 +98,7 @@ impl Client {
     async fn refresh_auth(&self) -> monzo::Result<()> {
         tracing::info!("attempting access token refresh");
 
-        let _refresh_lock = if let Ok(lock) = self.refresh_lock.try_lock() {
-            lock
-        } else {
+        let Ok(_refresh_lock) = self.refresh_lock.try_lock() else {
             tracing::debug!("another thread is already refreshing auth");
             return Ok(());
         };
