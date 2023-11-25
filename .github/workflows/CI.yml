@@ -68,7 +68,7 @@ jobs:
   cargo-deny:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: EmbarkStudios/cargo-deny-action@v1
 
   # Automatically merge if it's a Dependabot PR that passes the build
@@ -77,7 +77,7 @@ jobs:
     if: github.actor == 'dependabot[bot]'
     needs: [test, fmt, clippy, docs, cargo-deny]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Auto-merge Dependabot PRs
         # Find the PR number based on the current branch name, and squash merge based on this number
         run: 'PR_NUM="$(gh pr list | grep $(git branch --show-current) | cut -f1)"; gh pr merge --auto --squash $PR_NUM'
