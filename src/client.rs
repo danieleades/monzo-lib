@@ -12,10 +12,10 @@ pub mod inner;
 
 /// A generic trait of any HTTP client which also stores and manages an access
 /// token.
+#[allow(async_fn_in_trait)]
 pub trait Inner: Send + Sync + std::fmt::Debug {
     /// Construct end send an HTTP request using the provided Endpoint with
     /// bearer token authentication.
-    #[allow(async_fn_in_trait)]
     async fn execute<E>(&self, endpoint: &E) -> reqwest::Result<reqwest::Response>
     where
         E: Endpoint;
@@ -28,6 +28,29 @@ pub trait Inner: Send + Sync + std::fmt::Debug {
 
     /// The base URL of the API
     fn url(&self) -> &str;
+
+    #[instrument(skip(self, endpoint), fields(url = self.url(), endpoint = endpoint.endpoint()))]
+    async fn handle_request<E, R>(&self, endpoint: &E) -> Result<R>
+    where
+        R: DeserializeOwned,
+        E: Endpoint,
+    {
+        tracing::info!("sending request");
+        let response = self.execute(endpoint).await?;
+        tracing::info!("response received");
+
+        let result = handle_response(response).await;
+
+        match &result {
+            Ok(_) => {
+                tracing::info!("request successful");
+            }
+            Err(e) => {
+                tracing::info!("request failed: {}", e);
+            }
+        };
+        result
+    }
 }
 
 /// A Monzo API client
@@ -75,7 +98,7 @@ where
         pub struct Response {
             accounts: Vec<accounts::Account>,
         }
-        let response: Response = handle_request(&self.inner_client, &accounts::List).await?;
+        let response: Response = self.inner_client.handle_request(&accounts::List).await?;
 
         Ok(response.accounts)
     }
@@ -99,7 +122,9 @@ where
     /// # }
     /// ```
     pub async fn balance(&self, account_id: &str) -> Result<balance::Balance> {
-        handle_request(&self.inner_client, &balance::Get::new(account_id)).await
+        self.inner_client
+            .handle_request(&balance::Get::new(account_id))
+            .await
     }
 
     /// Return a list of Pots
@@ -127,8 +152,10 @@ where
             pots: Vec<pots::Pot>,
         }
 
-        let response: Response =
-            handle_request(&self.inner_client, &pots::List::new(account_id)).await?;
+        let response: Response = self
+            .inner_client
+            .handle_request(&pots::List::new(account_id))
+            .await?;
 
         Ok(response.pots)
     }
@@ -172,11 +199,9 @@ where
         source_account_id: &str,
         amount: u32,
     ) -> Result<pots::Pot> {
-        handle_request(
-            &self.inner_client,
-            &pots::Deposit::new(pot_id, source_account_id, amount),
-        )
-        .await
+        self.inner_client
+            .handle_request(&pots::Deposit::new(pot_id, source_account_id, amount))
+            .await
     }
 
     /// Withdraw money from a pot
@@ -186,11 +211,9 @@ where
         destination_account_id: &str,
         amount: u32,
     ) -> Result<pots::Pot> {
-        handle_request(
-            &self.inner_client,
-            &pots::Withdraw::new(pot_id, destination_account_id, amount),
-        )
-        .await
+        self.inner_client
+            .handle_request(&pots::Withdraw::new(pot_id, destination_account_id, amount))
+            .await
     }
 
     /// Get a list of transactions
@@ -255,32 +278,8 @@ where
 
     /// Return information about the current session
     pub async fn who_am_i(&self) -> Result<who_am_i::Response> {
-        handle_request(&self.inner_client, &who_am_i::Request).await
+        self.inner_client.handle_request(&who_am_i::Request).await
     }
-}
-
-#[instrument(skip(client, endpoint), fields(url = client.url(), endpoint = endpoint.endpoint()))]
-pub async fn handle_request<R, C, E>(client: &C, endpoint: &E) -> Result<R>
-where
-    R: DeserializeOwned,
-    C: Inner,
-    E: Endpoint,
-{
-    tracing::info!("sending request");
-    let response = client.execute(endpoint).await?;
-    tracing::info!("response received");
-
-    let result = handle_response(response).await;
-
-    match &result {
-        Ok(_) => {
-            tracing::info!("request successful");
-        }
-        Err(e) => {
-            tracing::info!("request failed: {}", e);
-        }
-    };
-    result
 }
 
 async fn handle_response<R>(response: reqwest::Response) -> Result<R>

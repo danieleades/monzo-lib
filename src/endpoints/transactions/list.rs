@@ -2,11 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::{Pagination, Since, Transaction};
-use crate::{
-    client::{self, handle_request},
-    endpoints::Endpoint,
-    Result,
-};
+use crate::{client, endpoints::Endpoint, Result};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
@@ -90,7 +86,7 @@ where
             transactions: Vec<Transaction>,
         }
 
-        let response: Response = handle_request(self.client, &self).await?;
+        let response: Response = self.client.handle_request(&self).await?;
 
         Ok(response.transactions)
     }

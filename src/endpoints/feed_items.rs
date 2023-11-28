@@ -5,7 +5,7 @@ pub use basic::Request as Basic;
 pub(crate) mod basic {
     use serde::Serialize;
 
-    use crate::{client, client::handle_request, endpoints::Endpoint, Result};
+    use crate::{client, endpoints::Endpoint, Result};
 
     /// A request to create a new basic feed item.
     ///
@@ -102,7 +102,7 @@ pub(crate) mod basic {
 
         /// Consume and send the [`Request`].
         pub async fn send(self) -> Result<()> {
-            handle_request(self.client, &self).await
+            self.client.handle_request(&self).await
         }
     }
 

@@ -1,9 +1,5 @@
 use super::Transaction;
-use crate::{
-    client::{self, handle_request},
-    endpoints::Endpoint,
-    Result,
-};
+use crate::{client, endpoints::Endpoint, Result};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
@@ -60,6 +56,6 @@ where
 
     /// Consume the request and return the [`Transaction`]
     pub async fn send(self) -> Result<Transaction> {
-        handle_request(self.client, &self).await
+        self.client.handle_request(&self).await
     }
 }
