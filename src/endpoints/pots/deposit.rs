@@ -8,9 +8,7 @@ pub struct Request<'a> {
 }
 
 impl<'a> Endpoint for Request<'a> {
-    fn method(&self) -> reqwest::Method {
-        reqwest::Method::PUT
-    }
+    const METHOD: reqwest::Method = reqwest::Method::PUT;
 
     fn endpoint(&self) -> &str {
         &self.endpoint

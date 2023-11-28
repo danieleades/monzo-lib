@@ -50,16 +50,11 @@ mod refresh {
     }
 
     impl<'a> Endpoint for Request<'a> {
-        fn method(&self) -> reqwest::Method {
-            reqwest::Method::POST
-        }
+        const AUTH_REQUIRED: bool = false;
+        const METHOD: reqwest::Method = reqwest::Method::POST;
 
         fn endpoint(&self) -> &str {
             "/oauth2/token"
-        }
-
-        fn auth_required(&self) -> bool {
-            false
         }
 
         fn form(&self) -> Option<&dyn erased_serde::Serialize> {

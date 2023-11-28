@@ -15,14 +15,20 @@ pub(crate) mod basic {
     /// Use the builder methods to set optional fields
     #[derive(Debug)]
     #[must_use]
-    pub struct Request<'a> {
-        client: &'a dyn client::Inner,
+    pub struct Request<'a, C>
+    where
+        C: client::Inner,
+    {
+        client: &'a C,
         payload: Payload<'a>,
     }
 
-    impl<'a> Request<'a> {
+    impl<'a, C> Request<'a, C>
+    where
+        C: client::Inner,
+    {
         pub(crate) fn new(
-            client: &'a dyn client::Inner,
+            client: &'a C,
             account_id: &'a str,
             title: &'a str,
             image_url: &'a str,
@@ -100,10 +106,11 @@ pub(crate) mod basic {
         }
     }
 
-    impl<'a> Endpoint for Request<'a> {
-        fn method(&self) -> reqwest::Method {
-            reqwest::Method::POST
-        }
+    impl<'a, C> Endpoint for Request<'a, C>
+    where
+        C: client::Inner,
+    {
+        const METHOD: reqwest::Method = reqwest::Method::POST;
 
         fn endpoint(&self) -> &str {
             "/feed"

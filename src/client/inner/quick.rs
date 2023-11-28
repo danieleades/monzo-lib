@@ -1,5 +1,3 @@
-use async_trait::async_trait;
-
 use crate::{client, client::Client, endpoints::Endpoint};
 
 /// A quick and dirty Monzo API client.
@@ -45,14 +43,16 @@ impl Client<Quick> {
     }
 }
 
-#[async_trait]
 impl client::Inner for Quick {
-    async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response> {
+    async fn execute<E>(&self, endpoint: &E) -> reqwest::Result<reqwest::Response>
+    where
+        E: Endpoint,
+    {
         let mut request = self
             .http_client
-            .request(endpoint.method(), self.url.clone() + endpoint.endpoint());
+            .request(E::METHOD, self.url.clone() + endpoint.endpoint());
 
-        if endpoint.auth_required() {
+        if E::AUTH_REQUIRED {
             request = request.bearer_auth(&self.access_token);
         }
 

@@ -1,6 +1,5 @@
 //! Monzo API clients
 
-use async_trait::async_trait;
 use serde::{de::DeserializeOwned, Deserialize};
 use tracing::instrument;
 
@@ -13,11 +12,13 @@ pub mod inner;
 
 /// A generic trait of any HTTP client which also stores and manages an access
 /// token.
-#[async_trait]
 pub trait Inner: Send + Sync + std::fmt::Debug {
     /// Construct end send an HTTP request using the provided Endpoint with
     /// bearer token authentication.
-    async fn execute(&self, endpoint: &dyn Endpoint) -> reqwest::Result<reqwest::Response>;
+    #[allow(async_fn_in_trait)]
+    async fn execute<E>(&self, endpoint: &E) -> reqwest::Result<reqwest::Response>
+    where
+        E: Endpoint;
 
     /// Return a reference to the current access token
     fn access_token(&self) -> &String;
@@ -31,16 +32,16 @@ pub trait Inner: Send + Sync + std::fmt::Debug {
 
 /// A Monzo API client
 #[derive(Debug)]
-pub struct Client<M>
+pub struct Client<C>
 where
-    M: Inner,
+    C: Inner,
 {
-    inner_client: M,
+    inner_client: C,
 }
 
-impl<M> Client<M>
+impl<C> Client<C>
 where
-    M: Inner,
+    C: Inner,
 {
     /// Return a reference to the current access token
     #[must_use]
@@ -160,7 +161,7 @@ where
         account_id: &'a str,
         title: &'a str,
         image_url: &'a str,
-    ) -> feed_items::basic::Request<'a> {
+    ) -> feed_items::basic::Request<'a, C> {
         feed_items::basic::Request::new(&self.inner_client, account_id, title, image_url)
     }
 
@@ -223,7 +224,7 @@ where
     /// *The Monzo API will only return transactions from more than 90 days ago
     /// in the first 5 minutes after authorising the Client. You can avoid this
     /// by using the 'since' method.*
-    pub fn transactions<'a>(&'a self, account_id: &'a str) -> transactions::List<'a> {
+    pub fn transactions<'a>(&'a self, account_id: &'a str) -> transactions::List<'a, C> {
         transactions::List::new(&self.inner_client, account_id)
     }
 
@@ -248,7 +249,7 @@ where
     /// # Note
     /// *The Monzo API will only return transactions from more than 90 days ago
     /// in the first 5 minutes after authorising the Client.*
-    pub fn transaction<'a>(&'a self, transaction_id: &'a str) -> transactions::Get<'a> {
+    pub fn transaction<'a>(&'a self, transaction_id: &'a str) -> transactions::Get<'a, C> {
         transactions::Get::new(&self.inner_client, transaction_id)
     }
 
@@ -259,9 +260,11 @@ where
 }
 
 #[instrument(skip(client, endpoint), fields(url = client.url(), endpoint = endpoint.endpoint()))]
-pub async fn handle_request<R>(client: &dyn Inner, endpoint: &dyn Endpoint) -> Result<R>
+pub async fn handle_request<R, C, E>(client: &C, endpoint: &E) -> Result<R>
 where
     R: DeserializeOwned,
+    C: Inner,
+    E: Endpoint,
 {
     tracing::info!("sending request");
     let response = client.execute(endpoint).await?;

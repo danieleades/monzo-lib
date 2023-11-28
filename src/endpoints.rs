@@ -10,7 +10,8 @@ mod utils;
 pub mod who_am_i;
 
 pub trait Endpoint: Sync {
-    fn method(&self) -> reqwest::Method;
+    const METHOD: reqwest::Method;
+    const AUTH_REQUIRED: bool = true;
     fn endpoint(&self) -> &str;
     fn query(&self) -> Option<&dyn ErasedSerialize> {
         None
@@ -20,8 +21,5 @@ pub trait Endpoint: Sync {
     }
     fn json(&self) -> Option<&dyn ErasedSerialize> {
         None
-    }
-    fn auth_required(&self) -> bool {
-        true
     }
 }

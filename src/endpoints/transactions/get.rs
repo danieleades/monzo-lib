@@ -10,16 +10,20 @@ use crate::{
 /// Use the builder-style methods to set optional fields on the request
 #[derive(Debug)]
 #[must_use]
-pub struct Request<'a> {
-    client: &'a dyn client::Inner,
+pub struct Request<'a, C>
+where
+    C: client::Inner,
+{
+    client: &'a C,
     endpoint: String,
     expand_merchant: bool,
 }
 
-impl<'a> Endpoint for Request<'a> {
-    fn method(&self) -> reqwest::Method {
-        reqwest::Method::GET
-    }
+impl<'a, C> Endpoint for Request<'a, C>
+where
+    C: client::Inner,
+{
+    const METHOD: reqwest::Method = reqwest::Method::GET;
 
     fn endpoint(&self) -> &str {
         &self.endpoint
@@ -34,8 +38,11 @@ impl<'a> Endpoint for Request<'a> {
     }
 }
 
-impl<'a> Request<'a> {
-    pub(crate) fn new(client: &'a dyn client::Inner, transaction_id: &str) -> Self {
+impl<'a, C> Request<'a, C>
+where
+    C: client::Inner,
+{
+    pub(crate) fn new(client: &'a C, transaction_id: &'a str) -> Self {
         let endpoint = format!("/transactions/{transaction_id}");
         Self {
             client,
