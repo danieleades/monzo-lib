@@ -2,26 +2,26 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::{Pagination, Since, Transaction};
-use crate::{
-    client::{self, handle_request},
-    endpoints::Endpoint,
-    Result,
-};
+use crate::{client, endpoints::Endpoint, Result};
 
 /// A request to retrieve a list of transactions from the Monzo API
 ///
 /// Use the builder-style methods to set optional fields on the request
 #[derive(Debug)]
 #[must_use]
-pub struct Request<'a> {
-    client: &'a dyn client::Inner,
+pub struct Request<'a, C>
+where
+    C: client::Inner,
+{
+    client: &'a C,
     query: Query<'a>,
 }
 
-impl<'a> Endpoint for Request<'a> {
-    fn method(&self) -> reqwest::Method {
-        reqwest::Method::GET
-    }
+impl<'a, C> Endpoint for Request<'a, C>
+where
+    C: client::Inner,
+{
+    const METHOD: reqwest::Method = reqwest::Method::GET;
 
     fn endpoint(&self) -> &str {
         "/transactions"
@@ -32,8 +32,11 @@ impl<'a> Endpoint for Request<'a> {
     }
 }
 
-impl<'a> Request<'a> {
-    pub(crate) fn new(client: &'a dyn client::Inner, account_id: &'a str) -> Self {
+impl<'a, C> Request<'a, C>
+where
+    C: client::Inner,
+{
+    pub(crate) fn new(client: &'a C, account_id: &'a str) -> Self {
         let query = Query {
             account_id,
             pagination: Pagination::default(),
@@ -83,7 +86,7 @@ impl<'a> Request<'a> {
             transactions: Vec<Transaction>,
         }
 
-        let response: Response = handle_request(self.client, &self).await?;
+        let response: Response = self.client.handle_request(&self).await?;
 
         Ok(response.transactions)
     }

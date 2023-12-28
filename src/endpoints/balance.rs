@@ -40,9 +40,7 @@ mod get {
     }
 
     impl<'a> Endpoint for Request<'a> {
-        fn method(&self) -> reqwest::Method {
-            reqwest::Method::GET
-        }
+        const METHOD: reqwest::Method = reqwest::Method::GET;
 
         fn endpoint(&self) -> &str {
             "/balance"

@@ -5,7 +5,7 @@ pub use basic::Request as Basic;
 pub(crate) mod basic {
     use serde::Serialize;
 
-    use crate::{client, client::handle_request, endpoints::Endpoint, Result};
+    use crate::{client, endpoints::Endpoint, Result};
 
     /// A request to create a new basic feed item.
     ///
@@ -15,14 +15,20 @@ pub(crate) mod basic {
     /// Use the builder methods to set optional fields
     #[derive(Debug)]
     #[must_use]
-    pub struct Request<'a> {
-        client: &'a dyn client::Inner,
+    pub struct Request<'a, C>
+    where
+        C: client::Inner,
+    {
+        client: &'a C,
         payload: Payload<'a>,
     }
 
-    impl<'a> Request<'a> {
+    impl<'a, C> Request<'a, C>
+    where
+        C: client::Inner,
+    {
         pub(crate) fn new(
-            client: &'a dyn client::Inner,
+            client: &'a C,
             account_id: &'a str,
             title: &'a str,
             image_url: &'a str,
@@ -96,14 +102,15 @@ pub(crate) mod basic {
 
         /// Consume and send the [`Request`].
         pub async fn send(self) -> Result<()> {
-            handle_request(self.client, &self).await
+            self.client.handle_request(&self).await
         }
     }
 
-    impl<'a> Endpoint for Request<'a> {
-        fn method(&self) -> reqwest::Method {
-            reqwest::Method::POST
-        }
+    impl<'a, C> Endpoint for Request<'a, C>
+    where
+        C: client::Inner,
+    {
+        const METHOD: reqwest::Method = reqwest::Method::POST;
 
         fn endpoint(&self) -> &str {
             "/feed"
