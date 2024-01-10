@@ -73,13 +73,14 @@ jobs:
 
   # Automatically merge if it's a Dependabot PR that passes the build
   dependabot:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
-    needs: [test, fmt, clippy, docs, cargo-deny]
     steps:
-      - uses: actions/checkout@v4
-      - name: Auto-merge Dependabot PRs
-        # Find the PR number based on the current branch name, and squash merge based on this number
-        run: 'PR_NUM="$(gh pr list | grep $(git branch --show-current) | cut -f1)"; gh pr merge --auto --squash $PR_NUM'
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge --auto --merge "$PR_URL"
         env:
+          PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
