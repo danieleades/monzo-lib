@@ -1,5 +1,7 @@
 //! Monzo API clients
 
+use std::future::Future;
+
 use serde::{de::DeserializeOwned, Deserialize};
 use tracing::instrument;
 
@@ -16,7 +18,10 @@ pub mod inner;
 pub trait Inner: Send + Sync + std::fmt::Debug {
     /// Construct end send an HTTP request using the provided Endpoint with
     /// bearer token authentication.
-    async fn execute<E>(&self, endpoint: &E) -> reqwest::Result<reqwest::Response>
+    fn execute<E>(
+        &self,
+        endpoint: &E,
+    ) -> impl Future<Output = reqwest::Result<reqwest::Response>> + Send
     where
         E: Endpoint;
 
@@ -30,26 +35,28 @@ pub trait Inner: Send + Sync + std::fmt::Debug {
     fn url(&self) -> &str;
 
     #[instrument(skip(self, endpoint), fields(url = self.url(), endpoint = endpoint.endpoint()))]
-    async fn handle_request<E, R>(&self, endpoint: &E) -> Result<R>
+    fn handle_request<E, R>(&self, endpoint: &E) -> impl Future<Output = Result<R>> + Send
     where
         R: DeserializeOwned,
         E: Endpoint,
     {
-        tracing::info!("sending request");
-        let response = self.execute(endpoint).await?;
-        tracing::info!("response received");
+        async {
+            tracing::info!("sending request");
+            let response = self.execute(endpoint).await?;
+            tracing::info!("response received");
 
-        let result = handle_response(response).await;
+            let result = handle_response(response).await;
 
-        match &result {
-            Ok(_) => {
-                tracing::info!("request successful");
-            }
-            Err(e) => {
-                tracing::info!("request failed: {}", e);
-            }
-        };
-        result
+            match &result {
+                Ok(_) => {
+                    tracing::info!("request successful");
+                }
+                Err(e) => {
+                    tracing::info!("request failed: {}", e);
+                }
+            };
+            result
+        }
     }
 }
 
@@ -183,7 +190,7 @@ where
     /// # Ok(())
     /// # }
     /// ```
-    pub fn basic_feed_item<'a>(
+    pub const fn basic_feed_item<'a>(
         &'a self,
         account_id: &'a str,
         title: &'a str,

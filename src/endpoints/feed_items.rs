@@ -27,7 +27,7 @@ pub(crate) mod basic {
     where
         C: client::Inner,
     {
-        pub(crate) fn new(
+        pub(crate) const fn new(
             client: &'a C,
             account_id: &'a str,
             title: &'a str,
