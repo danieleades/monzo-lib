@@ -24,7 +24,7 @@ chrono = { version = "0.4.33", features = ["serde"] }
 serde = { version = "1.0.196", features = ["derive"] }
 rand = "0.8.4"
 serde_json = "1.0.113"
-erased-serde = "0.4.2"
+erased-serde = "0.4.3"
 thiserror = "1.0.56"
 tracing = "0.1.29"
 
