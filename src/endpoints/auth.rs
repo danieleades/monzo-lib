@@ -16,7 +16,7 @@ mod refresh {
         pub access_token: String,
 
         /// The id of the client
-        #[serde(rename="client_id")]
+        #[serde(rename = "client_id")]
         pub _client_id: String,
 
         /// time (in seconds) until the access token expires
@@ -28,11 +28,11 @@ mod refresh {
 
         /// The token type. currently the only supported token type is
         /// "bearer_auth"
-        #[serde(rename="token_type")]
+        #[serde(rename = "token_type")]
         pub _token_type: String,
 
         /// The id of the current Monzo user
-        #[serde(rename="user_id")]
+        #[serde(rename = "user_id")]
         pub _user_id: String,
     }
 
