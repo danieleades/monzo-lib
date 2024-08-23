@@ -2,6 +2,7 @@ version: 2
 updates:
   # bump major and minor updates as soon as available
   - package-ecosystem: cargo
+    target-branch: main  # see https://github.com/dependabot/dependabot-core/issues/1778#issuecomment-1988140219
     directory: /
     schedule:
       interval: daily
