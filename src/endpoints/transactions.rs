@@ -166,7 +166,7 @@ struct Pagination {
     before: Option<DateTime<Utc>>,
 }
 
-/// The 'since' paramater of a pagination request can be either a timestamp or
+/// The 'since' parameter of a pagination request can be either a timestamp or
 /// an object id
 #[derive(Debug, Serialize, Clone)]
 #[serde(untagged)]
