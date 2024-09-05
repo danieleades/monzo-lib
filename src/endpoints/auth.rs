@@ -27,7 +27,7 @@ mod refresh {
         pub refresh_token: String,
 
         /// The token type. currently the only supported token type is
-        /// "bearer_auth"
+        /// `bearer_auth`
         #[serde(rename = "token_type")]
         pub _token_type: String,
 
