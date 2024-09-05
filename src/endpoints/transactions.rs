@@ -71,11 +71,12 @@ pub struct Transaction {
     pub decline_reason: Option<DeclineReason>,
 
     /// Top-ups to an account are represented as transactions with a positive
-    /// amount and is_load = true. Other transactions such as refunds, reversals
-    /// or chargebacks may have a positive amount but is_load = false
+    /// amount and `is_load` = true. Other transactions such as refunds,
+    /// reversals or chargebacks may have a positive amount but `is_load` =
+    /// false
     pub is_load: bool,
 
-    /// The timestamp at wich the transaction was settled
+    /// The timestamp at which the transaction was settled
     ///
     /// This is `None` if the transaction is authorised, but not yet complete.
     #[serde(deserialize_with = "empty_string_as_none")]
@@ -165,7 +166,7 @@ struct Pagination {
     before: Option<DateTime<Utc>>,
 }
 
-/// The 'since' paramater of a pagination request can be either a timestamp or
+/// The 'since' parameter of a pagination request can be either a timestamp or
 /// an object id
 #[derive(Debug, Serialize, Clone)]
 #[serde(untagged)]
