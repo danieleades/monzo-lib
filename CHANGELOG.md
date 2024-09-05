@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.6](https://github.com/danieleades/monzo-lib/compare/v0.4.5...v0.4.6) - 2024-09-05
+
+### Other
+- address missing backticks and spelling errors ([#124](https://github.com/danieleades/monzo-lib/pull/124))
+- *(deps)* bump the patch-updates group with 2 updates
+- *(deps)* bump tokio from 1.39.3 to 1.40.0
+
 ## [0.4.5](https://github.com/danieleades/monzo-lib/compare/v0.4.4...v0.4.5) - 2024-08-23
 
 ### Fixed
