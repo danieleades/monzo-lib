@@ -7,7 +7,7 @@ pub struct Request<'a> {
     form: Form<'a>,
 }
 
-impl<'a> Endpoint for Request<'a> {
+impl Endpoint for Request<'_> {
     const METHOD: reqwest::Method = reqwest::Method::PUT;
 
     fn endpoint(&self) -> &str {

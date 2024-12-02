@@ -17,13 +17,13 @@ where
     query: Query<'a>,
 }
 
-impl<'a, C> Endpoint for Request<'a, C>
+impl<C> Endpoint for Request<'_, C>
 where
     C: client::Inner,
 {
     const METHOD: reqwest::Method = reqwest::Method::GET;
 
-    fn endpoint(&self) -> &str {
+    fn endpoint(&self) -> &'static str {
         "/transactions"
     }
 

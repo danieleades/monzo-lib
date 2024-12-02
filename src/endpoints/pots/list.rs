@@ -14,10 +14,10 @@ impl<'a> Request<'a> {
     }
 }
 
-impl<'a> Endpoint for Request<'a> {
+impl Endpoint for Request<'_> {
     const METHOD: reqwest::Method = reqwest::Method::GET;
 
-    fn endpoint(&self) -> &str {
+    fn endpoint(&self) -> &'static str {
         "/pots"
     }
 

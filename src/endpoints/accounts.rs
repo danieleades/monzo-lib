@@ -84,7 +84,7 @@ mod list {
     impl Endpoint for Request {
         const METHOD: reqwest::Method = reqwest::Method::GET;
 
-        fn endpoint(&self) -> &str {
+        fn endpoint(&self) -> &'static str {
             "/accounts"
         }
     }

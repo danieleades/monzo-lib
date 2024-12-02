@@ -15,7 +15,7 @@ where
     expand_merchant: bool,
 }
 
-impl<'a, C> Endpoint for Request<'a, C>
+impl<C> Endpoint for Request<'_, C>
 where
     C: client::Inner,
 {

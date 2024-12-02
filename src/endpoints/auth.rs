@@ -52,11 +52,11 @@ mod refresh {
         }
     }
 
-    impl<'a> Endpoint for Request<'a> {
+    impl Endpoint for Request<'_> {
         const AUTH_REQUIRED: bool = false;
         const METHOD: reqwest::Method = reqwest::Method::POST;
 
-        fn endpoint(&self) -> &str {
+        fn endpoint(&self) -> &'static str {
             "/oauth2/token"
         }
 
