@@ -21,11 +21,11 @@ impl Endpoint for Request<'_> {
 
 impl<'a> Request<'a> {
     pub(crate) fn new(pot_id: &'a str, source_account_id: &'a str, amount: u32) -> Self {
-        use rand::{distributions::Alphanumeric, thread_rng, Rng};
+        use rand::{distr::Alphanumeric, rng, Rng};
 
         let endpoint = format!("/pots/{}/deposit", &pot_id);
 
-        let dedupe_id: String = thread_rng()
+        let dedupe_id: String = rng()
             .sample_iter(&Alphanumeric)
             .map(char::from)
             .take(10)
