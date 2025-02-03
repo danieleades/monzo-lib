@@ -54,7 +54,7 @@ pub trait Inner: Send + Sync + std::fmt::Debug {
                 Err(e) => {
                     tracing::info!("request failed: {}", e);
                 }
-            };
+            }
             result
         }
     }
