@@ -14,7 +14,6 @@ pub mod inner;
 
 /// A generic trait of any HTTP client which also stores and manages an access
 /// token.
-#[allow(async_fn_in_trait)]
 pub trait Inner: Send + Sync + std::fmt::Debug {
     /// Construct end send an HTTP request using the provided Endpoint with
     /// bearer token authentication.
