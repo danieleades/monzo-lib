@@ -2,7 +2,7 @@
 # Monzo
 
 [![Latest Docs](https://docs.rs/monzo-lib/badge.svg)](https://docs.rs/monzo-lib/)
-![Continuous integration](https://github.com/danieleades/monzo-lib/workflows/Continuous%20integration/badge.svg)
+[![Continuous integration](https://github.com/danieleades/monzo-lib/actions/workflows/CI.yml/badge.svg)](https://github.com/danieleades/monzo-lib/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/gh/danieleades/monzo-lib/graph/badge.svg?token=2ovtmhitE8)](https://codecov.io/gh/danieleades/monzo-lib)
 
 This crate is a Monzo client in pure rust.
