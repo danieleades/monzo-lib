@@ -419,8 +419,8 @@ mod tests {
     fn deserialise_list() {
         use serde::Deserialize;
         #[derive(Deserialize)]
-        #[allow(dead_code)]
         struct Response {
+            #[allow(dead_code)]
             transactions: Vec<Transaction>,
         }
 
