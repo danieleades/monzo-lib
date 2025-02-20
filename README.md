@@ -56,3 +56,5 @@ better, a pull request.
 ---
 
 License: Apache-2.0
+
+*Was this useful? [Buy me a coffee](https://github.com/sponsors/danieleades/sponsorships?sponsor=danieleades&preview=true&frequency=recurring&amount=5)*
