@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.6](https://github.com/danieleades/monzo-lib/compare/v0.4.5...v0.4.6) - 2025-04-05
+
+### Added
+
+- use rustls tls ([#156](https://github.com/danieleades/monzo-lib/pull/156))
+
+### Fixed
+
+- *(ci)* fix the name of the CI runners ([#136](https://github.com/danieleades/monzo-lib/pull/136))
+
+### Other
+
+- Merge pull request #150 from danieleades/dependabot/cargo/patch-updates-c89dced416
+- Merge pull request #151 from danieleades/dependabot/cargo/ring-0.17.13
+- *(deps)* bump tokio from 1.43.0 to 1.44.1
+- add funding info ([#149](https://github.com/danieleades/monzo-lib/pull/149))
+- *(ci)* tidying of workflow files and minor refactoring ([#148](https://github.com/danieleades/monzo-lib/pull/148))
+- *(docs)* update CI badge in readme ([#147](https://github.com/danieleades/monzo-lib/pull/147))
+- *(deps)* bump rand from 0.8.5 to 0.9.0 ([#143](https://github.com/danieleades/monzo-lib/pull/143))
+- *(lint)* remove unnecessary semicolon ([#146](https://github.com/danieleades/monzo-lib/pull/146))
+- *(deps)* bump openssl from 0.10.68 to 0.10.70
+- *(deps)* bump the patch-updates group with 3 updates
+- address cargo-deny warnings ([#142](https://github.com/danieleades/monzo-lib/pull/142))
+- *(deps)* bump tokio from 1.41.1 to 1.42.0
+- *(deps)* bump codecov/codecov-action from 4 to 5 ([#132](https://github.com/danieleades/monzo-lib/pull/132))
+- *(deps)* bump tokio from 1.40.0 to 1.41.1
+- *(deps)* bump the patch-updates group across 1 directory with 5 updates
+- *(deps)* bump thiserror from 1.0.63 to 2.0.3
+- address clippy warnings ([#135](https://github.com/danieleades/monzo-lib/pull/135))
+- *(ci)* refactor CI to parse MSRV from cargo.toml ([#134](https://github.com/danieleades/monzo-lib/pull/134))
+- address missing backticks and spelling errors ([#124](https://github.com/danieleades/monzo-lib/pull/124))
+- *(deps)* bump the patch-updates group with 2 updates
+- *(deps)* bump tokio from 1.39.3 to 1.40.0
+
 ## [0.4.5](https://github.com/danieleades/monzo-lib/compare/v0.4.4...v0.4.5) - 2024-08-23
 
 ### Fixed
