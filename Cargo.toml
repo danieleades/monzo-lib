@@ -10,7 +10,7 @@ categories = ["api-bindings", "asynchronous"]
 homepage = "https://github.com/danieleades/monzo-lib"
 repository = "https://github.com/danieleades/monzo-lib"
 license = "Apache-2.0"
-rust-version = "1.75.0"
+rust-version = "1.81.0"
 
 [lib]
 name = "monzo"
