@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.7](https://github.com/danieleades/monzo-lib/compare/v0.4.6...v0.4.7) - 2025-06-01
+
+### Other
+
+- *(deps)* bump the patch-updates group with 2 updates ([#163](https://github.com/danieleades/monzo-lib/pull/163))
+- *(deps)* bump the patch-updates group across 1 directory with 3 updates ([#162](https://github.com/danieleades/monzo-lib/pull/162))
+- *(deps)* bump tokio from 1.44.1 to 1.45.1 ([#160](https://github.com/danieleades/monzo-lib/pull/160))
+
 ## [0.4.6](https://github.com/danieleades/monzo-lib/compare/v0.4.5...v0.4.6) - 2025-04-05
 
 ### Added
