@@ -1,4 +1,27 @@
 # Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.4.7](https://github.com/danieleades/monzo-lib/compare/v0.4.6...v0.4.7) - 2025-08-01
+
+### Fixed
+
+- *(ci)* update license requirements for cargo deny ([#166](https://github.com/danieleades/monzo-lib/pull/166))
+
+### Other
+
+- *(deps)* bump the patch-updates group with 4 updates ([#168](https://github.com/danieleades/monzo-lib/pull/168))
+- *(deps)* bump the patch-updates group with 2 updates ([#164](https://github.com/danieleades/monzo-lib/pull/164))
+- *(deps)* bump tokio from 1.45.1 to 1.46.0 ([#165](https://github.com/danieleades/monzo-lib/pull/165))
+- *(deps)* bump the patch-updates group with 2 updates ([#163](https://github.com/danieleades/monzo-lib/pull/163))
+- *(deps)* bump the patch-updates group across 1 directory with 3 updates ([#162](https://github.com/danieleades/monzo-lib/pull/162))
+- *(deps)* bump tokio from 1.44.1 to 1.45.1 ([#160](https://github.com/danieleades/monzo-lib/pull/160))
+# Changelog
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
