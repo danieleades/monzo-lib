@@ -19,17 +19,17 @@ name = "monzo"
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-chrono = { version = "0.4.41", features = ["serde"] }
-erased-serde = "0.4.5"
+chrono = { version = "0.4.42", features = ["serde"] }
+erased-serde = "0.4.9"
 rand = "0.9.2"
-reqwest = { version = "0.12.23", default-features = false, features = ["rustls-tls", "json"] }
+reqwest = { version = "0.12.24", default-features = false, features = ["rustls-tls", "json"] }
 serde = { version = "1.0.218", features = ["derive"] }
-serde_json = "1.0.143"
-thiserror = "2.0.16"
-tracing = "0.1.41"
+serde_json = "1.0.145"
+thiserror = "2.0.17"
+tracing = "0.1.43"
 
 [dev-dependencies]
-clap = { version = "4.5.46", features = ["derive", "env"] }
-doc-comment = "0.3.3"
-tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread"] }
-tracing = "0.1.41"
+clap = { version = "4.5.53", features = ["derive", "env"] }
+doc-comment = "0.3.4"
+tokio = { version = "1.47.2", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1.43"
