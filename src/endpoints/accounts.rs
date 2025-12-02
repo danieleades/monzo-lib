@@ -71,6 +71,9 @@ pub enum Type {
 
     /// A monzo business account
     UkBusiness,
+
+    /// A monzo rewards account
+    UkRewards,
 }
 
 pub(crate) use list::Request as List;
