@@ -109,6 +109,9 @@ pub enum DeclineReason {
     /// Transaction declined by the cardholder
     AuthenticationRejectedByCardholder,
 
+    /// Transaction declined because verifcation failed
+    AuthenticationVerificationFailed,
+
     /// All other errors
     Other,
 }
