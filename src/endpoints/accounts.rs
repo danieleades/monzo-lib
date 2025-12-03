@@ -76,9 +76,9 @@ pub enum Type {
 /// Banking information
 pub struct AccountDetails {
     /// The account number
-    account_number: String,
+    pub account_number: String,
     /// The sort code
-    sort_code: String,
+    pub sort_code: String,
 }
 
 pub(crate) use list::Request as List;
