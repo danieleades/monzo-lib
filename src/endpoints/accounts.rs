@@ -12,7 +12,7 @@ pub struct Account {
 
     /// The account details including type and banking information
     #[serde(flatten)]
-    pub details: AccountType,
+    pub account_type: Type,
 
     /// Whether the account has been closed
     pub closed: bool,
@@ -55,7 +55,7 @@ pub struct Owner {
 #[derive(Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 #[serde(tag = "type", rename_all = "snake_case")]
 #[non_exhaustive]
-pub enum AccountType {
+pub enum Type {
     /// A standard monzo account
     UkRetail(AccountDetails),
 
