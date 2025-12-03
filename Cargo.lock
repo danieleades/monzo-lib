@@ -190,12 +190,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "doc-comment"
-version = "0.3.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "780955b8b195a21ab8e4ac6b60dd1dbdcec1dc6c51c0617964b08c81785e12c9"
-
-[[package]]
 name = "erased-serde"
 version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -630,7 +624,6 @@ version = "0.4.6"
 dependencies = [
  "chrono",
  "clap",
- "doc-comment",
  "erased-serde",
  "rand",
  "reqwest",
