@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0](https://github.com/danieleades/monzo-lib/compare/v0.5.0...v0.6.0) - 2025-12-03
+
+### Fixed
+
+- adds missing transaction decline reason ([#178](https://github.com/danieleades/monzo-lib/pull/178))
+
 ## [0.5.0](https://github.com/danieleades/monzo-lib/compare/v0.4.6...v0.5.0) - 2025-12-03
 
 ### Added
