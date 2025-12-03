@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0](https://github.com/danieleades/monzo-lib/compare/v0.4.6...v0.5.0) - 2025-12-03
+
+### Added
+
+- [**breaking**] add support for flex and rewards account types ([#176](https://github.com/danieleades/monzo-lib/pull/176))
+
+### Fixed
+
+- *(ci)* update license requirements for cargo deny ([#166](https://github.com/danieleades/monzo-lib/pull/166))
+
+### Other
+
+- little bit of tidying ([#177](https://github.com/danieleades/monzo-lib/pull/177))
+- *(deps)* bump tokio from 1.47.1 to 1.48.0 ([#172](https://github.com/danieleades/monzo-lib/pull/172))
+- *(deps)* bump the patch-updates group across 1 directory with 10 updates ([#174](https://github.com/danieleades/monzo-lib/pull/174))
+- *(deps)* bump the patch-updates group with 4 updates ([#170](https://github.com/danieleades/monzo-lib/pull/170))
+- *(deps)* bump tokio from 1.46.1 to 1.47.1 ([#169](https://github.com/danieleades/monzo-lib/pull/169))
+- *(deps)* bump the patch-updates group with 4 updates ([#168](https://github.com/danieleades/monzo-lib/pull/168))
+- *(deps)* bump the patch-updates group with 2 updates ([#164](https://github.com/danieleades/monzo-lib/pull/164))
+- *(deps)* bump tokio from 1.45.1 to 1.46.0 ([#165](https://github.com/danieleades/monzo-lib/pull/165))
+- *(deps)* bump the patch-updates group with 2 updates ([#163](https://github.com/danieleades/monzo-lib/pull/163))
+- *(deps)* bump the patch-updates group across 1 directory with 3 updates ([#162](https://github.com/danieleades/monzo-lib/pull/162))
+- *(deps)* bump tokio from 1.44.1 to 1.45.1 ([#160](https://github.com/danieleades/monzo-lib/pull/160))
+
 ## [0.4.6](https://github.com/danieleades/monzo-lib/compare/v0.4.5...v0.4.6) - 2025-04-05
 
 ### Added
