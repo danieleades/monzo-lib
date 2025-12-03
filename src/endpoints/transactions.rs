@@ -361,6 +361,12 @@ mod tests {
             "AUTHENTICATION_REJECTED_BY_CARDHOLDER",
         );
         serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
+
+        let new = raw.replace(
+            "AUTHENTICATION_REJECTED_BY_CARDHOLDER",
+            "AUTHENTICATION_VERIFICATION_FAILED",
+        );
+        serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
     }
 
     #[test]
