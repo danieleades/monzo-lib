@@ -109,6 +109,9 @@ pub enum DeclineReason {
     /// Transaction declined by the cardholder
     AuthenticationRejectedByCardholder,
 
+    /// Transaction declined because verifcation failed
+    AuthenticationVerificationFailed,
+
     /// All other errors
     Other,
 }
@@ -356,6 +359,12 @@ mod tests {
         let new = raw.replace(
             "SCA_NOT_AUTHENTICATED_CARD_NOT_PRESENT",
             "AUTHENTICATION_REJECTED_BY_CARDHOLDER",
+        );
+        serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
+
+        let new = raw.replace(
+            "AUTHENTICATION_REJECTED_BY_CARDHOLDER",
+            "AUTHENTICATION_VERIFICATION_FAILED",
         );
         serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
     }
