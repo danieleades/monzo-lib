@@ -31,5 +31,5 @@ tracing = "0.1.43"
 [dev-dependencies]
 clap = { version = "4.5.53", features = ["derive", "env"] }
 test-case = "3.3.1"
-tokio = { version = "1.48.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.49.0", features = ["macros", "rt-multi-thread"] }
 tracing = "0.1.43"
