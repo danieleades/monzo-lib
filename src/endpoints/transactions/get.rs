@@ -1,3 +1,5 @@
+use std::future::{Future, IntoFuture};
+
 use super::Transaction;
 use crate::{client, endpoints::Endpoint, Result};
 
@@ -53,9 +55,18 @@ where
         self.expand_merchant = true;
         self
     }
+}
+
+impl<'a, C> IntoFuture for Request<'a, C>
+where
+    C: client::Inner,
+{
+    type Output = Result<Transaction>;
+
+    type IntoFuture = impl Future<Output = Self::Output>;
 
     /// Consume the request and return the [`Transaction`]
-    pub async fn send(self) -> Result<Transaction> {
-        self.client.handle_request(&self).await
+    fn into_future(self) -> Self::IntoFuture {
+        async move { self.client.handle_request(&self).await }
     }
 }
