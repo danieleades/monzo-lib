@@ -70,6 +70,9 @@ pub enum Type {
 
     /// A monzo flex account
     UkMonzoFlex,
+
+    /// A monzo loan account
+    UkLoan,
 }
 
 #[derive(Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
@@ -202,6 +205,31 @@ mod tests {
             }
         }"#
         ; "uk_monzo_flex"
+    )]
+    #[test_case(
+        r#"{
+            "id": "acc_0000",
+            "closed": false,
+            "created": "2024-01-01T00:00:00.000Z",
+            "description": "loan_0000",
+            "type": "uk_loan",
+            "owner_type": "unknown",
+            "is_flex": false,
+            "product_type": "loan",
+            "closed_account_app_access": false,
+            "currency": "GBP",
+            "legal_entity": "monzo_uk",
+            "country_code": "GB",
+            "country_code_alpha3": "GBR",
+            "owners": [
+                {
+                    "user_id": "user_0000",
+                    "preferred_name": "First Last",
+                    "preferred_first_name": "First"
+                }
+            ]
+        }"#
+        ; "uk_loan"
     )]
     fn parse_account(json_data: &str) {
         let _account: Account = serde_json::from_str(json_data).unwrap();
