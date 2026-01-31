@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1](https://github.com/danieleades/monzo-lib/compare/v0.6.0...v0.6.1) - 2026-01-31
+
+### Added
+
+- add support for uk loans ([#187](https://github.com/danieleades/monzo-lib/pull/187))
+
+### Fixed
+
+- *(ci)* update dependabot auto-merge job to use squash merges ([#183](https://github.com/danieleades/monzo-lib/pull/183))
+
+### Other
+
+- *(deps)* bump the patch-updates group across 1 directory with 3 updates ([#186](https://github.com/danieleades/monzo-lib/pull/186))
+- *(deps)* bump reqwest from 0.12.24 to 0.12.28 ([#180](https://github.com/danieleades/monzo-lib/pull/180))
+- *(deps)* bump tokio from 1.48.0 to 1.49.0 ([#182](https://github.com/danieleades/monzo-lib/pull/182))
+
 ## [0.6.0](https://github.com/danieleades/monzo-lib/compare/v0.5.0...v0.6.0) - 2025-12-03
 
 ### Fixed
