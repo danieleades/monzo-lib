@@ -112,6 +112,9 @@ pub enum DeclineReason {
     /// Transaction declined because verifcation failed
     AuthenticationVerificationFailed,
 
+    /// Transaction declined by the decisioning engine
+    DecisioningEngineHardDecline,
+
     /// All other errors
     Other,
 }
@@ -365,6 +368,12 @@ mod tests {
         let new = raw.replace(
             "AUTHENTICATION_REJECTED_BY_CARDHOLDER",
             "AUTHENTICATION_VERIFICATION_FAILED",
+        );
+        serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
+
+        let new = raw.replace(
+            "AUTHENTICATION_VERIFICATION_FAILED",
+            "DECISIONING_ENGINE_HARD_DECLINE",
         );
         serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
     }
