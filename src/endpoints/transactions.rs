@@ -97,6 +97,9 @@ pub enum DeclineReason {
     /// The monzo card has been blocked
     CardBlocked,
 
+    /// The monzo card has been closed
+    CardClosed,
+
     /// Incorrect CVC code used
     InvalidCvc,
 
@@ -111,6 +114,9 @@ pub enum DeclineReason {
 
     /// Transaction declined because verifcation failed
     AuthenticationVerificationFailed,
+
+    /// Transaction declined by the decisioning engine
+    DecisioningEngineHardDecline,
 
     /// All other errors
     Other,
@@ -366,6 +372,15 @@ mod tests {
             "AUTHENTICATION_REJECTED_BY_CARDHOLDER",
             "AUTHENTICATION_VERIFICATION_FAILED",
         );
+        serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
+
+        let new = raw.replace(
+            "AUTHENTICATION_VERIFICATION_FAILED",
+            "DECISIONING_ENGINE_HARD_DECLINE",
+        );
+        serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
+
+        let new = raw.replace("DECISIONING_ENGINE_HARD_DECLINE", "CARD_CLOSED");
         serde_json::from_str::<Transaction>(&new).expect("couldn't decode Transaction from json");
     }
 
