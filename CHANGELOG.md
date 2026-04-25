@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0](https://github.com/danieleades/monzo-lib/compare/v0.6.1...v0.7.0) - 2026-04-25
+
+### Fixed
+
+- add missing transaction decline reason ([#205](https://github.com/danieleades/monzo-lib/pull/205)) ([#206](https://github.com/danieleades/monzo-lib/pull/206))
+
+### Other
+
+- *(deps)* bump reqwest to 0.13 ([#211](https://github.com/danieleades/monzo-lib/pull/211))
+- *(deps)* bump rand from 0.9.4 to 0.10.1 ([#201](https://github.com/danieleades/monzo-lib/pull/201))
+- bump rust edition from 2021 to 2024 ([#210](https://github.com/danieleades/monzo-lib/pull/210))
+- *(deps)* bump amannn/action-semantic-pull-request from 5 to 6 ([#197](https://github.com/danieleades/monzo-lib/pull/197))
+- *(deps)* bump codecov/codecov-action from 5 to 6 ([#198](https://github.com/danieleades/monzo-lib/pull/198))
+- *(deps)* bump the patch-updates group across 1 directory with 3 updates ([#208](https://github.com/danieleades/monzo-lib/pull/208))
+- *(deps)* bump tokio from 1.50.0 to 1.52.1 ([#204](https://github.com/danieleades/monzo-lib/pull/204))
+- *(deps)* bump rand from 0.9.2 to 0.9.3 ([#202](https://github.com/danieleades/monzo-lib/pull/202))
+- *(deps)* bump actions/checkout from 4 to 6 ([#199](https://github.com/danieleades/monzo-lib/pull/199))
+- *(deps)* bump tokio from 1.49.0 to 1.50.0 ([#192](https://github.com/danieleades/monzo-lib/pull/192))
+- *(deps)* bump clap from 4.5.60 to 4.6.0 ([#194](https://github.com/danieleades/monzo-lib/pull/194))
+- *(deps)* bump quinn-proto from 0.11.10 to 0.11.14 ([#193](https://github.com/danieleades/monzo-lib/pull/193))
+- *(deps)* bump the patch-updates group with 2 updates ([#191](https://github.com/danieleades/monzo-lib/pull/191))
+- *(deps)* bump bytes from 1.10.1 to 1.11.1 ([#189](https://github.com/danieleades/monzo-lib/pull/189))
+- *(deps)* bump the patch-updates group with 4 updates ([#188](https://github.com/danieleades/monzo-lib/pull/188))
+
 ## [0.6.1](https://github.com/danieleades/monzo-lib/compare/v0.6.0...v0.6.1) - 2026-01-31
 
 ### Added
