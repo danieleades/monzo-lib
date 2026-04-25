@@ -21,7 +21,7 @@ impl Endpoint for Request<'_> {
 
 impl<'a> Request<'a> {
     pub(crate) fn new(pot_id: &'a str, source_account_id: &'a str, amount: u32) -> Self {
-        use rand::{distr::Alphanumeric, rng, Rng};
+        use rand::{distr::Alphanumeric, rng, RngExt};
 
         let endpoint = format!("/pots/{}/deposit", &pot_id);
 
