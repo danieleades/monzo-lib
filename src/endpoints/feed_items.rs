@@ -3,6 +3,8 @@
 pub use basic::Request as Basic;
 
 pub(crate) mod basic {
+    use std::future::{Future, IntoFuture};
+
     use serde::Serialize;
 
     use crate::{client, endpoints::Endpoint, Result};
@@ -99,11 +101,6 @@ pub(crate) mod basic {
             self.payload.params.body = Some(body);
             self
         }
-
-        /// Consume and send the [`Request`].
-        pub async fn send(self) -> Result<()> {
-            self.client.handle_request(&self).await
-        }
     }
 
     impl<C> Endpoint for Request<'_, C>
@@ -118,6 +115,20 @@ pub(crate) mod basic {
 
         fn json(&self) -> Option<&dyn erased_serde::Serialize> {
             Some(&self.payload)
+        }
+    }
+
+    impl<'a, C> IntoFuture for Request<'a, C>
+    where
+        C: client::Inner,
+    {
+        type Output = Result<()>;
+
+        type IntoFuture = impl Future<Output = Self::Output>;
+
+        /// Consume and send the [`Request`].
+        fn into_future(self) -> Self::IntoFuture {
+            async move { self.client.handle_request(&self).await }
         }
     }
 
