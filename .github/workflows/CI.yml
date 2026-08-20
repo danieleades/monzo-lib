@@ -5,6 +5,10 @@ on:
 
 name: Continuous integration
 
+env:
+  # renovate: datasource=rust-version depName=rust
+  RUST_NIGHTLY_VERSION: nightly-2026-08-01
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -26,35 +30,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@nightly
+      - uses: dtolnay/rust-toolchain@master
         with:
           components: rustfmt
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
       - run: cargo fmt --all --check
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@nightly
+      - uses: dtolnay/rust-toolchain@master
         with:
           components: clippy
-      - uses: actions-rs-plus/clippy-check@v2
-        with:
-          args: --all-features --all-targets
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
+      - run: cargo clippy --all-features --all-targets -- -D warnings
 
   msrv:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Get MSRV from Cargo.toml
-        run: |
-          MSRV=$(grep 'rust-version' Cargo.toml | sed 's/.*= *"\(.*\)".*/\1/')
-          echo "MSRV=$MSRV" >> $GITHUB_ENV
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ env.MSRV }}
-      - uses: taiki-e/install-action@cargo-no-dev-deps
-      - run: cargo no-dev-deps check --all
+      - uses: actions/checkout@v6
+      - uses: taiki-e/install-action@cargo-hack
+      - run: cargo hack check --rust-version --no-dev-deps
 
   docs:
     runs-on: ubuntu-latest
@@ -71,40 +68,19 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - name: checkout source
-        uses: actions/checkout@v6
-
-      - name: Install nightly toolchain
-        uses: dtolnay/rust-toolchain@nightly
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@master
         with:
           components: llvm-tools-preview
-
-      - name: Install cargo-llvm-cov
-        uses: taiki-e/install-action@cargo-llvm-cov
-
-      - name: Run llvm-cov
-        run: cargo llvm-cov --all-features --doctests --workspace --lcov --output-path lcov.info
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - run: cargo llvm-cov --all-features --doctests --lcov --output-path lcov.info
+      - uses: codecov/codecov-action@v7
         with:
           files: lcov.info
-          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
-  
-
-  # Automatically merge if it's a Dependabot PR that passes the build
-  dependabot:
-    needs: [test, format, lint, msrv, docs, cargo-deny, coverage]
-    permissions:
-      contents: write
-      pull-requests: write
-    runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
-    steps:
-      - name: Enable auto-merge for Dependabot PRs
-        run: gh pr merge --auto --squash "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          use_oidc: true

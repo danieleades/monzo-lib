@@ -13,7 +13,7 @@ async fn main() -> monzo::Result<()> {
 
     let response = client.who_am_i().await?;
 
-    println!("{:#?}", &response);
+    println!("{response:#?}");
 
     Ok(())
 }

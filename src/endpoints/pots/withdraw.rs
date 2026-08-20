@@ -23,7 +23,7 @@ impl<'a> Request<'a> {
     pub(crate) fn new(pot_id: &'a str, destination_account_id: &'a str, amount: u32) -> Self {
         use rand::{distr::Alphanumeric, rng, RngExt};
 
-        let endpoint = format!("/pots/{}/withdraw", &pot_id);
+        let endpoint = format!("/pots/{pot_id}/withdraw");
 
         let dedupe_id: String = rng()
             .sample_iter(&Alphanumeric)

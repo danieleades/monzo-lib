@@ -1,0 +1,31 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    "security:minimumReleaseAgeCrate",
+    ":enableVulnerabilityAlerts",
+    "customManagers:githubActionsVersions",
+  ],
+
+  "automerge": true,
+  // Let Renovate verify CI itself because this repository does not currently
+  // enforce required status checks through branch protection.
+  "platformAutomerge": false,
+
+  "packageRules": [
+    // Batch Cargo patches to limit PR and CI churn.
+    {
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["patch"],
+      "groupName": "Rust patch updates",
+      "extends": ["schedule:monthly"],
+    },
+    // Keep formatting and linting reproducible while refreshing nightly monthly.
+    {
+      "matchDatasources": ["rust-version"],
+      "matchPackageNames": ["rust"],
+      "extends": ["schedule:monthly"],
+    },
+  ],
+}
