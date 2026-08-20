@@ -47,3 +47,24 @@ struct Form<'a> {
     amount: u32,
     dedupe_id: String,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::Request;
+    use crate::endpoints::Endpoint;
+
+    #[test]
+    fn builds_request() {
+        let request = Request::new("pot_1234", "account_1234", 1_000);
+
+        assert_eq!(request.endpoint(), "/pots/pot_1234/withdraw");
+        assert_eq!(request.form.destination_account_id, "account_1234");
+        assert_eq!(request.form.amount, 1_000);
+        assert_eq!(request.form.dedupe_id.len(), 10);
+        assert!(request
+            .form
+            .dedupe_id
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric()));
+    }
+}
