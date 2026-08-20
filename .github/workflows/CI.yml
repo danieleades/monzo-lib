@@ -7,7 +7,7 @@ name: Continuous integration
 
 env:
   # renovate: datasource=rust-version depName=rust
-  RUST_NIGHTLY_VERSION: nightly-2026-08-01
+  RUST_NIGHTLY_VERSION: nightly-2026-08-20
 
 jobs:
   test:
