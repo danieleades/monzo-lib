@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1](https://github.com/danieleades/monzo-lib/compare/v0.7.0...v0.7.1) - 2026-11-09
+
+### Other
+
+- *(ci)* use a PAT for release-plz ([#237](https://github.com/danieleades/monzo-lib/pull/237))
+- *(deps)* stop pinning dev-dependencies ([#236](https://github.com/danieleades/monzo-lib/pull/236))
+- *(deps)* update dependency rust to nightly-2026-11-09 ([#230](https://github.com/danieleades/monzo-lib/pull/230))
+- *(deps)* pin dependencies ([#235](https://github.com/danieleades/monzo-lib/pull/235))
+- *(ci)* simplify Renovate config and gate merges on ci-success ([#234](https://github.com/danieleades/monzo-lib/pull/234))
+- *(deps)* update actions/checkout action to v7 ([#226](https://github.com/danieleades/monzo-lib/pull/226))
+- *(deps)* update rust patch updates ([#229](https://github.com/danieleades/monzo-lib/pull/229))
+- *(deps)* update dependency rust to nightly-2026-08-20 ([#228](https://github.com/danieleades/monzo-lib/pull/228))
+- *(deps)* update rust crate tokio to v1.53.1 ([#225](https://github.com/danieleades/monzo-lib/pull/225))
+- *(ci)* migrate from Dependabot to Renovate ([#222](https://github.com/danieleades/monzo-lib/pull/222))
+- *(deps)* bump reqwest in the patch-updates group ([#212](https://github.com/danieleades/monzo-lib/pull/212))
+
 ## [0.7.0](https://github.com/danieleades/monzo-lib/compare/v0.6.1...v0.7.0) - 2026-04-25
 
 ### Fixed
