@@ -6,6 +6,9 @@
     "customManagers:githubActionsVersions",
   ],
 
+  // Cargo.lock already fixes exact versions.
+  "ignorePresets": [":pinDevDependencies"],
+
   "automerge": true,
 
   "packageRules": [
