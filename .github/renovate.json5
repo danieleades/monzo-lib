@@ -1,29 +1,28 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    ":semanticCommits",
+    "config:best-practices",
     "security:minimumReleaseAgeCrate",
-    ":enableVulnerabilityAlerts",
     "customManagers:githubActionsVersions",
   ],
 
   "automerge": true,
-  // Let Renovate verify CI itself because this repository does not currently
-  // enforce required status checks through branch protection.
-  "platformAutomerge": false,
 
   "packageRules": [
-    // Batch Cargo patches to limit PR and CI churn.
+    // Crates in the public API: a breaking bump is breaking for our users too.
     {
-      "matchManagers": ["cargo"],
-      "matchUpdateTypes": ["patch"],
-      "groupName": "Rust patch updates",
-      "extends": ["schedule:monthly"],
+      "matchPackageNames": ["serde", "serde_json"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
     },
-    // Keep formatting and linting reproducible while refreshing nightly monthly.
+    // As above, but Renovate classes breaking 0.x bumps as "minor".
     {
-      "matchDatasources": ["rust-version"],
+      "matchPackageNames": ["chrono", "reqwest"],
+      "matchUpdateTypes": ["major", "minor"],
+      "automerge": false,
+    },
+    // Nightlies publish daily; refresh the pinned toolchain monthly instead.
+    {
       "matchPackageNames": ["rust"],
       "extends": ["schedule:monthly"],
     },
