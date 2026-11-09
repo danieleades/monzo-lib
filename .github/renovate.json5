@@ -9,20 +9,20 @@
   "automerge": true,
 
   "packageRules": [
-    // Major updates can affect the public API, so review them by hand.
+    // Crates in the public API: a breaking bump is breaking for our users too.
     {
+      "matchPackageNames": ["serde", "serde_json"],
       "matchUpdateTypes": ["major"],
       "automerge": false,
     },
-    // Lock file maintenance picks up patches weekly; avoid one PR per patch.
+    // As above, but Renovate classes breaking 0.x bumps as "minor".
     {
-      "matchManagers": ["cargo"],
-      "matchUpdateTypes": ["patch"],
-      "extends": ["schedule:monthly"],
+      "matchPackageNames": ["chrono", "reqwest"],
+      "matchUpdateTypes": ["major", "minor"],
+      "automerge": false,
     },
-    // Keep formatting and linting reproducible while refreshing nightly monthly.
+    // Nightlies publish daily; refresh the pinned toolchain monthly instead.
     {
-      "matchDatasources": ["rust-version"],
       "matchPackageNames": ["rust"],
       "extends": ["schedule:monthly"],
     },
