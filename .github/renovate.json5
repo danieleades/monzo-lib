@@ -1,24 +1,23 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    ":semanticCommits",
+    "config:best-practices",
     "security:minimumReleaseAgeCrate",
-    ":enableVulnerabilityAlerts",
     "customManagers:githubActionsVersions",
   ],
 
   "automerge": true,
-  // Let Renovate verify CI itself because this repository does not currently
-  // enforce required status checks through branch protection.
-  "platformAutomerge": false,
 
   "packageRules": [
-    // Batch Cargo patches to limit PR and CI churn.
+    // Major updates can affect the public API, so review them by hand.
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+    },
+    // Lock file maintenance picks up patches weekly; avoid one PR per patch.
     {
       "matchManagers": ["cargo"],
       "matchUpdateTypes": ["patch"],
-      "groupName": "Rust patch updates",
       "extends": ["schedule:monthly"],
     },
     // Keep formatting and linting reproducible while refreshing nightly monthly.
