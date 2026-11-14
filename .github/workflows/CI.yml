@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: taiki-e/install-action@961e5c37a36cf6b0ff4e0b62ef05edd1fe9fe767 # cargo-hack
+      - uses: taiki-e/install-action@b7ba43af4db98194b255fdac90fd36f60b1de099 # cargo-hack
       - run: cargo hack check --rust-version --no-dev-deps
 
   docs:
@@ -85,7 +85,7 @@ jobs:
         with:
           components: llvm-tools-preview
           toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
-      - uses: taiki-e/install-action@3f7c3597aa4e6da3f315e128de702ce61e7b2877 # cargo-llvm-cov
+      - uses: taiki-e/install-action@9299c56f1fb893650f348425bb02c3acf492ebd2 # cargo-llvm-cov
       - run: cargo llvm-cov --all-features --doctests --lcov --output-path lcov.info
       - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
         with:
