@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2](https://github.com/danieleades/monzo-lib/compare/v0.7.1...v0.7.2) - 2026-11-21
+
+### Other
+
+- *(deps)* update taiki-e/install-action digest ([#244](https://github.com/danieleades/monzo-lib/pull/244))
+- *(deps)* update rust crate clap to v4.6.8 ([#246](https://github.com/danieleades/monzo-lib/pull/246))
+- *(deps)* update amannn/action-semantic-pull-request digest to c5e23b7 ([#247](https://github.com/danieleades/monzo-lib/pull/247))
+- *(deps)* ignore chrono unmaintained advisory ([#250](https://github.com/danieleades/monzo-lib/pull/250))
+- *(deps)* update embarkstudios/cargo-deny-action digest to 70f8153 ([#243](https://github.com/danieleades/monzo-lib/pull/243))
+- *(deps)* lock file maintenance ([#242](https://github.com/danieleades/monzo-lib/pull/242))
+- *(deps)* update taiki-e/install-action digest ([#241](https://github.com/danieleades/monzo-lib/pull/241))
+- *(deps)* update dtolnay/rust-toolchain digest ([#240](https://github.com/danieleades/monzo-lib/pull/240))
+- *(deps)* update taiki-e/install-action digest ([#238](https://github.com/danieleades/monzo-lib/pull/238))
+
 ## [0.7.1](https://github.com/danieleades/monzo-lib/compare/v0.7.0...v0.7.1) - 2026-11-09
 
 ### Other
