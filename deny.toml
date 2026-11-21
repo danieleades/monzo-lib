@@ -3,6 +3,13 @@ all-features = true
 
 [advisories]
 yanked = "deny"
+ignore = [
+    # chrono is unmaintained (https://github.com/chronotope/chrono/issues/1768).
+    # Waiting to see whether a maintainer or official fork picks it up before
+    # making a breaking switch; the jiff migration is parked in #249.
+    # Revisit by 2027-03-01.
+    { id = "RUSTSEC-2026-0543", reason = "chrono unmaintained; jiff migration parked in #249, revisit by 2027-03-01" },
+]
 
 [licenses]
 allow = [
