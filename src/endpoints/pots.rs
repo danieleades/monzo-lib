@@ -1,6 +1,6 @@
 //! endpoints for working with Monzo pots
 
-use chrono::{DateTime, Utc};
+use jiff::Timestamp;
 use serde::Deserialize;
 
 use crate::endpoints::utils::empty_string_as_none;
@@ -40,10 +40,10 @@ pub struct Pot {
     pub current_account_id: String,
 
     /// The datetime that the pot was created
-    pub created: DateTime<Utc>,
+    pub created: Timestamp,
 
     /// The datetime that the pot was last modified
-    pub updated: DateTime<Utc>,
+    pub updated: Timestamp,
 
     /// true if the pot has been deleted
     ///

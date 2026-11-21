@@ -1,5 +1,5 @@
-use chrono::{Duration, Utc};
 use clap::Parser;
+use jiff::{SignedDuration, Timestamp};
 use monzo::Client;
 
 #[derive(Parser)]
@@ -21,7 +21,7 @@ async fn main() -> monzo::Result<()> {
 
     let transactions = client
         .transactions(account_id)
-        .since(Utc::now() - Duration::try_days(args.days).unwrap())
+        .since(Timestamp::now() - SignedDuration::from_hours(args.days * 24))
         .limit(args.limit)
         .send()
         .await?;

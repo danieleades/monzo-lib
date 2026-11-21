@@ -19,8 +19,8 @@ name = "monzo"
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-chrono = { version = "0.4.44", features = ["serde"] }
 erased-serde = "0.4.10"
+jiff = { version = "1.0.1", default-features = false, features = ["std", "serde"] }
 rand = "0.10.1"
 reqwest = { version = "0.13.3", default-features = false, features = ["rustls", "json", "query", "form"] }
 serde = { version = "1.0.218", features = ["derive"] }
