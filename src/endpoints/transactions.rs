@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 
-use chrono::{DateTime, Utc};
+use jiff::Timestamp;
 use serde::{Deserialize, Serialize};
 
 use crate::endpoints::utils::empty_string_as_none;
@@ -43,7 +43,7 @@ pub struct Transaction {
     pub category: String,
 
     /// The timestamp when the transaction was created
-    pub created: DateTime<Utc>,
+    pub created: Timestamp,
 
     /// The three-letter currency string for the transaction
     pub currency: String,
@@ -80,7 +80,7 @@ pub struct Transaction {
     ///
     /// This is `None` if the transaction is authorised, but not yet complete.
     #[serde(deserialize_with = "empty_string_as_none")]
-    pub settled: Option<DateTime<Utc>>,
+    pub settled: Option<Timestamp>,
 }
 
 /// The set of reasons for which a monzo transaction may be declined
@@ -141,7 +141,7 @@ pub enum MerchantInfo {
 #[allow(missing_docs)]
 pub struct Merchant {
     pub address: Address,
-    pub created: DateTime<Utc>,
+    pub created: Timestamp,
     pub group_id: String,
     pub id: String,
     pub logo: String,
@@ -172,7 +172,7 @@ struct Pagination {
     since: Option<Since>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    before: Option<DateTime<Utc>>,
+    before: Option<Timestamp>,
 }
 
 /// The 'since' parameter of a pagination request can be either a timestamp or
@@ -181,7 +181,7 @@ struct Pagination {
 #[serde(untagged)]
 pub enum Since {
     /// A timestamp
-    Timestamp(DateTime<Utc>),
+    Timestamp(Timestamp),
 
     /// An id of an object
     ObjectId(String),
@@ -190,7 +190,7 @@ pub enum Since {
 #[cfg(test)]
 mod tests {
     #![allow(clippy::too_many_lines, clippy::non_ascii_literal)]
-    use super::Transaction;
+    use super::{Pagination, Since, Transaction};
 
     #[test]
     fn deserialise_expanded_transaction() {
@@ -579,5 +579,50 @@ mod tests {
         "##;
 
         serde_json::from_str::<Response>(raw).expect("couldn't decode Transaction from json");
+    }
+
+    #[test]
+    fn deserialise_timestamps() {
+        #[derive(serde::Deserialize)]
+        struct Row {
+            created: jiff::Timestamp,
+            #[serde(deserialize_with = "crate::endpoints::utils::empty_string_as_none")]
+            settled: Option<jiff::Timestamp>,
+        }
+
+        let row: Row =
+            serde_json::from_str(r#"{"created": "2021-06-29T13:10:09.992Z", "settled": ""}"#)
+                .unwrap();
+        assert_eq!(row.created.as_millisecond(), 1_624_972_209_992);
+        assert!(row.settled.is_none());
+
+        let row: Row = serde_json::from_str(
+            r#"{"created": "2021-06-29T13:10:09Z", "settled": "2021-06-30T05:00:00.123Z"}"#,
+        )
+        .unwrap();
+        assert_eq!(
+            row.settled.unwrap(),
+            "2021-06-30T05:00:00.123Z"
+                .parse::<jiff::Timestamp>()
+                .unwrap()
+        );
+    }
+
+    #[test]
+    fn serialise_pagination_timestamps_as_rfc3339() {
+        let ts: jiff::Timestamp = "2021-06-29T13:10:09.992Z".parse().unwrap();
+        let pagination = Pagination {
+            limit: None,
+            since: Some(Since::Timestamp(ts)),
+            before: Some(ts),
+        };
+
+        assert_eq!(
+            serde_json::to_value(&pagination).unwrap(),
+            serde_json::json!({
+                "since": "2021-06-29T13:10:09.992Z",
+                "before": "2021-06-29T13:10:09.992Z",
+            })
+        );
     }
 }

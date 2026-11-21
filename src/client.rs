@@ -229,7 +229,7 @@ where
     ///
     /// # Example
     /// ```no_run
-    /// use chrono::{Duration, Utc};
+    /// use jiff::{SignedDuration, Timestamp};
     /// use monzo::Client;
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -240,7 +240,7 @@ where
     ///
     /// let transactions = client
     ///     .transactions(account_id)
-    ///     .since(Utc::now() - Duration::days(10))
+    ///     .since(Timestamp::now() - SignedDuration::from_hours(10 * 24))
     ///     .limit(10)
     ///     .send()
     ///     .await?;
