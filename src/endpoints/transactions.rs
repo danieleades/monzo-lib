@@ -140,27 +140,32 @@ pub enum MerchantInfo {
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 #[allow(missing_docs)]
 pub struct Merchant {
-    pub address: Address,
-    pub created: DateTime<Utc>,
-    pub group_id: String,
     pub id: String,
+    pub group_id: String,
+    pub name: String,
     pub logo: String,
     pub emoji: String,
-    pub name: String,
     pub category: String,
+    pub online: bool,
+    pub atm: bool,
+    pub address: Address,
 }
 
 /// Address details
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 #[allow(missing_docs)]
 pub struct Address {
-    pub address: String,
+    pub short_formatted: String,
     pub city: String,
-    pub country: String,
     pub latitude: f32,
     pub longitude: f32,
-    pub postcode: String,
+    pub zoom_level: f32,
+    pub approximate: bool,
+    pub formatted: String,
+    pub address: String,
     pub region: String,
+    pub country: String,
+    pub postcode: String,
 }
 
 #[derive(Serialize, Default, Debug)]
