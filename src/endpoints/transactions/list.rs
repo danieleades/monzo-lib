@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use jiff::Timestamp;
 use serde::{Deserialize, Serialize};
 
 use super::{Pagination, Since, Transaction};
@@ -46,8 +46,8 @@ where
         Self { client, query }
     }
 
-    /// Only return transactions which occurred after the given `DateTime`
-    pub fn since(mut self, datetime: DateTime<Utc>) -> Self {
+    /// Only return transactions which occurred after the given `Timestamp`
+    pub fn since(mut self, datetime: Timestamp) -> Self {
         self.query.pagination.since = Some(Since::Timestamp(datetime));
         self
     }
@@ -60,8 +60,8 @@ where
         self
     }
 
-    /// Only return transactions which occurred before a given `DateTime`
-    pub const fn before(mut self, datetime: DateTime<Utc>) -> Self {
+    /// Only return transactions which occurred before a given `Timestamp`
+    pub const fn before(mut self, datetime: Timestamp) -> Self {
         self.query.pagination.before = Some(datetime);
         self
     }

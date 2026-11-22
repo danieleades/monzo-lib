@@ -1,6 +1,6 @@
 //! Accounts API endpoint
 
-use chrono::{DateTime, Utc};
+use jiff::Timestamp;
 use serde::Deserialize;
 
 /// A struct representing a Monzo Account
@@ -17,8 +17,8 @@ pub struct Account {
     /// Whether the account has been closed
     pub closed: bool,
 
-    /// The `DateTime` that the account was created
-    pub created: DateTime<Utc>,
+    /// The `Timestamp` at which the account was created
+    pub created: Timestamp,
 
     /// The account description
     pub description: String,
